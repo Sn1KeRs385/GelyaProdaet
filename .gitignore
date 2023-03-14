@@ -1,0 +1,5 @@
+/.idea/
+/.env.example
+/docker/config/nginx/log/
+/docker-compose.yml
+/.docker/
