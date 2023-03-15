@@ -9,7 +9,8 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "sn1kers385/laravel-file-uploader": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -62,5 +63,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:Sn1KeRs385/laravel-file-uploader.git"
+        }
+    ]
 }

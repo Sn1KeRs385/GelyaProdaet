@@ -4,6 +4,7 @@ import {
   createRouter,
   createWebHashHistory,
   createWebHistory,
+  Router,
 } from 'vue-router'
 
 import routes from './routes'
@@ -16,6 +17,7 @@ import routes from './routes'
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
+let router: Router
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
@@ -24,7 +26,7 @@ export default route(function (/* { store, ssrContext } */) {
     ? createWebHistory
     : createWebHashHistory
 
-  const Router = createRouter({
+  router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
@@ -34,5 +36,7 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
-  return Router
+  return router
 })
+
+export { router }
