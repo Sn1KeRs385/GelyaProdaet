@@ -6,7 +6,7 @@ use Database\Seeders\Traits\EnumUpdate;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
-class IdentifierTypesSeeder extends Seeder
+class OptionGroupSlugSeeder extends Seeder
 {
     use EnumUpdate;
 
@@ -15,8 +15,8 @@ class IdentifierTypesSeeder extends Seeder
      */
     public function run(): void
     {
-        $availableTypes = Arr::pluck(\App\Enums\IdentifierType::cases(), 'value');
+        $availableTypes = Arr::pluck(\App\Enums\OptionGroupSlug::cases(), 'value');
 
-        $this->updateEnum('user_identifiers', 'type', $availableTypes);
+        $this->updateEnum('list_options', 'group_slug', $availableTypes);
     }
 }

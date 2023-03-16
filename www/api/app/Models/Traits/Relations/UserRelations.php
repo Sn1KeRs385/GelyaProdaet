@@ -3,20 +3,16 @@
 namespace App\Models\Traits\Relations;
 
 
-use App\Models\Album;
-use App\Models\AlbumUser;
 use App\Models\File;
 use App\Models\UserCode;
 use App\Models\UserIdentifier;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property Collection<int, UserIdentifier> $identifiers
  * @property Collection<int, UserCode> $codes
- * @property Collection<int, Album> $albums
  * @property Collection<int, File> $files
  */
 trait UserRelations

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\GetTokensByCodeRequest;
 use App\Http\Requests\Api\Auth\GetTokensByCredentialsRequest;
 use App\Http\Requests\Api\Auth\SendCodeRequest;
 use App\Http\Resources\Model\TokenResource;
 use App\Http\Resources\Model\UserCodeResource;
-use App\Http\Resources\Model\UserResource;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
-class AuthController extends Controller
+class AuthController extends BaseApiController
 {
     public function __construct(protected AuthService $authService)
     {

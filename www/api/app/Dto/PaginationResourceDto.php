@@ -5,9 +5,9 @@ namespace App\Dto;
 
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 
-class PaginationResourceDto extends DataTransferObject
+class PaginationResourceDto extends Data
 {
     public Paginator $paginator;
     public string|JsonResource $itemResourceClass;
