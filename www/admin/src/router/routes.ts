@@ -1,25 +1,43 @@
+import models from 'src/models'
 import { RouteRecordRaw } from 'vue-router'
 import authentication from 'src/router/middleware/authentication'
 import notAuthentication from 'src/router/middleware/not-authentication'
 
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+const indexRoute: RouteRecordRaw = {
+  path: '/',
+  component: () => import('layouts/MainLayout.vue'),
+  children: [
+    {
+      path: '',
+      name: 'index',
+      component: () => import('pages/IndexPage.vue'),
+    },
+  ],
+  beforeEnter: authentication,
+}
+
+Object.entries(models).forEach(([key, value]) => {
+  const tempRoute: RouteRecordRaw = {
+    path: value.getUrl(),
+    name: `table_${key}`,
+    props: { model: value },
+    component: () => import('pages/models/TablePage.vue'),
+    beforeEnter: authentication,
     children: [
       {
-        path: '',
-        name: 'index',
-        component: () => import('pages/IndexPage.vue'),
+        path: value.getUrl() + '/create',
+        name: `create_form_${key}`,
+        props: { model: value },
+        component: () => import('pages/models/FormPage.vue'),
+        beforeEnter: authentication,
       },
-      // {
-      //   path: '/albums',
-      //   name: 'Albums',
-      //   component: () => import('pages/AlbumsPage.vue'),
-      // },
     ],
-    beforeEnter: authentication,
-  },
+  }
+  indexRoute.children.push(tempRoute)
+})
+
+const routes: RouteRecordRaw[] = [
+  indexRoute,
   {
     path: '/login',
     name: 'login',

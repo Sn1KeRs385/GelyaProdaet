@@ -22,6 +22,10 @@ class ProductCrudService extends BaseCrudService
         return Product::query();
     }
 
+    protected function indexBeforeQueryExecHook(Builder &$query): void
+    {
+        $query->with(['brand', "country"]);
+    }
 
     protected function storeDataHook(array &$data): void
     {

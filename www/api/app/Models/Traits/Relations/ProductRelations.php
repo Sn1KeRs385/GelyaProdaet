@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
+ * @property ListOption $type
  * @property ListOption|null $brand
  * @property ListOption|null $country
  * @property Collection<int, File> $files
@@ -19,6 +20,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 trait ProductRelations
 {
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(ListOption::class);
+    }
+
     public function brand(): BelongsTo
     {
         return $this->belongsTo(ListOption::class);

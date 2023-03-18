@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read int $id
+ * @property int $type_id
  * @property int|null $brand_id
  * @property int|null $country_id
  * @property Carbon|null $created_at

@@ -37,7 +37,7 @@ export const useUserStore = defineStore('user', {
       clearAuthorizationHeader()
 
       router.push({
-        name: 'Login',
+        name: 'login',
       })
     },
   },

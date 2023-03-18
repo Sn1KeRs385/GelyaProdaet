@@ -16,6 +16,7 @@ class BaseIndexResources extends JsonResource
             'current_page' => $this->currentPage(),
             'last_page' => $this->lastPage(),
             'per_page' => $this->perPage(),
+            'total' => $this->total(),
             'items' => $this->items(),
         ];
     }

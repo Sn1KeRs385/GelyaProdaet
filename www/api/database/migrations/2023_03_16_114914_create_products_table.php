@@ -12,11 +12,16 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('brand_id')
                 ->nullable();
             $table->unsignedBigInteger('country_id')
                 ->nullable();
             $table->timestamps();
+
+            $table->foreign('type_id')
+                ->on('list_options')
+                ->references('id');
 
             $table->foreign('brand_id')
                 ->on('list_options')

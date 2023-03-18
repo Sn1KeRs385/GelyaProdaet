@@ -4,7 +4,6 @@ import { useUserStore } from 'src/stores/user-store'
 // @ts-ignore
 export default (to, from, next) => {
   const store = useUserStore()
-  console.log(store.tokens.accessToken)
   if (!store.tokens.accessToken) {
     next({ name: 'login' })
     return

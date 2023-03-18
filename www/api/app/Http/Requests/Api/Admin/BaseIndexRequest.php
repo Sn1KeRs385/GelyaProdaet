@@ -17,7 +17,7 @@ class BaseIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'per_page' => ['sometimes', 'nullable', 'int', 'min:0', 'max:200'],
+            'per_page' => ['sometimes', 'nullable', 'int', 'min:1'],
             'page' => ['sometimes', 'nullable', 'int', 'min:1'],
         ];
     }
