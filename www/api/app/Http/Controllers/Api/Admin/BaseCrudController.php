@@ -12,6 +12,13 @@ abstract class BaseCrudController extends BaseAdminController
 {
     protected BaseCrudService $crudService;
 
+    public function all(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json(
+            $this->crudService->all(),
+            Response::HTTP_OK
+        );
+    }
 
     public function index(BaseIndexRequest $request): \Illuminate\Http\JsonResponse
     {

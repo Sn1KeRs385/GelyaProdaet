@@ -16,24 +16,19 @@ const indexRoute: RouteRecordRaw = {
   beforeEnter: authentication,
 }
 
-Object.entries(models).forEach(([key, value]) => {
-  const tempRoute: RouteRecordRaw = {
-    path: value.getUrl(),
-    name: `table_${key}`,
+Object.values(models).forEach((value) => {
+  indexRoute.children.push({
+    path: `/${value.getUrl()}`,
+    name: `table_${value.constructor.name}`,
     props: { model: value },
     component: () => import('pages/models/TablePage.vue'),
-    beforeEnter: authentication,
-    children: [
-      {
-        path: value.getUrl() + '/create',
-        name: `create_form_${key}`,
-        props: { model: value },
-        component: () => import('pages/models/FormPage.vue'),
-        beforeEnter: authentication,
-      },
-    ],
-  }
-  indexRoute.children.push(tempRoute)
+  })
+  indexRoute.children.push({
+    path: `/${value.getUrl()}/create`,
+    name: `create_form_${value.constructor.name}`,
+    props: { model: value },
+    component: () => import('pages/models/FormPage.vue'),
+  })
 })
 
 const routes: RouteRecordRaw[] = [

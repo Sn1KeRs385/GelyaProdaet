@@ -2,6 +2,7 @@ enum CollectionName {
   IMAGE = 'image',
   VIDEO = 'video',
   PREVIEW = 'preview',
+  FILE = 'file',
 }
 
 export const isVideoCollection = (collectionName: CollectionName) => {

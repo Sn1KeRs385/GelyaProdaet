@@ -14,9 +14,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+function addAdminRoutes(string $name, string $controller): void
+{
+    Route::get("/$name/all", [$controller, 'all'])->name("$name.all");
+    Route::resource($name, $controller);
+}
 
-//Route::middleware(['auth:sanctum'])->group(function () {
-Route::middleware([])->group(function () {
-    Route::resource('products', ProductController::class);
-    Route::resource('list-options', ListOptionController::class);
+Route::middleware(['auth:sanctum'])->group(function () {
+    addAdminRoutes('products', ProductController::class);
+    addAdminRoutes('list-options', ListOptionController::class);
 });

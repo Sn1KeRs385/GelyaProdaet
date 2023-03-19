@@ -32,4 +32,9 @@ class UserIdentifier extends Model
         'type',
         'value',
     ];
+
+    public function getMorphClass(): string
+    {
+        return 'UserIdentifier';
+    }
 }

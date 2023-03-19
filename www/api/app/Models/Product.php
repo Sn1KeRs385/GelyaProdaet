@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read int $id
+ * @property string $title
  * @property int $type_id
  * @property int|null $brand_id
  * @property int|null $country_id
@@ -26,7 +27,14 @@ class Product extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'title',
+        'type_id',
         'brand_id',
         'country_id',
     ];
+
+    public function getMorphClass(): string
+    {
+        return 'Product';
+    }
 }

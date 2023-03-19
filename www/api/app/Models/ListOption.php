@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Attributes\ListOptionAttributes;
 use App\Models\Traits\EntityPhpDoc;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 class ListOption extends Model
 {
     use EntityPhpDoc;
+    use ListOptionAttributes;
 
     /**
      * The attributes that are mass assignable.
@@ -28,4 +30,9 @@ class ListOption extends Model
         'title',
         'weight',
     ];
+
+    public function getMorphClass(): string
+    {
+        return 'ListOption';
+    }
 }

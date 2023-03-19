@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import models from 'src/models/'
 import { computed } from 'vue'
 import BaseModel from 'src/models/base-model'
@@ -18,8 +17,6 @@ interface ModelToLink {
   children?: ModelToLink[]
 }
 
-const { t } = useI18n()
-
 const linksStatic: Link[] = [
   {
     title: 'Dashboard',
@@ -34,13 +31,17 @@ const modelsToLink: ModelToLink[] = [
     icon: 'checkroom',
     model: models.Product,
   },
+  {
+    icon: 'settings',
+    model: models.ListOption,
+  },
 ]
 
 const links = computed(() => {
   const processModelToLink = (modelToLink: ModelToLink): Link => {
     const link: Link = {
-      title: t(modelToLink.model.getTitle()),
-      href: modelToLink.model.getUrl(),
+      title: modelToLink.model.getTitle(),
+      href: `/${modelToLink.model.getUrl()}`,
       icon: modelToLink.icon,
       caption: modelToLink.caption,
     }

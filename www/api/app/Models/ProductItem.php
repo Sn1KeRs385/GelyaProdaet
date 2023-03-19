@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $product_id
  * @property int $size_id
  * @property int|null $color_id
+ * @property int $price_buy
  * @property int $price
  * @property bool $is_sold
+ * @property bool $is_for_sale
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -31,7 +33,14 @@ class ProductItem extends Model
         'product_id',
         'size_id',
         'color_id',
+        'price_buy',
         'price',
         'is_sold',
+        'is_for_sale',
     ];
+
+    public function getMorphClass(): string
+    {
+        return 'ProductItem';
+    }
 }

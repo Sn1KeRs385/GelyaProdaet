@@ -1,88 +1,51 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import BaseModel from 'src/models/base-model'
-import { onMounted, ref } from 'vue'
-import { QTableProps } from 'quasar'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import apiErrorHandler from 'src/utils/api-error-handler'
+import FormData from 'src/interfaces/admin/form-data'
+import AutoFormComponent from 'src/components/models/AutoFormComponent.vue'
 
 interface Props {
-  model: BaseModel<never>
+  model: BaseModel<never, never>
 }
 
 const props = defineProps<Props>()
 
 const { t } = useI18n()
-const route = useRoute()
 const router = useRouter()
-console.log(route.query)
-const tableRef = ref()
-const rows = ref([])
-const loading = ref(false)
-const pagination = ref({
-  sortBy: route.query.sortBy || 'id',
-  descending: route.query.desc || true,
-  page: route.query.page || 1,
-  rowsPerPage: route.query.perPage || 25,
-  rowsNumber: 1,
-})
 
-// const data = props.model.index()
-onMounted(() => {
-  tableRef.value.requestServerInteraction()
-})
+const fields = computed(() => props.model.getFormFields())
 
-const onRequest = async (tableProps: QTableProps) => {
-  loading.value = true
+const submitForm = (formData: FormData) => {
+  const data: { [key: string]: unknown } = {}
 
-  const tempData = await props.model.index(
-    tableProps.pagination?.page || 1,
-    tableProps.pagination?.rowsPerPage || 25
-  )
+  Object.entries(formData).forEach(([key, value]) => {
+    data[key] = value.value
+  })
 
-  rows.value.splice(0, rows.value.length, ...tempData.items)
-
-  pagination.value.page = tempData.current_page
-  pagination.value.rowsPerPage = tempData.per_page
-  pagination.value.rowsNumber = tempData.total
-  pagination.value.sortBy = tableProps.pagination?.sortBy || 'id'
-  pagination.value.descending =
-    tableProps.pagination?.descending !== undefined ? tableProps.pagination?.descending : true
-
-  loading.value = false
-
-  saveParamsToRoute()
-}
-
-const saveParamsToRoute = () => {
-  const params = {
-    page: pagination.value.page,
-    perPage: pagination.value.rowsPerPage,
-    sortBy: pagination.value.sortBy,
-    desc: pagination.value.descending.toString(),
-  }
-
-  router.push({ query: params })
+  props.model
+    .create(data)
+    .then(() => {
+      router.push({ name: `table_${props.model.constructor.name}` })
+    })
+    .catch((error) => {
+      apiErrorHandler(error, { formFields: formData })
+    })
 }
 </script>
 
 <template>
   <q-page padding>
     <div class="row justify-between">
-      <h4 class="tw-my-0 tw-font-bold">{{ t(model.getTitle()) }}</h4>
-      <q-btn color="primary" no-caps unelevated>{{ t('models.base.create') }}</q-btn>
+      <h4 class="tw-my-0 tw-font-bold">
+        {{ t('models.base.createModel', { model: model.getTitle() }) }}
+      </h4>
+      <q-btn color="secondary" no-caps unelevated @click="router.go(-1)">
+        {{ t('models.base.back') }}
+      </q-btn>
     </div>
-    <q-table
-      ref="tableRef"
-      v-model:pagination="pagination"
-      class="tw-mt-4"
-      color="primary"
-      :rows-per-page-options="[25, 50, 75, 100, 200, 500, 1000]"
-      :rows="rows"
-      :columns="model.getTableSettings()"
-      row-key="id"
-      :loading="loading"
-      binary-state-sort
-      @request="onRequest"
-    />
+    <auto-form-component :fields="fields" @submit-form="submitForm" />
   </q-page>
 </template>

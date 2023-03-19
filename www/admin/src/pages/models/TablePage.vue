@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import BaseModel from 'src/models/base-model'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { QTableProps } from 'quasar'
 import { useRoute, useRouter } from 'vue-router'
 
 interface Props {
-  model: BaseModel<never>
+  model: BaseModel<never, never>
 }
 
 const props = defineProps<Props>()
@@ -26,7 +26,20 @@ const pagination = ref({
   rowsNumber: 1,
 })
 
-// const data = props.model.index()
+watch(
+  () => props.model,
+  () => {
+    loading.value = true
+    rows.value.splice(0, rows.value.length)
+    pagination.value.page = 1
+    pagination.value.rowsPerPage = 25
+    pagination.value.rowsNumber = 0
+    pagination.value.sortBy = 'id'
+    pagination.value.descending = true
+    tableRef.value.requestServerInteraction()
+  }
+)
+
 onMounted(() => {
   tableRef.value.requestServerInteraction()
 })
@@ -68,8 +81,15 @@ const saveParamsToRoute = () => {
 <template>
   <q-page padding>
     <div class="row justify-between">
-      <h4 class="tw-my-0 tw-font-bold">{{ t(model.getTitle()) }}</h4>
-      <q-btn color="primary" no-caps unelevated>{{ t('models.base.create') }}</q-btn>
+      <h4 class="tw-my-0 tw-font-bold">{{ model.getTitle() }}</h4>
+      <q-btn
+        color="primary"
+        no-caps
+        unelevated
+        :to="{ name: `create_form_${model.constructor.name}` }"
+      >
+        {{ t('models.base.create') }}
+      </q-btn>
     </div>
     <q-table
       ref="tableRef"

@@ -17,9 +17,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('color_id')
                 ->nullable()
                 ->default(null);
+            $table->unsignedBigInteger('price_buy');
             $table->unsignedBigInteger('price');
             $table->boolean('is_sold')
                 ->default(false);
+            $table->boolean('is_for_sale')
+                ->default(true);
             $table->timestamps();
 
             $table->foreign('product_id')

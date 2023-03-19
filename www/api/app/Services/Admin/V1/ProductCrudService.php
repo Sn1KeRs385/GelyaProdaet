@@ -5,7 +5,6 @@ namespace App\Services\Admin\V1;
 use App\Models\Product;
 use App\Services\Admin\BaseCrudService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class ProductCrudService extends BaseCrudService
 {
@@ -24,14 +23,22 @@ class ProductCrudService extends BaseCrudService
 
     protected function indexBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', "country"]);
+        $query->with(['brand', 'country', 'type']);
     }
 
     protected function storeDataHook(array &$data): void
     {
-        if (isset($data['relation_items'])) {
-            foreach ($data['relation_items'] as &$item) {
+        if (isset($data['items'])) {
+            foreach ($data['items'] as &$item) {
                 $item['price'] = $item['price'] ?? $data['price'] ?? null;
+                $item['price_buy'] = $item['price_buy'] ?? $data['price_buy'] ?? null;
+
+                if ($item['price']) {
+                    $item['price'] = $item['price'] * 100;
+                }
+                if ($item['price_buy']) {
+                    $item['price_buy'] = $item['price_buy'] * 100;
+                }
             }
         }
     }

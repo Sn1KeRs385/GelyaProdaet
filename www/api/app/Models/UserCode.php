@@ -40,4 +40,9 @@ class UserCode extends Model
         'used_at' => 'datetime',
         'expired_at' => 'datetime',
     ];
+
+    public function getMorphClass(): string
+    {
+        return 'UserCode';
+    }
 }

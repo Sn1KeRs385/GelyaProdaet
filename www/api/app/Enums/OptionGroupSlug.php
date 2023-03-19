@@ -9,4 +9,5 @@ enum OptionGroupSlug: string
     case COUNTRY = 'country';
     case COLOR = 'color';
     case SIZE = 'size';
+    case PRODUCT_TYPE = 'product_type';
 }

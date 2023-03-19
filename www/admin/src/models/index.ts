@@ -1,3 +1,4 @@
+import ListOption from 'src/models/list-option'
 import Product from 'src/models/product'
 
-export default { Product }
+export default { ListOption, Product }

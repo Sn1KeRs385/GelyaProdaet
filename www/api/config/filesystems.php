@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -56,6 +56,17 @@ return [
             'throw' => false,
         ],
 
+        'minio-files' => [
+            'driver' => 's3',
+            'key' => env('S3_MINIO_FILES_KEY'),
+            'secret' => env('S3_MINIO_FILES_SECRET'),
+            'region' => env('S3_MINIO_FILES_REGION'),
+            'bucket' => env('S3_MINIO_FILES_BUCKET'),
+            'url' => env('S3_MINIO_FILES_URL'),
+            'endpoint' => env('S3_MINIO_FILES_ENDPOINT'),
+            'use_path_style_endpoint' => env('S3_MINIO_FILES_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ],
     ],
 
     /*

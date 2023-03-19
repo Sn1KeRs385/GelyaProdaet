@@ -12,20 +12,26 @@ export const useFileUploadStore = defineStore('fileUpload', {
     files: [],
   }),
   actions: {
-    addFileToUploadQueue(file: File, collectionName: CollectionName) {
-      this.files.push({
+    addFileToUploadQueue(file: File, collectionName: CollectionName): FileUploadInfoInterface {
+      const FileUploadInfo = {
         uploadStarted: false,
         progress: 0,
         file,
         collectionName,
         bytesPerRequest: 1024 * 1024,
         errors: [],
-      })
+      }
+      this.files.push(FileUploadInfo)
+
+      return FileUploadInfo
     },
-    addFilesToUploadQueue(files: File[], collectionName: CollectionName) {
-      files.forEach((file) => this.addFileToUploadQueue(file, collectionName))
+    addFilesToUploadQueue(
+      files: File[],
+      collectionName: CollectionName
+    ): FileUploadInfoInterface[] {
+      return files.map((file) => this.addFileToUploadQueue(file, collectionName))
     },
-    async startUpload() {
+    async startUpload(): Promise<void> {
       const promises = []
       for (const file of this.files.filter((file) => !file.id && file.errors.length === 0)) {
         promises.push(uploadFile(file))

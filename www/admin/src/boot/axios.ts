@@ -17,11 +17,11 @@ declare module '@vue/runtime-core' {
 const api = axios.create({ baseURL: process.env.BACKEND_URL + '/api' })
 
 const setAuthorizationHeader = (token: string) => {
-  api.defaults.headers.authorization = `Bearer ${token}`
+  api.defaults.headers.Authorization = `Bearer ${token}`
 }
 
 const clearAuthorizationHeader = () => {
-  delete api.defaults.headers.authorization
+  delete api.defaults.headers.Authorization
 }
 
 export default boot(({ app, store }) => {
@@ -39,6 +39,18 @@ export default boot(({ app, store }) => {
   if (userStore.tokens.accessToken) {
     setAuthorizationHeader(userStore.tokens.accessToken)
   }
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response.status === 401) {
+        console.log(401)
+        userStore.logout()
+        return error
+      }
+      throw error
+    }
+  )
 })
 
 export { api, axios, setAuthorizationHeader, clearAuthorizationHeader }

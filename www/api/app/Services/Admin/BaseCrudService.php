@@ -2,11 +2,15 @@
 
 namespace App\Services\Admin;
 
+use App\Models\File;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 abstract class BaseCrudService
 {
@@ -23,6 +27,10 @@ abstract class BaseCrudService
      * ]
      */
     protected array $relationMapper = [];
+
+    protected array $fileFields = [
+        'files_ids',
+    ];
 
     abstract protected function getModelQuery(): Builder;
 
@@ -47,6 +55,27 @@ abstract class BaseCrudService
         return $paginate;
     }
 
+    protected function allBeforeQueryExecHook(Builder &$query): void
+    {
+    }
+
+    protected function allAfterGetHook(Collection &$collection): void
+    {
+    }
+
+    public function all(): Collection
+    {
+        $query = $this->getModelQuery();
+
+        $this->allBeforeQueryExecHook($query);
+
+        $items = $query->get();
+
+        $this->allAfterGetHook($items);
+
+        return $items;
+    }
+
     protected function storeDataHook(array &$data): void
     {
     }
@@ -62,12 +91,12 @@ abstract class BaseCrudService
     protected function storeOrUpdateRelationData(Model $model, array $data): void
     {
         foreach ($this->relationMapper as $relationMapper) {
-            if (!isset($data["relation_{$relationMapper['name']}"])) {
+            if (!isset($data[$relationMapper['name']])) {
                 continue;
             }
             /** @var BaseCrudService $crudService */
             $crudService = app($relationMapper['crudService']);
-            foreach ($data["relation_{$relationMapper['name']}"] as $relationData) {
+            foreach ($data[$relationMapper['name']] as $relationData) {
                 if (isset($relationData['id'])) {
                     $crudService->update($relationData['id'], $relationData);
                 } else {
@@ -76,6 +105,44 @@ abstract class BaseCrudService
                     $crudService->store($relationData);
                 }
             }
+        }
+    }
+
+    protected function processFiles(Model $model, array $data): void
+    {
+        $filesIds = [];
+        foreach ($this->fileFields as $fileField) {
+            if (!isset($data[$fileField])) {
+                return;
+            }
+            $filesIds = [...$filesIds, ...$data[$fileField]];
+        }
+
+        $filesNotInModel = File::query()
+            ->whereIn('id', $filesIds)
+            ->where(function (Builder $query) use ($model) {
+                $query->where('owner_type', '<>', $model->getMorphClass())
+                    ->orWhere('owner_id', '<>', $model->id);
+            })
+            ->get();
+
+        foreach ($filesNotInModel as $file) {
+            if (!Gate::allows('update', $file)) {
+                continue;
+            }
+            $file->owner_type = $model->getMorphClass();
+            $file->owner_id = $model->id;
+            $file->save();
+        }
+
+        $filesToDelete = File::query()
+            ->whereNotIn('id', $filesIds)
+            ->where('owner_type', $model->getMorphClass())
+            ->where('owner_id', $model->id)
+            ->get();
+
+        foreach ($filesToDelete as $file) {
+            $file->delete();
         }
     }
 
@@ -93,6 +160,8 @@ abstract class BaseCrudService
             $this->storeAfterSaveHook($model, $data);
 
             $this->storeOrUpdateRelationData($model, $data);
+
+            $this->processFiles($model, $data);
 
             return $model;
         });
