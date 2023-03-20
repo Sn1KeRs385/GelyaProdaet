@@ -3,7 +3,7 @@
 return [
     'image' => [
         'queue' => 'default',
-        'disk' => 'minio-files',
+        'disk' => 's3',
         'jobs' => [
             \Sn1KeRs385\FileUploader\App\Jobs\FileConverter::class,
             \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromFile::class,

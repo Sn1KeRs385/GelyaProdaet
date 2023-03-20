@@ -55,18 +55,6 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
-
-        'minio-files' => [
-            'driver' => 's3',
-            'key' => env('S3_MINIO_FILES_KEY'),
-            'secret' => env('S3_MINIO_FILES_SECRET'),
-            'region' => env('S3_MINIO_FILES_REGION'),
-            'bucket' => env('S3_MINIO_FILES_BUCKET'),
-            'url' => env('S3_MINIO_FILES_URL'),
-            'endpoint' => env('S3_MINIO_FILES_ENDPOINT'),
-            'use_path_style_endpoint' => env('S3_MINIO_FILES_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
-        ],
     ],
 
     /*

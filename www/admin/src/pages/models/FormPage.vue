@@ -40,7 +40,7 @@ const submitForm = (formData: FormData) => {
 
 <template>
   <q-page padding>
-    <div class="row justify-between">
+    <div class="row justify-between tw-mb-6">
       <h4 class="tw-my-0 tw-font-bold">
         {{ t('models.base.createModel', { model: model.getTitle() }) }}
       </h4>
