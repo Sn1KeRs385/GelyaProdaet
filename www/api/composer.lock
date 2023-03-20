@@ -3986,16 +3986,16 @@
         },
         {
             "name": "sn1kers385/laravel-file-uploader",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Sn1KeRs385/laravel-file-uploader.git",
-                "reference": "72a5ffdd9c11bc461accebc845cb9916183c7ceb"
+                "reference": "f04dbe70d8505db74418d523798829f439362a48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/72a5ffdd9c11bc461accebc845cb9916183c7ceb",
-                "reference": "72a5ffdd9c11bc461accebc845cb9916183c7ceb",
+                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/f04dbe70d8505db74418d523798829f439362a48",
+                "reference": "f04dbe70d8505db74418d523798829f439362a48",
                 "shasum": ""
             },
             "require": {
@@ -4027,10 +4027,10 @@
                 "uploader"
             ],
             "support": {
-                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.2.0",
+                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.2.1",
                 "issues": "https://github.com/Sn1KeRs385/laravel-file-uploader/issues"
             },
-            "time": "2023-03-19T21:37:36+00:00"
+            "time": "2023-03-20T23:52:18+00:00"
         },
         {
             "name": "spatie/image",
