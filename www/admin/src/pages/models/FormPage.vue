@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import BaseModel from 'src/models/base-model'
-import { computed, reactive } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import apiErrorHandler from 'src/utils/api-error-handler'
 import FormData from 'src/interfaces/admin/form-data'
 import AutoFormComponent from 'src/components/models/AutoFormComponent.vue'
+import { AxiosError } from 'axios'
+import ApiErrorInterface from 'src/interfaces/Api/error-interface'
 
 interface Props {
   model: BaseModel<never, never>
@@ -30,7 +32,7 @@ const submitForm = (formData: FormData) => {
     .then(() => {
       router.push({ name: `table_${props.model.constructor.name}` })
     })
-    .catch((error) => {
+    .catch((error: AxiosError<ApiErrorInterface>) => {
       apiErrorHandler(error, { formFields: formData })
     })
 }
