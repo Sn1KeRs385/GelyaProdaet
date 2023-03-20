@@ -8,7 +8,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -167,9 +166,26 @@ abstract class BaseCrudService
         });
     }
 
-    public function show(string $id)
+    protected function showBeforeQueryExecHook(Builder &$query): void
     {
-        //
+    }
+
+    protected function showAfterQueryExecHook(Model &$model): void
+    {
+    }
+
+    public function show(string $id): Model
+    {
+        $query = $this->getModelQuery()
+            ->where('id', $id);
+
+        $this->showBeforeQueryExecHook($query);
+
+        $model = $query->firstOrFail();
+
+        $this->showAfterQueryExecHook($model);
+
+        return $model;
     }
 
     public function update(string $id, array $data)

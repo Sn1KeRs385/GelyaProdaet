@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b425ac7ee41e667f854bedb143903746",
+    "content-hash": "cf84fddaedb689e9edcc45890f9d6faa",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -280,6 +280,49 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.2"
             },
             "time": "2022-10-27T11:44:00+00:00"
+        },
+        {
+            "name": "doctrine/deprecations",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/deprecations.git",
+                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
+                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1|^8.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^9",
+                "phpunit/phpunit": "^7.5|^8.5|^9.5",
+                "psr/log": "^1|^2|^3"
+            },
+            "suggest": {
+                "psr/log": "Allows logging deprecations via PSR-3 logger implementation"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Deprecations\\": "lib/Doctrine/Deprecations"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A small layer on top of trigger_error(E_USER_DEPRECATED) or PSR-3 logging with options to disable all deprecations or selectively for packages.",
+            "homepage": "https://www.doctrine-project.org/",
+            "support": {
+                "issues": "https://github.com/doctrine/deprecations/issues",
+                "source": "https://github.com/doctrine/deprecations/tree/v1.0.0"
+            },
+            "time": "2022-05-02T15:47:09+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -1258,16 +1301,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.3.3",
+            "version": "v10.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "90f24d9e2860ecf6b5492e966956270ceb98c03d"
+                "reference": "7d15f7eef442633cff108f83d9fe43d8c3b8b76f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/90f24d9e2860ecf6b5492e966956270ceb98c03d",
-                "reference": "90f24d9e2860ecf6b5492e966956270ceb98c03d",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7d15f7eef442633cff108f83d9fe43d8c3b8b76f",
+                "reference": "7d15f7eef442633cff108f83d9fe43d8c3b8b76f",
                 "shasum": ""
             },
             "require": {
@@ -1366,7 +1409,7 @@
                 "league/flysystem-read-only": "^3.3",
                 "league/flysystem-sftp-v3": "^3.0",
                 "mockery/mockery": "^1.5.1",
-                "orchestra/testbench-core": "^8.0",
+                "orchestra/testbench-core": "^8.1",
                 "pda/pheanstalk": "^4.0",
                 "phpstan/phpdoc-parser": "^1.15",
                 "phpstan/phpstan": "^1.4.7",
@@ -1454,7 +1497,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-03-09T14:00:53+00:00"
+            "time": "2023-03-18T11:34:02+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -1836,6 +1879,88 @@
                 }
             ],
             "time": "2022-12-11T20:36:23+00:00"
+        },
+        {
+            "name": "league/container",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/container.git",
+                "reference": "375d13cb828649599ef5d48a339c4af7a26cd0ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/container/zipball/375d13cb828649599ef5d48a339c4af7a26cd0ab",
+                "reference": "375d13cb828649599ef5d48a339c4af7a26cd0ab",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0",
+                "psr/container": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "psr/container-implementation": "^1.0"
+            },
+            "replace": {
+                "orno/di": "~2.0"
+            },
+            "require-dev": {
+                "nette/php-generator": "^3.4",
+                "nikic/php-parser": "^4.10",
+                "phpstan/phpstan": "^0.12.47",
+                "phpunit/phpunit": "^8.5.17",
+                "roave/security-advisories": "dev-latest",
+                "scrutinizer/ocular": "^1.8",
+                "squizlabs/php_codesniffer": "^3.6"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.x-dev",
+                    "dev-4.x": "4.x-dev",
+                    "dev-3.x": "3.x-dev",
+                    "dev-2.x": "2.x-dev",
+                    "dev-1.x": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Container\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Phil Bennett",
+                    "email": "mail@philbennett.co.uk",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A fast and intuitive dependency injection container.",
+            "homepage": "https://github.com/thephpleague/container",
+            "keywords": [
+                "container",
+                "dependency",
+                "di",
+                "injection",
+                "league",
+                "provider",
+                "service"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/container/issues",
+                "source": "https://github.com/thephpleague/container/tree/4.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/philipobenito",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-11-16T10:29:06+00:00"
         },
         {
             "name": "league/flysystem",
@@ -2675,6 +2800,157 @@
             "time": "2023-02-08T01:06:31+00:00"
         },
         {
+            "name": "nutgram/hydrator",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nutgram/hydrator.git",
+                "reference": "20ca4fe2f4993c97f67b029a6949e9ea756b072f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nutgram/hydrator/zipball/20ca4fe2f4993c97f67b029a6949e9ea756b072f",
+                "reference": "20ca4fe2f4993c97f67b029a6949e9ea756b072f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "psr/container": "^1.1 || ^2.0"
+            },
+            "require-dev": {
+                "league/container": "^4.2",
+                "phpunit/phpunit": "~9.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SergiX44\\Hydrator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergio Brighenti",
+                    "email": "sergio@brighenti.me",
+                    "homepage": "https://github.com/SergiX44"
+                },
+                {
+                    "name": "Anatoly Fenric",
+                    "email": "afenric@gmail.com",
+                    "homepage": "https://github.com/fenric"
+                }
+            ],
+            "description": "Hydrator for PHP 8.0+",
+            "homepage": "https://github.com/nutgram/hydrator",
+            "keywords": [
+                "data-mapper",
+                "dto",
+                "hydrator",
+                "jsonmapper",
+                "mapper",
+                "php8"
+            ],
+            "support": {
+                "issues": "https://github.com/nutgram/hydrator/issues",
+                "source": "https://github.com/nutgram/hydrator/tree/4.0.0"
+            },
+            "time": "2023-02-07T21:18:07+00:00"
+        },
+        {
+            "name": "nutgram/nutgram",
+            "version": "3.17.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nutgram/nutgram.git",
+                "reference": "7b08e7c1f3280dfa69b0f1624cfb15dda4c9eaa4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nutgram/nutgram/zipball/7b08e7c1f3280dfa69b0f1624cfb15dda4c9eaa4",
+                "reference": "7b08e7c1f3280dfa69b0f1624cfb15dda4c9eaa4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^7.2",
+                "illuminate/macroable": "^8.0|^9.0|^10.0",
+                "laravel/serializable-closure": "^1.2",
+                "league/container": "^4.2",
+                "nutgram/hydrator": "^4.0",
+                "php": ">=8.0",
+                "psr/log": "^1.0|^2.0|^3.0",
+                "psr/simple-cache": "^1.0|^2.0|^3.0"
+            },
+            "require-dev": {
+                "ext-reflection": "*",
+                "illuminate/testing": "^8.0|^9.0|^10.0",
+                "netresearch/jsonmapper": "^4.0.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0",
+                "pestphp/pest": "^1.1",
+                "pestphp/pest-plugin-mock": "^1.0",
+                "roave/security-advisories": "dev-latest",
+                "vimeo/psalm": "^4.30"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SergiX44\\Nutgram\\NutgramServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SergiX44\\Nutgram\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergio Brighenti",
+                    "email": "sergio@brighenti.me",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Luca Patera",
+                    "email": "lucapatera@outlook.it",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The Telegram bot library that doesn't drive you nuts",
+            "homepage": "https://github.com/SergiX44/Nutgram",
+            "keywords": [
+                "api",
+                "bot",
+                "framework",
+                "laravel",
+                "library",
+                "nutgram",
+                "telegram"
+            ],
+            "support": {
+                "issues": "https://github.com/nutgram/nutgram/issues",
+                "source": "https://github.com/nutgram/nutgram/tree/3.17.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Lukasss93",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/SergiX44",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-14T19:23:19+00:00"
+        },
+        {
             "name": "php-ffmpeg/php-ffmpeg",
             "version": "v1.1.0",
             "source": {
@@ -2818,24 +3094,27 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.6.2",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "48f445a408c131e38cab1c235aa6d2bb7a0bb20d"
+                "reference": "1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/48f445a408c131e38cab1c235aa6d2bb7a0bb20d",
-                "reference": "48f445a408c131e38cab1c235aa6d2bb7a0bb20d",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5",
+                "reference": "1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5",
                 "shasum": ""
             },
             "require": {
+                "doctrine/deprecations": "^1.0",
                 "php": "^7.4 || ^8.0",
-                "phpdocumentor/reflection-common": "^2.0"
+                "phpdocumentor/reflection-common": "^2.0",
+                "phpstan/phpdoc-parser": "^1.13"
             },
             "require-dev": {
                 "ext-tokenizer": "*",
+                "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
                 "phpstan/phpstan": "^1.8",
                 "phpstan/phpstan-phpunit": "^1.1",
@@ -2867,9 +3146,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.2"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.7.0"
             },
-            "time": "2022-10-14T12:47:21+00:00"
+            "time": "2023-03-12T10:13:29+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -2945,6 +3224,51 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "phpstan/phpdoc-parser",
+            "version": "1.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpdoc-parser.git",
+                "reference": "e27e92d939e2e3636f0a1f0afaba59692c0bf571"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/e27e92d939e2e3636f0a1f0afaba59692c0bf571",
+                "reference": "e27e92d939e2e3636f0a1f0afaba59692c0bf571",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^1.5",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "symfony/process": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\PhpDocParser\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPDoc parser with support for nullable, intersection and generic types",
+            "support": {
+                "issues": "https://github.com/phpstan/phpdoc-parser/issues",
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.16.1"
+            },
+            "time": "2023-02-07T18:11:17+00:00"
         },
         {
             "name": "psr/cache",
@@ -3834,16 +4158,16 @@
         },
         {
             "name": "spatie/laravel-data",
-            "version": "3.1.2",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-data.git",
-                "reference": "5cc6b285817dfff8327fd07870972d25c4e16aae"
+                "reference": "c4f632924870e52beefe982aa50a88ff59250bfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/5cc6b285817dfff8327fd07870972d25c4e16aae",
-                "reference": "5cc6b285817dfff8327fd07870972d25c4e16aae",
+                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/c4f632924870e52beefe982aa50a88ff59250bfd",
+                "reference": "c4f632924870e52beefe982aa50a88ff59250bfd",
                 "shasum": ""
             },
             "require": {
@@ -3862,6 +4186,7 @@
                 "orchestra/testbench": "^7.6|^8.0",
                 "pestphp/pest": "^1.22",
                 "pestphp/pest-plugin-laravel": "^1.3",
+                "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
                 "phpunit/phpunit": "^9.3",
                 "spatie/invade": "^1.0",
@@ -3904,7 +4229,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-data/issues",
-                "source": "https://github.com/spatie/laravel-data/tree/3.1.2"
+                "source": "https://github.com/spatie/laravel-data/tree/3.2.0"
             },
             "funding": [
                 {
@@ -3912,7 +4237,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-10T09:05:26+00:00"
+            "time": "2023-03-17T09:48:15+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -7204,16 +7529,16 @@
         },
         {
             "name": "nunomaduro/collision",
-            "version": "v7.1.1",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/collision.git",
-                "reference": "ec91efc82a40ca4224a53494e7e93775cebc39e5"
+                "reference": "8ee125cb0888cf694b559caa015e104f577bb4f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/ec91efc82a40ca4224a53494e7e93775cebc39e5",
-                "reference": "ec91efc82a40ca4224a53494e7e93775cebc39e5",
+                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/8ee125cb0888cf694b559caa015e104f577bb4f0",
+                "reference": "8ee125cb0888cf694b559caa015e104f577bb4f0",
                 "shasum": ""
             },
             "require": {
@@ -7227,13 +7552,13 @@
             },
             "require-dev": {
                 "brianium/paratest": "^7.1.1",
-                "laravel/framework": "^10.3.3",
+                "laravel/framework": "^10.4.1",
                 "laravel/pint": "^1.6.0",
                 "laravel/sail": "^1.21.2",
                 "laravel/sanctum": "^3.2.1",
                 "laravel/tinker": "^2.8.1",
                 "nunomaduro/larastan": "^2.5.1",
-                "orchestra/testbench-core": "^8.0.5",
+                "orchestra/testbench-core": "^8.1.0",
                 "pestphp/pest": "^2.0.0",
                 "phpunit/phpunit": "^10.0.16",
                 "sebastian/environment": "^6.0.0",
@@ -7296,7 +7621,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-03-13T17:02:54+00:00"
+            "time": "2023-03-19T17:08:17+00:00"
         },
         {
             "name": "phar-io/manifest",

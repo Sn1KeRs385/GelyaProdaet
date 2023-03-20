@@ -40,9 +40,9 @@ abstract class BaseCrudController extends BaseAdminController
         return response()->json(['id' => $this->crudService->store($data)->id], Response::HTTP_OK);
     }
 
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json($this->crudService->show($id), Response::HTTP_OK);
     }
 
     public function update(Request $request, string $id)
