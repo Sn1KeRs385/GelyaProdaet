@@ -4,6 +4,7 @@ import TokenInterface from 'src/interfaces/token-interface'
 import ApiTokensInterface from 'src/interfaces/Api/token-interface'
 import { router } from 'src/router'
 import { clearAuthorizationHeader, setAuthorizationHeader } from 'src/boot/axios'
+import { useListOptionsStore } from 'src/stores/list-options-store'
 
 interface UserStoreInterface {
   user?: UserInterface
@@ -28,6 +29,8 @@ export const useUserStore = defineStore('user', {
       localStorage.setItem('userTokens', JSON.stringify(this.tokens))
 
       setAuthorizationHeader(this.tokens.accessToken)
+
+      useListOptionsStore().loadOptions()
     },
     logout() {
       this.user = undefined
