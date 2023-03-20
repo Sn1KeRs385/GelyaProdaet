@@ -47,7 +47,6 @@ resetForm()
 
 <template>
   <q-form @submit="submitForm" @reset="resetForm">
-    {{ formData }}
     <template v-for="field in fields" :key="field.key">
       <component
         :is="field.input.component"
