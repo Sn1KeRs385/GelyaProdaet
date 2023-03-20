@@ -8,7 +8,7 @@ services:
       context: ./config/api
     working_dir: /var/www
     ports:
-      - ${HOST_PORT_API}:80
+      - ${HOST_PORT_API}:9000
     volumes:
       - ${PATH_TO_API}:/var/www/
     environment:
