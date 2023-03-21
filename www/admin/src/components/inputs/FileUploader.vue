@@ -95,7 +95,7 @@ const { t } = useI18n()
       <q-linear-progress
         v-for="uploadFile in uploadFiles"
         :key="uploadFile.file.name"
-        :value="uploadFile.progress"
+        :value="uploadFile.progress / 100"
         color="primary"
         class="q-mt-sm"
         size="25px"
