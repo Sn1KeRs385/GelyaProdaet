@@ -2,7 +2,7 @@
 
 return [
     'image' => [
-        'queue' => 'default',
+        'queue' => 'file-converter',
         'disk' => 's3',
         'options' => [
             'optimize_if_size_more_mb' => 4.9,
