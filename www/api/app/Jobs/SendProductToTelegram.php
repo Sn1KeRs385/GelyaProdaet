@@ -16,13 +16,14 @@ class SendProductToTelegram implements ShouldQueue
 
     protected ProductService $productService;
 
-    public function __construct(protected Product $product)
+    public function __construct(protected int $productId)
     {
         $this->productService = app(ProductService::class);
     }
 
     public function handle(): void
     {
-        $this->productService->sendProductToTelegram($this->product);
+        $product = Product::findOrFail($this->productId);
+        $this->productService->sendProductToTelegram($product);
     }
 }
