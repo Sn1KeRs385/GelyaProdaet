@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Exceptions\HasUnreadyFileOnModelException;
+use App\Models\File;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Bus\Queueable;
@@ -12,20 +13,26 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Sn1KeRs385\FileUploader\App\Enums\FileStatus;
 
-class SendProductToTelegram implements ShouldQueue
+class SendProductToTelegramAfterImagesUploading implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected ProductService $productService;
 
-    public function __construct(protected int $productId)
+    public function __construct(protected File $file)
     {
+        $this->file->refresh();
         $this->productService = app(ProductService::class);
     }
 
     public function handle(): void
     {
-        $product = Product::findOrFail($this->productId);
+        if ($this->file->owner_type !== (new Product())->getMorphClass()) {
+            echo "File not product";
+            return;
+        }
+        /** @var Product $product */
+        $product = $this->file->owner;
         $hanNotUploadFiles = $product->files()
             ->whereNotIn('status', [FileStatus::FINISHED, FileStatus::DELETED, FileStatus::ERROR])
             ->exists();
@@ -33,6 +40,7 @@ class SendProductToTelegram implements ShouldQueue
             echo 'HasUnreadyFile';
             return;
         }
-        $this->productService->sendProductToTelegram($product);
+
+        SendProductToTelegram::dispatch($product->id)->onQueue('tg_public_messages');
     }
 }

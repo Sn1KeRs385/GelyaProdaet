@@ -229,7 +229,7 @@ return [
                 'balanceCooldown' => 3,
             ],
             'supervisor-2' => [
-                'maxProcesses' => 10,
+                'maxProcesses' => 20,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
@@ -242,7 +242,7 @@ return [
                 'balanceCooldown' => 3,
             ],
             'supervisor-2' => [
-                'maxProcesses' => 10,
+                'maxProcesses' => 20,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],

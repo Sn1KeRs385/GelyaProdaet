@@ -16,6 +16,7 @@ return [
             \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromFile::class,
             \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromImage::class,
             \Sn1KeRs385\FileUploader\App\Jobs\EndConverting::class,
+            \App\Jobs\SendProductToTelegram::class,
         ],
     ],
 ];
