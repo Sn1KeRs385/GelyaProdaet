@@ -58,6 +58,8 @@ RUN curl -L -o /tmp/composer-setup.php "https://getcomposer.org/installer" \
     && php /tmp/composer-setup.php --install-dir=/bin --filename=composer \
     && rm /tmp/composer-setup.php
 
+RUN apk update && apk add supervisor
+
 RUN echo "UTC" > /etc/timezone
 
 COPY supervisord.conf /etc/supervisord.conf
