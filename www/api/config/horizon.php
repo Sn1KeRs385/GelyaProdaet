@@ -201,7 +201,7 @@ return [
             'maxProcesses' => 5,
             'maxTime' => 0,
             'maxJobs' => 0,
-            'memory' => 512,
+            'memory' => 1024,
             'tries' => 1,
             'timeout' => 1800,
             'nice' => 0,
@@ -224,6 +224,11 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
+                'maxProcesses' => 5,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+            'supervisor-2' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
@@ -232,7 +237,14 @@ return [
 
         'local' => [
             'supervisor-1' => [
-                'maxProcesses' => 3,
+                'maxProcesses' => 5,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+            'supervisor-2' => [
+                'maxProcesses' => 10,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
             ],
         ],
     ],
