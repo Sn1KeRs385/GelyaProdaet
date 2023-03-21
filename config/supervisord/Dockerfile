@@ -19,8 +19,6 @@ RUN apk update && apk add freetype-dev \
     git \
     tzdata \
     linux-headers \
-#    libzip-dev \
-#    unzip \
     $PHPIZE_DEPS
 
 RUN docker-php-ext-install mbstring
@@ -58,7 +56,9 @@ RUN curl -L -o /tmp/composer-setup.php "https://getcomposer.org/installer" \
     && php /tmp/composer-setup.php --install-dir=/bin --filename=composer \
     && rm /tmp/composer-setup.php
 
-RUN apk update && apk add supervisor
+RUN apk update && apk add supervisor libxml2-dev gmp-dev libzip-dev
+
+RUN docker-php-ext-install gmp soap pcntl zip bcmath sockets
 
 RUN echo "UTC" > /etc/timezone
 

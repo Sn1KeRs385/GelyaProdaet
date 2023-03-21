@@ -58,6 +58,10 @@ RUN curl -L -o /tmp/composer-setup.php "https://getcomposer.org/installer" \
     && php /tmp/composer-setup.php --install-dir=/bin --filename=composer \
     && rm /tmp/composer-setup.php
 
+RUN apk update && apk add libxml2-dev gmp-dev libzip-dev
+
+RUN docker-php-ext-install gmp soap pcntl zip bcmath sockets
+
 RUN echo "UTC" > /etc/timezone
 
 # Expose port 9000 and start php-fpm server
