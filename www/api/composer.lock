@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "488b8b2b0fe6a79d792e7a5431ab1200",
+    "content-hash": "0dc5dc281e56b748351266583db3f88f",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -4064,16 +4064,16 @@
         },
         {
             "name": "sn1kers385/laravel-file-uploader",
-            "version": "1.2.6",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Sn1KeRs385/laravel-file-uploader.git",
-                "reference": "dce5e494b8c4de210ce43b36b9376d893710ea76"
+                "reference": "ad6a7ac7d6f269cec40fd43fded770bd68325968"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/dce5e494b8c4de210ce43b36b9376d893710ea76",
-                "reference": "dce5e494b8c4de210ce43b36b9376d893710ea76",
+                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/ad6a7ac7d6f269cec40fd43fded770bd68325968",
+                "reference": "ad6a7ac7d6f269cec40fd43fded770bd68325968",
                 "shasum": ""
             },
             "require": {
@@ -4105,10 +4105,10 @@
                 "uploader"
             ],
             "support": {
-                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.2.6",
+                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.3.0",
                 "issues": "https://github.com/Sn1KeRs385/laravel-file-uploader/issues"
             },
-            "time": "2023-03-21T11:13:11+00:00"
+            "time": "2023-03-21T12:28:36+00:00"
         },
         {
             "name": "spatie/image",

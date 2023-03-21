@@ -30,7 +30,7 @@ class SendProductToTelegram implements ShouldQueue
             ->whereNotIn('status', [FileStatus::FINISHED, FileStatus::DELETED, FileStatus::ERROR])
             ->exists();
         if ($hanNotUploadFiles) {
-            SendProductToTelegram::dispatch($this->productId)->delay(10);
+            SendProductToTelegram::dispatch($this->productId)->onQueue('tg_public_messages')->delay(10);
             throw new HasUnreadyFileOnModelException();
         }
         $this->productService->sendProductToTelegram($product);
