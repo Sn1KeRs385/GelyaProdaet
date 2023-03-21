@@ -63,5 +63,15 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server --console-address ":9001" /data
 
+  supervisord:
+    container_name: "${COMPOSE_PROJECT_NAME}_supervisord"
+    build:
+      context: ./config/supervisord
+    volumes:
+      - ${PATH_TO_API}:/var/www/
+      - ./config/supervisord/conf.d:/etc/supervisord.d
+    depends_on:
+      - api
+
 volumes:
   minio_storage:
