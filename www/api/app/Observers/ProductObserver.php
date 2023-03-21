@@ -9,11 +9,11 @@ class ProductObserver
 {
     public function created(Product $product): void
     {
-        SendProductToTelegram::dispatchAfterResponse($product)->onQueue('tg_public_messages');
+        SendProductToTelegram::dispatch($product)->onQueue('tg_public_messages')->afterResponse();
     }
 
     public function updated(Product $product): void
     {
-        SendProductToTelegram::dispatchAfterResponse($product)->onQueue('tg_public_messages');
+        SendProductToTelegram::dispatch($product)->onQueue('tg_public_messages')->afterResponse();
     }
 }
