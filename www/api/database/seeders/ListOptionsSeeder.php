@@ -91,6 +91,19 @@ class ListOptionsSeeder extends Seeder
                 'group_slug' => OptionGroupSlug::COLOR,
                 'title' => 'Серый',
             ],
+
+            [
+                'group_slug' => OptionGroupSlug::GENDER,
+                'title' => 'На мальчика',
+            ],
+            [
+                'group_slug' => OptionGroupSlug::GENDER,
+                'title' => 'На девочку',
+            ],
+            [
+                'group_slug' => OptionGroupSlug::GENDER,
+                'title' => 'На мальчика и девочку',
+            ],
         ];
 
         foreach ($data as $item) {

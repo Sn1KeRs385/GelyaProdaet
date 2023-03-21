@@ -7,6 +7,9 @@ export default {
     type: {
       label: 'Тип',
     },
+    gender: {
+      label: 'Пол',
+    },
     brand: {
       label: 'Бренд',
     },
@@ -20,6 +23,9 @@ export default {
     },
     title: {
       label: 'Заголовок',
+    },
+    description: {
+      label: 'Описание',
     },
     price_buy: {
       label: 'Себестоимость одной вещи',

@@ -4,6 +4,7 @@ enum OptionGroupSlug {
   COLOR = 'color',
   SIZE = 'size',
   PRODUCT_TYPE = 'product_type',
+  GENDER = 'gender',
 }
 
 export default OptionGroupSlug

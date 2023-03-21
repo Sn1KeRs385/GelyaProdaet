@@ -26,7 +26,7 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
       { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
       {
         name: 'title',
-        label: t('models.product.table.brand.label'),
+        label: t('models.product.table.title.label'),
         field: 'title',
         align: 'left',
       },
@@ -34,6 +34,13 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
         name: 'type',
         label: t('models.product.table.type.label'),
         field: 'type',
+        format: (val) => val?.title || '-',
+        align: 'left',
+      },
+      {
+        name: 'gender',
+        label: t('models.product.table.gender.label'),
+        field: 'gender',
         format: (val) => val?.title || '-',
         align: 'left',
       },
@@ -71,11 +78,23 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
         input: new QuasarInput({ label: t('models.product.form.title.label') }),
       },
       {
+        key: 'description',
+        input: new QuasarInput({ label: t('models.product.form.description.label') }),
+      },
+      {
         key: 'type_id',
         input: new QuasarSelect({
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.PRODUCT_TYPE),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.PRODUCT_TYPE),
+        }),
+      },
+      {
+        key: 'gender_id',
+        input: new QuasarSelect({
+          label: useListOptionsStore().getHumanSlug(OptionGroupSlug.GENDER),
+          optionsCallback: () =>
+            useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.GENDER),
         }),
       },
       {

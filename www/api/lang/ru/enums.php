@@ -9,5 +9,6 @@ return [
         OptionGroupSlug::COLOR->value => 'Цвет',
         OptionGroupSlug::SIZE->value => 'Размер',
         OptionGroupSlug::PRODUCT_TYPE->value => 'Тип товара',
+        OptionGroupSlug::GENDER->value => 'Пол',
     ]
 ];

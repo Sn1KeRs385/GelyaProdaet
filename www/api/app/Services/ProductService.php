@@ -99,14 +99,19 @@ class ProductService
             }
         }
 
-        $text = "{$product->title}";
+        $gender = mb_strtolower($product->gender->title);
+        $text = "{$product->type->title} $gender";
+
+        if ($product->brand) {
+            $text .= " {$product->brand->title}";
+        }
 
         if ($product->country) {
             $text .= " ({$product->country->title})";
         }
 
-        if ($product->brand) {
-            $text .= "\n{$product->brand->title}";
+        if ($product->description) {
+            $text .= "\n$product->description";
         }
 
         $text .= "\n\nРазмеры: ";

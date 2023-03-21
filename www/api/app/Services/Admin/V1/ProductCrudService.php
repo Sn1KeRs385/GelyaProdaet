@@ -28,7 +28,7 @@ class ProductCrudService extends BaseCrudService
 
     protected function showBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', 'country', 'type', 'files', 'items']);
+        $query->with(['brand', 'country', 'type', 'files', 'items', 'gender']);
     }
 
     protected function showAfterQueryExecHook(Model &$model): void
@@ -45,7 +45,7 @@ class ProductCrudService extends BaseCrudService
 
     protected function indexBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', 'country', 'type']);
+        $query->with(['brand', 'country', 'type', 'gender']);
     }
 
 //    protected function indexAfterPaginateHook(LengthAwarePaginator|Collection &$paginate): void

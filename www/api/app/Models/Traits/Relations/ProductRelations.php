@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property ListOption $type
+ * @property ListOption $gender
  * @property ListOption|null $brand
  * @property ListOption|null $country
  * @property Collection<int, File> $files
@@ -23,6 +24,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait ProductRelations
 {
     public function type(): BelongsTo
+    {
+        return $this->belongsTo(ListOption::class);
+    }
+
+    public function gender(): BelongsTo
     {
         return $this->belongsTo(ListOption::class);
     }

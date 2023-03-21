@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property-read int $id
  * @property string $title
+ * @property string|null $description
  * @property int $type_id
+ * @property int $gender_id
  * @property int|null $brand_id
  * @property int|null $country_id
  * @property Carbon|null $created_at
@@ -28,7 +30,9 @@ class Product extends Model
      */
     protected $fillable = [
         'title',
+        'description',
         'type_id',
+        'gender_id',
         'brand_id',
         'country_id',
     ];
