@@ -41,6 +41,8 @@ class ProductService
 //                $photo->media = 'https://shop-cdn1.vigbo.tech/shops/173204/products/20950271/images/3-2efe41fcd3f4c89971fc7bd505632f89.jpg?version=1';
                 if (count($inputMediaPhoto) === 0) {
                     $photo->caption = $this->getTgMessageText($product);
+                } else {
+                    $photo->caption = '';
                 }
                 $photo->parse_mode = ParseMode::HTML;
                 $photo->has_spoiler = false;
