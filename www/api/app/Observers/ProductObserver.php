@@ -9,11 +9,11 @@ class ProductObserver
 {
     public function created(Product $product): void
     {
-        SendProductToTelegram::dispatch($product);
+        SendProductToTelegram::dispatchAfterResponse($product);
     }
 
     public function updated(Product $product): void
     {
-        SendProductToTelegram::dispatch($product);
+        SendProductToTelegram::dispatchAfterResponse($product);
     }
 }
