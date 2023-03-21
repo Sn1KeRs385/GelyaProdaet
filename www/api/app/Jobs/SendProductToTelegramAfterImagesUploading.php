@@ -32,7 +32,7 @@ class SendProductToTelegramAfterImagesUploading implements ShouldQueue
             return;
         }
         /** @var Product $product */
-        $product = $this->file->owner;
+        $product = $this->file->owner()->first();
         $hanNotUploadFiles = $product->files()
             ->whereNotIn('status', [FileStatus::FINISHED, FileStatus::DELETED, FileStatus::ERROR])
             ->exists();
