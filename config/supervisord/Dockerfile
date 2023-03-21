@@ -62,7 +62,7 @@ RUN docker-php-ext-install gmp soap pcntl zip bcmath sockets
 
 RUN apk add libpng-dev jpeg-dev libjpeg-turbo-dev freetype-dev
 RUN docker-php-ext-install gd && \
-  docker-php-ext-configure gd --with-freetype --with-jpeg && \
+  docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp  && \
   docker-php-ext-install gd
 
 RUN echo "UTC" > /etc/timezone
