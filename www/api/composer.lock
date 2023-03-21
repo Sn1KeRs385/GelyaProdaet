@@ -4064,16 +4064,16 @@
         },
         {
             "name": "sn1kers385/laravel-file-uploader",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Sn1KeRs385/laravel-file-uploader.git",
-                "reference": "83ce10896bbc16f212e0657c34b2e22fe8baa67a"
+                "reference": "dce5e494b8c4de210ce43b36b9376d893710ea76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/83ce10896bbc16f212e0657c34b2e22fe8baa67a",
-                "reference": "83ce10896bbc16f212e0657c34b2e22fe8baa67a",
+                "url": "https://api.github.com/repos/Sn1KeRs385/laravel-file-uploader/zipball/dce5e494b8c4de210ce43b36b9376d893710ea76",
+                "reference": "dce5e494b8c4de210ce43b36b9376d893710ea76",
                 "shasum": ""
             },
             "require": {
@@ -4105,10 +4105,10 @@
                 "uploader"
             ],
             "support": {
-                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.2.5",
+                "source": "https://github.com/Sn1KeRs385/laravel-file-uploader/tree/1.2.6",
                 "issues": "https://github.com/Sn1KeRs385/laravel-file-uploader/issues"
             },
-            "time": "2023-03-21T08:41:36+00:00"
+            "time": "2023-03-21T11:13:11+00:00"
         },
         {
             "name": "spatie/image",
@@ -7345,16 +7345,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "e48e3fadd7863d6b7d03464f5c4f211a828b890f"
+                "reference": "d55381c73b7308e1b8a124084e804193a179092e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/e48e3fadd7863d6b7d03464f5c4f211a828b890f",
-                "reference": "e48e3fadd7863d6b7d03464f5c4f211a828b890f",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/d55381c73b7308e1b8a124084e804193a179092e",
+                "reference": "d55381c73b7308e1b8a124084e804193a179092e",
                 "shasum": ""
             },
             "require": {
@@ -7407,7 +7407,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2023-02-21T15:44:57+00:00"
+            "time": "2023-03-21T10:55:35+00:00"
         },
         {
             "name": "laravel/sail",

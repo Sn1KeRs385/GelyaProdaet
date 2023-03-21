@@ -103,6 +103,7 @@ async function finishUpload(uploadFile: FileUploadInfoInterface) {
   })
 
   uploadFile.progress = 100
+  uploadFile.isFinishedUpload = true
 }
 
 function getFileSlice(uploadFile: FileUploadInfoInterface, from: number) {

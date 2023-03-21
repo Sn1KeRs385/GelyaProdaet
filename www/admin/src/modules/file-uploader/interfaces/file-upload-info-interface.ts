@@ -4,6 +4,7 @@ export default interface FileUploadInfoInterface {
   uploadStarted: boolean
   id?: number
   progress: number
+  isFinishedUpload: boolean
   file: File
   collectionName: CollectionName
   bytesPerRequest: number

@@ -9,13 +9,17 @@ import FileUploadInfoInterface from 'file-uploader/interfaces/file-upload-info-i
 
 interface Props {
   modelValue?: number[]
+  isReady: boolean
   label: string
   fileUploaderOptions?: QFileParams
 }
 
 const props = defineProps<Props>()
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: number[]): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number[]): void
+  (e: 'update:isReady', value: boolean): void
+}>()
 
 const fileUploadStore = useFileUploadStore()
 
@@ -27,7 +31,11 @@ watch(
   () => {
     const ids: number[] = []
 
+    let ready = true
     uploadFiles.value.forEach((uploadFile) => {
+      if (!uploadFile.isFinishedUpload) {
+        ready = false
+      }
       if (!uploadFile.id) {
         return
       }
@@ -42,6 +50,8 @@ watch(
       newValue.push(...ids)
       emit('update:modelValue', newValue)
     }
+
+    emit('update:isReady', ready)
   },
   { deep: true }
 )

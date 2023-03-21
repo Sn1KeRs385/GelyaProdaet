@@ -16,6 +16,7 @@ export const useFileUploadStore = defineStore('fileUpload', {
       const FileUploadInfo = {
         uploadStarted: false,
         progress: 0,
+        isFinishedUpload: false,
         file,
         collectionName,
         bytesPerRequest: 1024 * 1024,
