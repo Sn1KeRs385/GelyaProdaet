@@ -100,7 +100,8 @@ class ProductService
         }
 
         $gender = mb_strtolower($product->gender->title);
-        $text = "{$product->type->title} $gender";
+        $title = mb_strtolower($product->title);
+        $text = "{$product->type->title} $gender $title";
 
         if ($product->brand) {
             $text .= " {$product->brand->title}";
