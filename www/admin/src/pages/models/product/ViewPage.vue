@@ -5,9 +5,6 @@ import { useRoute, useRouter } from 'vue-router'
 import ProductModel, { GetByIdItemInterface } from 'src/models/product'
 import { useListOptionsStore } from 'src/stores/list-options-store'
 import OptionGroupSlug from 'src/enums/option-group-slug'
-import ProductItemInterface from 'src/interfaces/models/product-item-interface'
-import ProductItemModel from 'src/models/product-item'
-import { loadingButton } from 'src/utils/interface-loading'
 import ProductItemViewCard from 'src/components/models/product/ProductItemViewCard.vue'
 
 interface Props {
