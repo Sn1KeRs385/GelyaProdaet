@@ -4,10 +4,11 @@ namespace App\Models\Traits\Relations;
 
 
 use App\Models\ListOption;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property ListOption $product
+ * @property Product $product
  * @property ListOption $size
  * @property ListOption|null $color
  */
@@ -15,7 +16,7 @@ trait ProductItemRelations
 {
     public function product(): BelongsTo
     {
-        return $this->belongsTo(ListOption::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function size(): BelongsTo

@@ -31,6 +31,7 @@ class ProductItemCrudService extends BaseCrudService
 
         $productItem->is_sold = true;
         $productItem->save();
+        $productItem->product->touch();
         return $productItem;
     }
 
@@ -44,6 +45,7 @@ class ProductItemCrudService extends BaseCrudService
 
         $productItem->is_for_sale = false;
         $productItem->save();
+        $productItem->product->touch();
         return $productItem;
     }
 
@@ -58,6 +60,7 @@ class ProductItemCrudService extends BaseCrudService
         $productItem->is_sold = false;
         $productItem->is_for_sale = true;
         $productItem->save();
+        $productItem->product->touch();
         return $productItem;
     }
 }
