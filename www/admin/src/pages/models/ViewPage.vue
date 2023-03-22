@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import BaseModel from 'src/models/base-model'
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { QTableProps } from 'quasar'
 import { useRoute, useRouter } from 'vue-router'
-import QTableColParams from 'src/interfaces/quasar/q-table-params'
-
-interface ModelOnlyId {
-  id: number
-}
 
 interface Props {
-  model: BaseModel<never, never>
+  model: BaseModel<never, never, never>
 }
 
 const props = defineProps<Props>()
@@ -30,8 +25,6 @@ const pagination = ref({
   rowsPerPage: route.query.perPage || 25,
   rowsNumber: 1,
 })
-
-const tableSettings = computed(() => props.model.getTableSettings())
 
 watch(
   () => props.model,
@@ -83,19 +76,6 @@ const saveParamsToRoute = () => {
 
   router.push({ query: params })
 }
-
-const onRowClick = (row: ModelOnlyId) => {
-  router.push({ name: `view_${props.model.constructor.name}`, params: { id: row.id } })
-}
-
-const getRowValue = (colSetting: QTableColParams, tableRow: { [key: string]: unknown }) => {
-  const value = tableRow[colSetting.field as string]
-  if (colSetting.format) {
-    return colSetting.format(value, tableRow)
-  }
-
-  return value
-}
 </script>
 
 <template>
@@ -118,19 +98,11 @@ const getRowValue = (colSetting: QTableColParams, tableRow: { [key: string]: unk
       color="primary"
       :rows-per-page-options="[25, 50, 75, 100, 200, 500, 1000]"
       :rows="rows"
-      :columns="tableSettings"
+      :columns="model.getTableSettings()"
       row-key="id"
       :loading="loading"
       binary-state-sort
       @request="onRequest"
-    >
-      <template #body="tableBodyProps">
-        <q-tr :props="tableBodyProps" @click="onRowClick(tableBodyProps.row)">
-          <q-td v-for="colSetting in tableSettings" :key="colSetting.name" :props="tableBodyProps">
-            {{ getRowValue(colSetting, tableBodyProps.row) }}
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
+    />
   </q-page>
 </template>

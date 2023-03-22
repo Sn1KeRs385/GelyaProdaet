@@ -21,13 +21,19 @@ Object.values(models).forEach((value) => {
     path: `/${value.getUrl()}`,
     name: `table_${value.constructor.name}`,
     props: { model: value },
-    component: () => import('pages/models/TablePage.vue'),
+    component: value.tablePageComponent,
   })
   indexRoute.children.push({
     path: `/${value.getUrl()}/create`,
     name: `create_form_${value.constructor.name}`,
     props: { model: value },
-    component: () => import('pages/models/FormPage.vue'),
+    component: value.formPageComponent,
+  })
+  indexRoute.children.push({
+    path: `/${value.getUrl()}/:id`,
+    name: `view_${value.constructor.name}`,
+    props: { model: value },
+    component: value.viewPageComponent,
   })
 })
 
@@ -41,6 +47,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:catchAll(.*)*',
+    name: 'page404',
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ]

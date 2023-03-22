@@ -9,6 +9,12 @@ import OptionGroupSlug from 'src/enums/option-group-slug'
 import Table from 'src/classes/inputs/table'
 import QuasarToggle from 'src/classes/inputs/quasar/quasar-toggle'
 import FileUploader from 'src/classes/inputs/file-uploader'
+import ProductInterface from 'src/interfaces/models/product-interface'
+import ListOptionInterface from 'src/interfaces/models/list-option-interface'
+import ProductItemInterface from 'src/interfaces/models/product-item-interface'
+import ApiFileInterface from 'src/interfaces/Api/file-interface'
+import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
+import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
 
 interface AllItemInterface {
   id: number
@@ -16,8 +22,22 @@ interface AllItemInterface {
 interface IndexItemInterface {
   id: number
 }
+interface GetByIdItemInterface extends ProductInterface {
+  files: ApiFileInterface[]
+  type: ListOptionInterface
+  gender: ListOptionInterface
+  brand?: ListOptionInterface
+  country?: ListOptionInterface
+  items: (ProductItemInterface &
+    ProductItemWithColorInterface &
+    ProductItemWithSizeInterface & {
+      price_buy_normalize: number
+      price_normalize: number
+    })[]
+}
 
-class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
+class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterface> {
+  public readonly viewPageComponent = () => import('src/pages/models/product/ViewPage.vue')
   protected readonly title = t('models.product.title')
   protected readonly url = 'products'
 
@@ -198,20 +218,20 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
                   useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COLOR),
               }),
             },
-            {
-              key: 'price_buy',
-              input: new QuasarInput({
-                label: t('models.productItem.form.price_buy.label'),
-                type: 'number',
-              }),
-            },
-            {
-              key: 'price',
-              input: new QuasarInput({
-                label: t('models.productItem.form.price.label'),
-                type: 'number',
-              }),
-            },
+            // {
+            //   key: 'price_buy',
+            //   input: new QuasarInput({
+            //     label: t('models.productItem.form.price_buy.label'),
+            //     type: 'number',
+            //   }),
+            // },
+            // {
+            //   key: 'price',
+            //   input: new QuasarInput({
+            //     label: t('models.productItem.form.price.label'),
+            //     type: 'number',
+            //   }),
+            // },
             {
               key: 'is_for_sale',
               input: new QuasarToggle({
@@ -229,4 +249,4 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface> {
 const modelClass = new ProductModel()
 export default modelClass
 
-export type { AllItemInterface, IndexItemInterface }
+export type { AllItemInterface, IndexItemInterface, GetByIdItemInterface }

@@ -2,8 +2,9 @@ export default {
   create: 'Создать',
   add: 'Добавить',
   back: 'Назад',
-  createModel: '{model} - Создание',
-  addModel: '{model} - Добавление',
+  createModel: 'Создание',
+  viewModel: 'Просмотр',
+  addModel: 'Добавление',
   form: {
     submit: 'Создать',
     reset: 'Сбросить',

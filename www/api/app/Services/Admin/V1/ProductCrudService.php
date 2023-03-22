@@ -28,7 +28,7 @@ class ProductCrudService extends BaseCrudService
 
     protected function showBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', 'country', 'type', 'files', 'items', 'gender']);
+        $query->with(['brand', 'country', 'type', 'files', 'gender', 'items.size', 'items.color']);
     }
 
     protected function showAfterQueryExecHook(Model &$model): void

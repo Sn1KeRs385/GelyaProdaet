@@ -6,23 +6,13 @@ import QuasarInput from 'src/classes/inputs/quasar/quasar-input'
 import QuasarSelect from 'src/classes/inputs/quasar/quasar-select'
 import { useListOptionsStore } from 'src/stores/list-options-store'
 import OptionGroupSlug from 'src/enums/option-group-slug'
+import ListOptionInterface from 'src/interfaces/models/list-option-interface'
 
-interface AllItemInterface {
-  id: number
-  group_slug: string
-  group_slug_human: string
-  title: string
-  weight: number
-}
-interface IndexItemInterface {
-  id: number
-  group_slug: string
-  group_slug_human: string
-  title: string
-  weight: number
-}
+type AllItemInterface = ListOptionInterface
+type IndexItemInterface = ListOptionInterface
+type GetByIdItemInterface = ListOptionInterface
 
-class ListOption extends BaseModel<AllItemInterface, IndexItemInterface> {
+class ListOption extends BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterface> {
   protected readonly title = t('models.listOptions.title')
   protected readonly url = 'list-options'
 
@@ -92,4 +82,4 @@ class ListOption extends BaseModel<AllItemInterface, IndexItemInterface> {
 const modelClass = new ListOption()
 export default modelClass
 
-export type { AllItemInterface, IndexItemInterface }
+export type { AllItemInterface, IndexItemInterface, GetByIdItemInterface }

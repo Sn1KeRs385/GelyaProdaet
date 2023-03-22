@@ -57,9 +57,7 @@ const onFormSubmit = (formData: FormData) => {
       <q-card>
         <q-card-section>
           <div class="row justify-between">
-            <h6 class="tw-my-0 tw-font-semibold">
-              {{ t('models.base.addModel', { model: label }) }}
-            </h6>
+            <h6 class="tw-my-0 tw-font-semibold">{{ label }} - {{ t('models.base.addModel') }}</h6>
           </div>
           <auto-form-component :fields="formFields" @submit-form="onFormSubmit" />
         </q-card-section>

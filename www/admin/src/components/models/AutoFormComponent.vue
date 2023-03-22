@@ -60,7 +60,6 @@ const formReady = computed(() => {
 
 <template>
   <q-form @submit="submitForm" @reset="resetForm">
-    {{ formReadyComponents }}
     <template v-for="field in fields" :key="field.key">
       <component
         :is="field.input.component"

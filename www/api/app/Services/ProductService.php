@@ -14,8 +14,15 @@ class ProductService
 {
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
     {
+        if (!$product->items()->where('is_for_sale', true)->exists()) {
+            return;
+        }
         if (!$chatId) {
-            $chatId = '@' . config('telegram.public_id');
+            if (is_numeric(config('telegram.public_id'))) {
+                $chatId = config('telegram.public_id');
+            } else {
+                $chatId = '@' . config('telegram.public_id');
+            }
         }
 
         $bot = new Nutgram(config('telegram.bot_api_key'));
@@ -100,8 +107,7 @@ class ProductService
         }
 
         $gender = mb_strtolower($product->gender->title);
-        $title = mb_strtolower($product->title);
-        $text = "{$product->type->title} $gender $title";
+        $text = "{$product->type->title} $gender";
 
         if ($product->brand) {
             $text .= " {$product->brand->title}";
@@ -110,6 +116,8 @@ class ProductService
         if ($product->country) {
             $text .= " ({$product->country->title})";
         }
+
+        $text .= "\n{$product->title}";
 
         if ($product->description) {
             $text .= "\n$product->description";

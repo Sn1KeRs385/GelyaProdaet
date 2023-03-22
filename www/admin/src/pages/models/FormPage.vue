@@ -42,7 +42,7 @@ const submitForm = (formData: FormData) => {
   <q-page padding>
     <div class="row justify-between tw-mb-6">
       <h4 class="tw-my-0 tw-font-bold">
-        {{ t('models.base.createModel', { model: model.getTitle() }) }}
+        {{ model.getTitle() }} - {{ t('models.base.createModel') }}
       </h4>
       <q-btn color="secondary" no-caps unelevated @click="router.go(-1)">
         {{ t('models.base.back') }}

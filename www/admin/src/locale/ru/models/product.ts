@@ -17,6 +17,26 @@ export default {
       label: 'Страна',
     },
   },
+  view: {
+    title: {
+      label: 'Заголовок',
+    },
+    description: {
+      label: 'Описание',
+    },
+    item: {
+      statuses: {
+        isNotForSale: 'Выведен из продажи',
+        isForSale: 'В продаже',
+        isSold: 'Продано',
+      },
+      statusButton: {
+        toSale: 'Вернуть в продажу',
+        sold: 'Продано',
+        toNotSale: 'Снять с продажи',
+      },
+    },
+  },
   form: {
     photos: {
       label: 'Фотографии',
