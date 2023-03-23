@@ -23,10 +23,24 @@ services:
       - ${PATH_TO_API}:/var/www/api
       - ./.docker/nginx/log:/var/log/nginx
       - ./config/nginx/api.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/admin.conf:/etc/nginx/conf.d/admin.conf
     environment:
       TZ: UTC
     depends_on:
       - api
+
+  admin:
+    image: node:16
+    volumes:
+      - ${PATH_TO_ADMIN}:/srv/www
+    ports:
+      - ${HOST_PORT_ADMIN_WS}:9000 # для нормальной работы DEV-режима с обновлением через WS
+    depends_on:
+      - api
+    working_dir: /srv/www
+    command: bash -c "yarn dev"
+    environment:
+      TZ: UTC
 
   postgres:
     container_name: "${COMPOSE_PROJECT_NAME}_postgresdb"
