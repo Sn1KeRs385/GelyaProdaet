@@ -11,6 +11,7 @@ return [
         'jobs' => [
             \Sn1KeRs385\FileUploader\App\Jobs\StartConverting::class,
             \Sn1KeRs385\FileUploader\App\Jobs\FileConverter::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\ImageToWebp::class,
             \Sn1KeRs385\FileUploader\App\Jobs\ImageOptimize::class,
             \Sn1KeRs385\FileUploader\App\Jobs\ImageZipToSize::class,
             \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromFile::class,

@@ -6,7 +6,8 @@ return [
         'final' => 'public/'
     ],
 
-    'queue' => 'default',
+    'queue' => 'file-converter-super',
+    'start_uploader_job_on_finish' => false,
 
     /**
      * Время истечения временных ссылок на файлы в минутах

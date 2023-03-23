@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Sn1KeRs385\FileUploader\App\Enums\FileStatus;
+use Sn1KeRs385\FileUploader\App\Jobs\UploaderJob;
 
 abstract class BaseCrudService
 {
@@ -142,6 +144,18 @@ abstract class BaseCrudService
 
         foreach ($filesToDelete as $file) {
             $file->delete();
+        }
+
+        if (!filter_var(config('uploader.start_uploader_job_on_finish'), FILTER_VALIDATE_BOOLEAN)) {
+            $filesToUploadProcess = File::query()
+                ->where('owner_type', $model->getMorphClass())
+                ->where('owner_id', $model->id)
+                ->where('status', FileStatus::CREATED)
+                ->get();
+
+            foreach ($filesToUploadProcess as $file) {
+                UploaderJob::dispatch($file->id, $model)->onQueue(config('uploader.queue'));
+            }
         }
     }
 

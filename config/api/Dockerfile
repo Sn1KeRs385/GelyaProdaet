@@ -19,8 +19,6 @@ RUN apk update && apk add freetype-dev \
     git \
     tzdata \
     linux-headers \
-#    libzip-dev \
-#    unzip \
     $PHPIZE_DEPS
 
 RUN docker-php-ext-install mbstring
@@ -66,6 +64,8 @@ RUN apk add libpng-dev jpeg-dev libjpeg-turbo-dev freetype-dev
 RUN docker-php-ext-install gd && \
   docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
   docker-php-ext-install gd
+
+RUN apk add jpegoptim optipng pngquant gifsicle libwebp libwebp-tools
 
 RUN echo "UTC" > /etc/timezone
 
