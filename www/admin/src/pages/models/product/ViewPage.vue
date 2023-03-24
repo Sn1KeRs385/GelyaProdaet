@@ -6,6 +6,10 @@ import ProductModel, { GetByIdItemInterface } from 'src/models/product'
 import { useListOptionsStore } from 'src/stores/list-options-store'
 import OptionGroupSlug from 'src/enums/option-group-slug'
 import ProductItemViewCard from 'src/components/models/product/ProductItemViewCard.vue'
+import imagesUrl from 'src/enums/images-url'
+import ApiFileInterface from 'src/interfaces/Api/file-interface'
+import FileStatus from 'file-uploader/enums/file-status'
+import ImagesUrl from 'src/enums/images-url'
 
 interface Props {
   model: typeof ProductModel
@@ -56,6 +60,15 @@ const modelId = computed(() => {
   return parseInt(route.params.id)
 })
 
+const getFileImageSrc = computed(() => (file: ApiFileInterface) => {
+  let url: string | undefined
+  if (file.type?.indexOf('image/') === 0 && file.status === FileStatus.FINISHED) {
+    url = file.url
+  }
+
+  return url || ImagesUrl.EMPTY_IMAGE
+})
+
 onMounted(() => {
   loadData()
 })
@@ -97,13 +110,37 @@ const itemsNotActive = computed(
         {{ model.getTitle() }} - {{ t('models.base.viewModel') }}
       </h4>
 
-      <q-btn color="secondary" no-caps unelevated @click="router.go(-1)">
-        {{ t('models.base.back') }}
-      </q-btn>
+      <div
+        class="row tw-gap-12px row tw-justify-between md:tw-justify-start tw-w-full md:tw-w-auto tw-mt-8px md:tw-mt-0"
+      >
+        <q-btn
+          color="primary"
+          no-caps
+          unelevated
+          flat
+          :to="{ name: `edit_${model.constructor.name}`, params: { id: modelId } }"
+        >
+          {{ t('models.base.edit') }}
+        </q-btn>
+
+        <q-btn color="primary" no-caps unelevated @click="router.go(-1)">
+          {{ t('models.base.back') }}
+        </q-btn>
+      </div>
     </div>
     <div v-if="data" class="tw-mt-24px">
       <div class="tw-grid tw-w-full tw-grid-col-1 md:tw-grid-cols-3 tw-gap-40px">
+        <q-img
+          v-if="data.files.length === 0"
+          :src="imagesUrl.EMPTY_IMAGE"
+          class="tw-h-200px md:tw-h-max"
+        >
+          <div class="absolute-bottom text-center text-subtitle2">
+            {{ t('models.product.view.images.imageNotFound') }}
+          </div>
+        </q-img>
         <q-carousel
+          v-else
           v-model="slide"
           v-model:fullscreen="fullscreenPhoto"
           swipeable
@@ -116,13 +153,19 @@ const itemsNotActive = computed(
             v-for="(file, index) in data.files"
             :key="file.id"
             :name="index + 1"
-            :img-src="file.url"
+            :img-src="getFileImageSrc(file)"
             class="cursor-pointer tw-rounded-20px tw-relative"
             :class="{ 'tw-rounded-20px': !fullscreenPhoto }"
             @click="fullscreenPhoto = !fullscreenPhoto"
           >
             <div class="tw-absolute tw-w-full tw-h-full tw-top-0 tw-left-0">
-              <q-img :src="file.url" class="tw-w-full tw-h-full" fit="contain" />
+              <q-img :src="getFileImageSrc(file)" class="tw-w-full tw-h-full" fit="contain">
+                <div v-if="file.status !== FileStatus.FINISHED" class="absolute-bottom">
+                  <div v-if="file.status !== FileStatus.FINISHED" class="text-h6">
+                    {{ t(`fileUploaderModule.enums.fileStatuses.${file.status}`) }}
+                  </div>
+                </div>
+              </q-img>
             </div>
           </q-carousel-slide>
         </q-carousel>

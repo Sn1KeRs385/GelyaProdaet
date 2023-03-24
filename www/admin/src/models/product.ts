@@ -134,14 +134,14 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         }),
       },
       {
-        key: 'price_buy',
+        key: 'price_buy_normalize',
         input: new QuasarInput({
           label: t('models.product.form.price_buy.label'),
           type: 'number',
         }),
       },
       {
-        key: 'price',
+        key: 'price_normalize',
         input: new QuasarInput({
           label: t('models.product.form.price.label'),
           type: 'number',
@@ -162,28 +162,14 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
               name: 'size_id',
               label: t('models.productItem.table.size.label'),
               field: 'size_id',
-              format: (val) =>
-                useListOptionsStore().getOptionById(val)?.title || t('texts.unknown'),
+              format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
               align: 'left',
             },
             {
               name: 'color_id',
               label: t('models.productItem.table.color.label'),
               field: 'color_id',
-              format: (val) =>
-                useListOptionsStore().getOptionById(val)?.title || t('texts.unknown'),
-              align: 'left',
-            },
-            {
-              name: 'price_buy',
-              label: t('models.productItem.table.price_buy.label'),
-              field: 'price_buy',
-              align: 'left',
-            },
-            {
-              name: 'price',
-              label: t('models.productItem.table.price.label'),
-              field: 'price',
+              format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
               align: 'left',
             },
             {
@@ -218,26 +204,13 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
                   useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COLOR),
               }),
             },
-            // {
-            //   key: 'price_buy',
-            //   input: new QuasarInput({
-            //     label: t('models.productItem.form.price_buy.label'),
-            //     type: 'number',
-            //   }),
-            // },
-            // {
-            //   key: 'price',
-            //   input: new QuasarInput({
-            //     label: t('models.productItem.form.price.label'),
-            //     type: 'number',
-            //   }),
-            // },
             {
               key: 'is_for_sale',
               input: new QuasarToggle({
                 label: t('models.productItem.form.is_for_sale.label'),
               }),
               defaultValue: true,
+              hideInUpdate: true,
             },
           ],
         }),

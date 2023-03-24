@@ -1,5 +1,6 @@
-export default interface ProductInterface {
-  id: number
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
+
+export default interface ProductInterface extends BaseModelInterface {
   title: string
   description?: string
   type_id: number

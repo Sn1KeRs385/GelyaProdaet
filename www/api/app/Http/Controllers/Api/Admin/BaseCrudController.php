@@ -47,7 +47,9 @@ abstract class BaseCrudController extends BaseAdminController
 
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->toArray();
+
+        return response()->json(['id' => $this->crudService->update($id, $data)->id], Response::HTTP_OK);
     }
 
     public function destroy(string $id)

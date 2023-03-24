@@ -5,13 +5,10 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { QTableProps } from 'quasar'
 import { useRoute, useRouter } from 'vue-router'
 import QTableColParams from 'src/interfaces/quasar/q-table-params'
-
-interface ModelOnlyId {
-  id: number
-}
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 
 interface Props {
-  model: BaseModel<never, never>
+  model: BaseModel<BaseModelInterface, BaseModelInterface, BaseModelInterface>
 }
 
 const props = defineProps<Props>()
@@ -21,7 +18,7 @@ const route = useRoute()
 const router = useRouter()
 
 const tableRef = ref()
-const rows = ref([])
+const rows = ref<BaseModelInterface[]>([])
 const loading = ref(false)
 const pagination = ref({
   sortBy: route.query.sortBy || 'id',
@@ -84,7 +81,7 @@ const saveParamsToRoute = () => {
   router.push({ query: params })
 }
 
-const onRowClick = (row: ModelOnlyId) => {
+const onRowClick = (row: BaseModelInterface) => {
   router.push({ name: `view_${props.model.constructor.name}`, params: { id: row.id } })
 }
 

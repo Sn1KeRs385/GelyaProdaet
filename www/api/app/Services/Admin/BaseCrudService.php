@@ -202,9 +202,48 @@ abstract class BaseCrudService
         return $model;
     }
 
-    public function update(string $id, array $data)
+    protected function updateDataHook(array &$data): void
     {
-        //
+    }
+
+    protected function updateBeforeFindHook(Builder &$query): void
+    {
+    }
+
+    protected function updateBeforeSaveHook(Model &$model, array $data): void
+    {
+    }
+
+    protected function updateAfterSaveHook(Model &$model, array &$data): void
+    {
+    }
+
+    public function update(string $id, array $data): Model
+    {
+        return DB::transaction(function () use ($id, $data) {
+            $this->updateDataHook($data);
+
+            $query = $this->getModelQuery()
+                ->where('id', $id);
+
+            $this->updateBeforeFindHook($query);
+
+            $model = $query->firstOrFail();
+
+            $model->fill($data);
+
+            $this->updateBeforeSaveHook($model, $data);
+
+            $model->save();
+
+            $this->updateAfterSaveHook($model, $data);
+
+            $this->storeOrUpdateRelationData($model, $data);
+
+            $this->processFiles($model, $data);
+
+            return $model;
+        });
     }
 
     public function destroy(string $id)

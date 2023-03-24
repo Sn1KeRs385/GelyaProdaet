@@ -3,6 +3,7 @@ import axios from './axios'
 import enums from './enums'
 import login from './login'
 import texts from './texts'
+import fileUploaderModule from 'file-uploader/locale/ru'
 
 export default {
   models,
@@ -10,4 +11,5 @@ export default {
   enums,
   login,
   texts,
+  fileUploaderModule,
 }

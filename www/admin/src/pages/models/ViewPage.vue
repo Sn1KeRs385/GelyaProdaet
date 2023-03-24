@@ -4,9 +4,10 @@ import BaseModel from 'src/models/base-model'
 import { onMounted, ref, watch } from 'vue'
 import { QTableProps } from 'quasar'
 import { useRoute, useRouter } from 'vue-router'
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 
 interface Props {
-  model: BaseModel<never, never, never>
+  model: BaseModel<BaseModelInterface, BaseModelInterface, BaseModelInterface>
 }
 
 const props = defineProps<Props>()

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Attributes\ProductAttributes;
 use App\Models\Traits\EntityPhpDoc;
 use App\Models\Traits\Relations\ProductRelations;
 use Carbon\Carbon;
@@ -22,6 +23,7 @@ class Product extends Model
 {
     use EntityPhpDoc;
     use ProductRelations;
+    use ProductAttributes;
 
     /**
      * The attributes that are mass assignable.

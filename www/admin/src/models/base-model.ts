@@ -56,6 +56,16 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
       })
       .then((response) => response.data)
   }
+
+  update(id: number, data: unknown): Promise<null> {
+    return api
+      .request({
+        method: 'put',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}`,
+        data: data,
+      })
+      .then((response) => response.data)
+  }
   getById(id: number): Promise<GetByIdItemInterface> {
     return api
       .request({ method: 'get', url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}` })

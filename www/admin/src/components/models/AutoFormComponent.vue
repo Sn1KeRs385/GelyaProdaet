@@ -3,9 +3,11 @@ import FormField from 'src/interfaces/admin/form-field'
 import FormData from 'src/interfaces/admin/form-data'
 import { useI18n } from 'vue-i18n'
 import { computed, reactive } from 'vue'
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 
 interface Props {
   fields: FormField[]
+  modelData?: BaseModelInterface
 }
 
 const props = defineProps<Props>()
@@ -18,23 +20,35 @@ const { t } = useI18n()
 const formData = reactive<FormData>({})
 const formReadyComponents = reactive<{ [key: string]: boolean }>({})
 
+const isEditForm = computed(() => !!props.modelData)
+const fieldsShowed = computed(() =>
+  props.fields.filter(
+    (field) =>
+      !((field.hideInCreate && !isEditForm.value) || (field.hideInUpdate && isEditForm.value))
+  )
+)
+
 const resetForm = () => {
-  props.fields.forEach((field) => {
+  fieldsShowed.value.forEach((field) => {
     formReadyComponents[field.key] = true
     if (!formData[field.key]) {
       formData[field.key] = {
-        value: field.defaultValue,
+        // eslint-disable-next-line
+        // @ts-ignore
+        value: props.modelData?.[field.key] || field.defaultValue,
         errors: [],
       }
     } else {
-      formData[field.key].value = field.defaultValue
+      // eslint-disable-next-line
+      // @ts-ignore
+      formData[field.key].value = props.modelData?.[field.key] || field.defaultValue
       formData[field.key].errors.splice(0, formData[field.key].errors.length)
     }
   })
 }
 
 const resetErrors = () => {
-  props.fields.forEach((field) => {
+  fieldsShowed.value.forEach((field) => {
     formData[field.key].errors.splice(0, formData[field.key].errors.length)
   })
 }
@@ -63,9 +77,11 @@ const formReady = computed(() => {
     <template v-for="field in fields" :key="field.key">
       <component
         :is="field.input.component"
+        v-if="isEditForm ? !field.hideInUpdate : !field.hideInCreate"
         v-bind="field.input.getParams()"
         v-model="formData[field.key].value"
         v-model:is-ready="formReadyComponents[field.key]"
+        :model-data="modelData"
         :error="formData[field.key].errors.length > 0"
         :error-message="formData[field.key].errors.join('\r\n')"
       ></component>
@@ -73,7 +89,7 @@ const formReady = computed(() => {
 
     <div class="row tw-space-x-8px tw-mt-6">
       <q-btn
-        :label="t('models.base.form.submit')"
+        :label="isEditForm ? t('models.base.form.save') : t('models.base.form.submit')"
         type="submit"
         color="primary"
         no-caps

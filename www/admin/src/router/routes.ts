@@ -35,6 +35,12 @@ Object.values(models).forEach((value) => {
     props: { model: value },
     component: value.viewPageComponent,
   })
+  indexRoute.children.push({
+    path: `/${value.getUrl()}/:id/edit`,
+    name: `edit_${value.constructor.name}`,
+    props: { model: value },
+    component: value.formPageComponent,
+  })
 })
 
 const routes: RouteRecordRaw[] = [

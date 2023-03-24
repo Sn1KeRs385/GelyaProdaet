@@ -34,9 +34,7 @@ class ProductCrudService extends BaseCrudService
     protected function showAfterQueryExecHook(Model &$model): void
     {
         /** @var Product $model */
-        $model->items->each(function (ProductItem $item) {
-            $item->setAppends(['price_normalize', 'price_buy_normalize']);
-        });
+        $model->setAppends(['price_normalize', 'price_buy_normalize']);
 
         $model->files->each(function (File $file) {
             $file->setAppends(['url']);
@@ -59,10 +57,20 @@ class ProductCrudService extends BaseCrudService
 
     protected function storeDataHook(array &$data): void
     {
+        $this->storeUpdateDataHook($data);
+    }
+
+    protected function updateDataHook(array &$data): void
+    {
+        $this->storeUpdateDataHook($data);
+    }
+
+    protected function storeUpdateDataHook(array &$data): void
+    {
         if (isset($data['items'])) {
             foreach ($data['items'] as &$item) {
-                $item['price'] = $item['price'] ?? $data['price'] ?? null;
-                $item['price_buy'] = $item['price_buy'] ?? $data['price_buy'] ?? null;
+                $item['price'] = $data['price_normalize'] ?? null;
+                $item['price_buy'] = $data['price_buy_normalize'] ?? null;
 
                 if ($item['price']) {
                     $item['price'] = $item['price'] * 100;

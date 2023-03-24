@@ -36,6 +36,9 @@ export default {
         toNotSale: 'Снять с продажи',
       },
     },
+    images: {
+      imageNotFound: 'Изображений не найдено',
+    },
   },
   form: {
     photos: {
