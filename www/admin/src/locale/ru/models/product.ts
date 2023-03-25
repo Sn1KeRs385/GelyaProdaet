@@ -56,6 +56,9 @@ export default {
     price: {
       label: 'Цена продажи одной вещи',
     },
+    sendToTelegram: {
+      label: 'Отправить в телеграм',
+    },
     items: {
       label: 'Товарные позиции',
     },

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $gender_id
  * @property int|null $brand_id
  * @property int|null $country_id
+ * @property bool $send_to_telegram
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -37,6 +38,7 @@ class Product extends Model
         'gender_id',
         'brand_id',
         'country_id',
+        'send_to_telegram'
     ];
 
     public function getMorphClass(): string

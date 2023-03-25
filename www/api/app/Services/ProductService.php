@@ -38,6 +38,9 @@ class ProductService
             ]);
             return;
         }
+        if (!$product->send_to_telegram) {
+            return;
+        }
 
         if (!$product->items()->where('is_for_sale', true)->exists()) {
             return;

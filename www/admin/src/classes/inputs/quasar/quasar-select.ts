@@ -23,6 +23,7 @@ class QuasarInput extends BaseInput {
       optionsCallback: this.optionsCallback,
       emitValue: true,
       mapOptions: true,
+      clearable: true,
     }
   }
 }

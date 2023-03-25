@@ -148,6 +148,13 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         }),
       },
       {
+        key: 'send_to_telegram',
+        input: new QuasarToggle({
+          label: t('models.product.form.sendToTelegram.label'),
+        }),
+        defaultValue: true,
+      },
+      {
         key: 'items',
         input: new Table({
           label: t('models.product.form.items.label'),
