@@ -121,7 +121,7 @@ class ListOptionsSeeder extends Seeder
             ListOption::create([
                 'group_slug' => OptionGroupSlug::SIZE,
                 'title' => $i . '-' . ($i + 1),
-                'weight' => 800000,
+                'weight' => 800000 - ($i * 100),
             ]);
         }
     }
