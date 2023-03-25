@@ -110,7 +110,7 @@ class ListOptionsSeeder extends Seeder
             ListOption::create($item);
         }
 
-        for ($i = 50; $i <= 100; $i += 6) {
+        for ($i = 50; $i <= 152; $i += 6) {
             ListOption::create([
                 'group_slug' => OptionGroupSlug::SIZE,
                 'title' => $i,
