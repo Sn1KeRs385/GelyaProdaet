@@ -106,14 +106,17 @@ class ProductService
                     'colors' => [],
                 ];
             }
-            if ($item->is_sold || !$item->is_for_sale) {
+
+            $itemIsSold = $item->is_sold || !$item->is_for_sale;
+            if ($itemIsSold) {
                 $sizes[$item->size->title]['is_sold'] = $sizes[$item->size->title]['is_sold'] + 1;
             } else {
                 $sizes[$item->size->title]['for_sale'] = $sizes[$item->size->title]['for_sale'] + 1;
+            }
 
-                if ($item->color?->title && !in_array($item->color->title, $sizes[$item->size->title]['colors'])) {
-                    $sizes[$item->size->title]['colors'][] = $item->color->title;
-                }
+            if ($item->color?->title) {
+                $sizes[$item->size->title]['colors'][$item->color->title] =
+                    $sizes[$item->size->title]['colors'][$item->color->title] ?? $itemIsSold;
             }
         }
 
@@ -136,12 +139,24 @@ class ProductService
 
         $text .= "\n\nРазмеры: ";
         foreach ($sizes as $size => $info) {
-            $text .= "\n$size";
-            if ($info['for_sale'] === 0) {
-                $text .= " ❌";
+            $icon = '';
+            if (count($info['colors']) === 0) {
+                $icon = $info['for_sale'] === 0 ? '❌' : '✅';
             }
+            $text .= "\n{$icon}{$size}";
+
             if (count($info['colors']) > 0) {
-                $text .= ": " . implode(', ', $info['colors']);
+                $colors = [];
+                foreach ($info['colors'] as $color => $isSold) {
+                    $icon = $isSold ? '❌' : '✅';
+                    $colorText = "{$icon}{$color}";
+                    if ($isSold) {
+                        $colors[] = $colorText;
+                    } else {
+                        array_unshift($colors, $colorText);
+                    }
+                }
+                $text .= ": " . implode(', ', $colors);
             }
         }
 

@@ -2,22 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\IdentifierType;
 use App\Models\Product;
-use App\Models\User;
 use App\Services\ProductService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Hash;
 
-class SendProductToTg extends Command
+class ProductTgSend extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'product:send-tg {id}';
+    protected $signature = 'product:tg-send {id}';
 
     /**
      * The console command description.
