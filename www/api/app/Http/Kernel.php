@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Telegram\Authenticate;
+use App\Http\Middleware\Telegram\UserDetect;
+use App\Http\Middleware\Telegram\WebhookDataExtract;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,6 +45,12 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'telegram' => [
+            Authenticate::class,
+            WebhookDataExtract::class,
+            UserDetect::class,
         ],
     ];
 

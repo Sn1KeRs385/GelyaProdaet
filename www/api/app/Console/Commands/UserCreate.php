@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\IdentifierType;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
@@ -33,22 +34,10 @@ class UserCreate extends Command
             throw new \Exception('Login and password is required');
         }
 
-        $user = User::query()
-            ->whereHas('identifiers', function (Builder $query) {
-                $query->where('type', IdentifierType::LOGIN)
-                    ->where('value', $this->argument('login'));
-            })
-            ->first();
+        /** @var UserRepository $userRepository */
+        $userRepository = app(UserRepository::class);
 
-        if (!$user) {
-            $user = new User();
-            $user->save();
-            $user->identifiers()
-                ->create([
-                    'type' => IdentifierType::LOGIN,
-                    'value' => $this->argument('login')
-                ]);
-        }
+        $user = $userRepository->findOrCreateByIdentifier(IdentifierType::LOGIN, $this->argument('login'));
 
         $user->password = Hash::make($this->argument('password'));
         $user->save();

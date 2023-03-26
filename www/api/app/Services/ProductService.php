@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Bots\Telegram\TelegramBot;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\TgMessage;
-use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
@@ -14,15 +14,11 @@ class ProductService
 {
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
     {
-        if (!$chatId) {
-            if (is_numeric(config('telegram.public_id'))) {
-                $chatId = config('telegram.public_id');
-            } else {
-                $chatId = '@' . config('telegram.public_id');
-            }
-        }
+        $bot = new TelegramBot(config('telegram.bot_api_key'));
 
-        $bot = new Nutgram(config('telegram.bot_api_key'));
+        if (!$chatId) {
+            $chatId = $bot::getPublicId();
+        }
 
         /** @var TgMessage $message */
         $message = $product->tgMessages()
