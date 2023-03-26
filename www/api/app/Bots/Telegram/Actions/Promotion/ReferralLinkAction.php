@@ -34,17 +34,17 @@ class ReferralLinkAction extends AbstractAction
             $referralLink->save();
         }
 
-        $inviteCount = TgReferralLinkJoin::query()
-            ->select('link_id')
-            ->selectRaw('count(distinct(user_id)) as user_count')
-            ->where('link_id', $referralLink->id)
-            ->groupBy('link_id')
-            ->first()
-            ->user_count;
-
         if ($referralLink->wasRecentlyCreated) {
             $text = "Приветствуем вас в программе \"Пригласи друга\"! Рады видеть вас здесь и благодарим за участие.";
         } else {
+            $inviteCount = TgReferralLinkJoin::query()
+                ->select('link_id')
+                ->selectRaw('count(distinct(user_id)) as user_count')
+                ->where('link_id', $referralLink->id)
+                ->groupBy('link_id')
+                ->first()
+                ->user_count ?? 0;
+
             $text = "Вы уже принимаете участие в программе \"Пригласи друга\"";
             $text .= "\nКоличество новый участников по вашей ссылке: {$inviteCount}";
         }
