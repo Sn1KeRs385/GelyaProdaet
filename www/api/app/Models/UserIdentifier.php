@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $user_id
  * @property string $type
  * @property string $value
+ * @property array|null $extra_data
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -31,6 +32,11 @@ class UserIdentifier extends Model
     protected $fillable = [
         'type',
         'value',
+        'extra_data',
+    ];
+
+    protected $casts = [
+        'extra_data' => 'array',
     ];
 
     public function getMorphClass(): string
