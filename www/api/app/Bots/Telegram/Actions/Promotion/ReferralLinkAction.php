@@ -61,7 +61,7 @@ class ReferralLinkAction extends AbstractAction
 
     public static function getPaths(): array
     {
-        return ['/^пригла\S*\sдру(г|з)\S*$/ui'];
+        return ['/^пригла\S*\sдру(г|з)\S*$/ui', '/^\/promotion_invite_friend/ui'];
     }
 
     public static function getAvailableWebhookTypes(): array
