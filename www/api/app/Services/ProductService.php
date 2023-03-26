@@ -6,6 +6,7 @@ use App\Bots\Telegram\TelegramBot;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\TgMessage;
+use Illuminate\Database\Eloquent\Builder;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
@@ -97,6 +98,10 @@ class ProductService
             }
             if (!isset($sizes[$item->size->title])) {
                 $sizes[$item->size->title] = [
+                    'weight' => $item->size->weight,
+                    'title' => $item->size->title,
+                    'id' => $item->size->id,
+
                     'for_sale' => 0,
                     'is_sold' => 0,
                     'colors' => [],
@@ -110,11 +115,17 @@ class ProductService
                 $sizes[$item->size->title]['for_sale'] = $sizes[$item->size->title]['for_sale'] + 1;
             }
 
-            if ($item->color?->title) {
-                $sizes[$item->size->title]['colors'][$item->color->title] =
-                    $sizes[$item->size->title]['colors'][$item->color->title] ?? $itemIsSold;
+            if ($item->color?->title
+                && (!isset($sizes[$item->size->title]['colors'][$item->color->title]) || !$itemIsSold)
+            ) {
+                $sizes[$item->size->title]['colors'][$item->color->title] = !$itemIsSold;
             }
         }
+        $sizes = collect($sizes)->sortBy([
+            ['weight', 'desc'],
+            ['title', 'asc'],
+            ['id', 'desc'],
+        ]);
 
         $gender = mb_strtolower($product->gender->title);
         $text = "{$product->type->title} $gender";
@@ -143,10 +154,10 @@ class ProductService
 
             if (count($info['colors']) > 0) {
                 $colors = [];
-                foreach ($info['colors'] as $color => $isSold) {
-                    $icon = $isSold ? '❌' : '✅';
+                foreach ($info['colors'] as $color => $isForSale) {
+                    $icon = $isForSale ? '✅' : '❌';
                     $colorText = "{$icon}{$color}";
-                    if ($isSold) {
+                    if (!$isForSale) {
                         $colors[] = $colorText;
                     } else {
                         array_unshift($colors, $colorText);
