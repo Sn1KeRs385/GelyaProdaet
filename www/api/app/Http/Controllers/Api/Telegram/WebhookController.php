@@ -12,6 +12,7 @@ class WebhookController
 {
     public function __invoke(TelegramActionRouter $actionRouter)
     {
+        return null;
         /** @var Collection<int, ActionContract> $actions */
         $actions = $actionRouter->getAction(TelegramWebhook::getData());
 
