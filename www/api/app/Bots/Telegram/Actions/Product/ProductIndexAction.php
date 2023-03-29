@@ -56,7 +56,7 @@ class ProductIndexAction extends AbstractAction
         $filterText = 'Размер: ' . ($sizes ? implode(', ', $sizes->pluck('title')->toArray()) : 'любой');
         $filterText .= "\nБренд: " . ($brands ? implode(', ', $brands->pluck('title')->toArray()) : 'любой');
         $filterText .= "\nСтрана: " . ($countries ? implode(', ', $countries->pluck('title')->toArray()) : 'любой');
-        $filterText .= $genders ? implode(', ', $genders->pluck('title')->toArray()) : "\nНа мальчика и девочку";
+        $filterText .= $genders ? "\n" . implode(', ', $genders->pluck('title')->toArray()) : "\nНа мальчика и девочку";
         if ($products->count() > 0 && $page === 1) {
             $text = '🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽';
             $text .= "\nТовары по вашему запросу:";
