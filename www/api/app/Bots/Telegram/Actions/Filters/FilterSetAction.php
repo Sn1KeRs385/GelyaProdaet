@@ -29,7 +29,8 @@ class FilterSetAction extends AbstractAction
                 ->select('id', 'slug')
                 ->where('group_slug', $params['slug'])
                 ->whereIn('id', $state->filters->listOptionIds ?? [])
-                ->pluck('id');
+                ->pluck('id')
+                ->toArray();
 
             $state->filters->listOptionIds = array_diff(
                 $state->filters->listOptionIds,
@@ -44,7 +45,8 @@ class FilterSetAction extends AbstractAction
                         ->select('id', 'group_slug')
                         ->where('group_slug', $params['slug'])
                         ->where('id', '<>', $id)
-                        ->pluck('id');
+                        ->pluck('id')
+                        ->toArray();
                     $state->filters->listOptionIds = array_diff(
                         $state->filters->listOptionIds,
                         $optionIds
