@@ -3,6 +3,7 @@
 namespace App\Bots\Telegram;
 
 
+use App\Models\TgUserState;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use SergiX44\Nutgram\Telegram\Types\Common\Update;
@@ -10,6 +11,7 @@ use SergiX44\Nutgram\Telegram\Types\Common\Update;
 class TelegramWebhook
 {
     protected ?User $user;
+    protected ?TgUserState $state;
 
     public function __construct(
         protected readonly TelegramBot $bot,
@@ -44,5 +46,18 @@ class TelegramWebhook
             throw new ModelNotFoundException();
         }
         return $this->user;
+    }
+
+    public function setState(TgUserState $state): void
+    {
+        $this->state = $state;
+    }
+
+    public function getState(): TgUserState
+    {
+        if (!$this->state) {
+            throw new ModelNotFoundException();
+        }
+        return $this->state;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\Telegram\Authenticate;
 use App\Http\Middleware\Telegram\UserDetect;
 use App\Http\Middleware\Telegram\WebhookDataExtract;
+use App\Http\Middleware\Telegram\WithState;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -51,6 +52,7 @@ class Kernel extends HttpKernel
             Authenticate::class,
             WebhookDataExtract::class,
             UserDetect::class,
+            WithState::class,
         ],
     ];
 

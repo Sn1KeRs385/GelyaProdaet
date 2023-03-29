@@ -19,6 +19,12 @@ class WebhookController
             $action->__invoke();
         });
 
+        if (TelegramWebhook::getState()->data->actionsQueue) {
+            foreach (TelegramWebhook::getState()->data->actionsQueue as $action) {
+                $action->__invoke();
+            }
+        }
+
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

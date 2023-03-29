@@ -3,6 +3,12 @@
 namespace App\Bots\Telegram;
 
 use App\Bots\Telegram\Actions\ActionContract;
+use App\Bots\Telegram\Actions\Filters\FilterBrandAction;
+use App\Bots\Telegram\Actions\Filters\FilterCountryAction;
+use App\Bots\Telegram\Actions\Filters\FilterGenderAction;
+use App\Bots\Telegram\Actions\Filters\FilterSetAction;
+use App\Bots\Telegram\Actions\Filters\FilterSizeAction;
+use App\Bots\Telegram\Actions\Product\ProductIndexAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkJoinAction;
 use App\Bots\Telegram\Actions\StartAction;
@@ -22,6 +28,12 @@ class TelegramActionRouter
             StartAction::getActionRouteInfo(),
             ReferralLinkAction::getActionRouteInfo(),
             ReferralLinkJoinAction::getActionRouteInfo(),
+            ProductIndexAction::getActionRouteInfo(),
+            FilterBrandAction::getActionRouteInfo(),
+            FilterCountryAction::getActionRouteInfo(),
+            FilterGenderAction::getActionRouteInfo(),
+            FilterSizeAction::getActionRouteInfo(),
+            FilterSetAction::getActionRouteInfo(),
         ]);
     }
 
@@ -36,23 +48,46 @@ class TelegramActionRouter
         });
 
         return (match ($webhookData->getType()) {
-            UpdateTypes::MESSAGE => $filteredRoutes->filter(
-                function (ActionRouteInfo $actionRouteInfo) use ($webhookData) {
-                    $pregTest = false;
-                    foreach ($actionRouteInfo->paths as $path) {
-                        $pregTest = preg_match($path, $webhookData->getMessage()->text) === 1;
-                        if ($pregTest) {
-                            break;
-                        }
-                    }
-
-                    return $pregTest;
-                }
+            UpdateTypes::MESSAGE => $this->getRoutesListFromText($filteredRoutes, $webhookData->getMessage()->text),
+            UpdateTypes::CALLBACK_QUERY => $this->getRoutesListFromText(
+                $filteredRoutes,
+                $webhookData->callback_query->data
             ),
             UpdateTypes::CHAT_MEMBER => $filteredRoutes,
             default => collect([]),
-        })->values()->map(function (ActionRouteInfo $actionRouteInfo) {
-            return $actionRouteInfo->action;
+        })
+            ->values()
+            ->map(function (ActionRouteInfo $actionRouteInfo) {
+                return $actionRouteInfo->action;
+            });
+    }
+
+    public function getActionByText(string $text): Collection
+    {
+        return $this->getRoutesListFromText($this->routes, $text)
+            ->values()
+            ->map(function (ActionRouteInfo $actionRouteInfo) {
+                return $actionRouteInfo->action;
+            });
+    }
+
+    /**
+     * @param  Collection<int, ActionRouteInfo>  $routes
+     * @param  string  $text
+     * @return Collection<int, ActionContract>
+     */
+    protected function getRoutesListFromText(Collection $routes, string $text): Collection
+    {
+        return $routes->filter(function (ActionRouteInfo $actionRouteInfo) use ($text) {
+            $pregTest = false;
+            foreach ($actionRouteInfo->paths as $path) {
+                $pregTest = preg_match($path, $text) === 1;
+                if ($pregTest) {
+                    break;
+                }
+            }
+
+            return $pregTest;
         });
     }
 }

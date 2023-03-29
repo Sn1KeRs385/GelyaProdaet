@@ -10,7 +10,7 @@ trait ActionRouteInfoMapper
     {
         return ActionRouteInfo::from([
             'paths' => static::getPaths(),
-            'action' => new static(),
+            'action' => app(static::class),
             'isVisible' => static::getIsVisible(),
             'description' => static::getDescription(),
             'availableWebhookTypes' => static::getAvailableWebhookTypes(),

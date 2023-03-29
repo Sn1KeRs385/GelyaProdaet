@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $group_slug
  * @property string $title
  * @property int $weight
+ * @property boolean $is_hidden_from_user_filters
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -29,6 +30,7 @@ class ListOption extends Model
         'group_slug',
         'title',
         'weight',
+        'is_hidden_from_user_filters'
     ];
 
     public function getMorphClass(): string
