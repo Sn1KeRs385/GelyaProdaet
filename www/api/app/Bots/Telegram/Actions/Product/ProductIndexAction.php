@@ -44,7 +44,7 @@ class ProductIndexAction extends AbstractAction
 
     protected function sendProducts(int $page): void
     {
-        $perPage = 1;
+        $perPage = 10;
 
         $products = $this->getProducts($page, $perPage);
 
@@ -191,6 +191,7 @@ class ProductIndexAction extends AbstractAction
         $countries = $this->getFilterListOptionsBySlug(OptionGroupSlug::COUNTRY);
         $genders = $this->getFilterListOptionsBySlug(OptionGroupSlug::GENDER);
         return Product::query()
+            ->orderBy('created_at', 'desc')
             ->whereHas('items', function (Builder $query) use ($sizes) {
                 $query->where('is_sold', false)
                     ->where('is_for_sale', true)
