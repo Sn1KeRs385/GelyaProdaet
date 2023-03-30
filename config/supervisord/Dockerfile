@@ -28,7 +28,8 @@ RUN docker-php-ext-install intl
 RUN docker-php-ext-install pdo_pgsql
 RUN docker-php-ext-install pgsql
 RUN docker-php-ext-install exif
-RUN docker-php-ext-install opcache
+RUN #docker-php-ext-configure opcache --enable-opcache \
+#    && docker-php-ext-install opcache
 #RUN docker-php-ext-install zip
 
 RUN pecl install memcached \
@@ -37,8 +38,8 @@ RUN pecl install memcached \
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+#RUN pecl install xdebug \
+#    && docker-php-ext-enable xdebug
 
 RUN pecl install -n mcrypt \
     && docker-php-ext-enable mcrypt
