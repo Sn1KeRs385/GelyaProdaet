@@ -28,7 +28,7 @@ RUN docker-php-ext-install intl
 RUN docker-php-ext-install pdo_pgsql
 RUN docker-php-ext-install pgsql
 RUN docker-php-ext-install exif
-RUN #docker-php-ext-configure opcache --enable-opcache \
+#RUN docker-php-ext-configure opcache --enable-opcache \
 #    && docker-php-ext-install opcache
 #RUN docker-php-ext-install zip
 
