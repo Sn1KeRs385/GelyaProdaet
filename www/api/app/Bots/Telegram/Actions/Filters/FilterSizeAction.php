@@ -11,7 +11,7 @@ class FilterSizeAction extends AbstractFilterAction
 {
     public static function getPaths(): array
     {
-        return ['/^\/filterSize/ui'];
+        return ['/^\/filterSize$/ui'];
     }
 
     protected function getListOptionIdsSubQuery(): Builder
@@ -43,6 +43,11 @@ class FilterSizeAction extends AbstractFilterAction
         $text .= "\nЧтобы увидеть товары с любым размером, нажмите кнопку <b>\"Сбросить\"</b>";
 
         return $text;
+    }
+
+    protected function getAllText(): string
+    {
+        return 'Выбрать все размеры';
     }
 
     protected function getCountButtonOnRow(): int

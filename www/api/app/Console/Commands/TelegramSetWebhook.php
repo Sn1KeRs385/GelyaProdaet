@@ -12,7 +12,7 @@ class TelegramSetWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'telegram:set-web-hook';
+    protected $signature = 'telegram:set-web-hook {--dropUpdates=false}';
 
     /**
      * The console command description.
@@ -38,6 +38,10 @@ class TelegramSetWebhook extends Command
                     'chat_join_request',
                     'chat_member',
                 ],
+                'drop_pending_updates' => filter_var(
+                    $this->option('dropUpdates') ?? false,
+                    FILTER_VALIDATE_BOOL
+                ),
             ]
         );
     }

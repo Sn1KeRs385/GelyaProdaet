@@ -8,10 +8,7 @@ use App\Bots\Telegram\Actions\Traits\CallbackQueryMethods;
 use App\Bots\Telegram\Facades\TelegramWebhook;
 use App\Enums\OptionGroupSlug;
 use App\Models\ListOption;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Builder;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
-use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
@@ -36,18 +33,11 @@ class FilterGenderAction extends AbstractAction
 
         $inlineKeyBoard = InlineKeyboardMarkup::make();
 
-        $existsOptionIds = TelegramWebhook::getState()->data->productFilter['list_option_ids'] ?? [];
         $keyboardRow = [];
-        $anyOneSelected = false;
         foreach ($listOptions as $listOption) {
-            $icon = '';
-            if (in_array($listOption->id, $existsOptionIds)) {
-                $icon = '✅';
-                $anyOneSelected = true;
-            }
             $keyboardRow[] = InlineKeyboardButton::make(
-                "{$icon}{$listOption->title}",
-                callback_data: "/filterSet-id={$listOption->id}-back=/products-clear=1-slug=" . OptionGroupSlug::GENDER->value,
+                $listOption->title,
+                callback_data: "/filterSet-id={$listOption->id}-back=/products_next-slug=" . OptionGroupSlug::GENDER->value,
             );
             if (count($keyboardRow) === 3) {
                 $inlineKeyBoard->addRow(...$keyboardRow);
@@ -59,11 +49,10 @@ class FilterGenderAction extends AbstractAction
             $inlineKeyBoard->addRow(...$keyboardRow);
         }
 
-        $icon = $anyOneSelected ? '' : '✅';
         $inlineKeyBoard->addRow(
             InlineKeyboardButton::make(
-                "{$icon}И на мальчика и на девочку",
-                callback_data: '/filterSet-id=null-back=/products-slug=' . OptionGroupSlug::GENDER->value,
+                "И на мальчика и на девочку",
+                callback_data: '/filterSet-id=null-back=/products_next-slug=' . OptionGroupSlug::GENDER->value,
             ),
         );
 
@@ -78,11 +67,11 @@ class FilterGenderAction extends AbstractAction
 
     public static function getPaths(): array
     {
-        return ['/^\/filterGender/ui'];
+        return ['/^\/filterGender$/ui'];
     }
 
     public static function getAvailableWebhookTypes(): array
     {
-        return [UpdateTypes::MESSAGE, UpdateTypes::CALLBACK_QUERY];
+        return [];
     }
 }

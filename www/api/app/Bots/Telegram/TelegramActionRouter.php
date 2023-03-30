@@ -9,6 +9,8 @@ use App\Bots\Telegram\Actions\Filters\FilterGenderAction;
 use App\Bots\Telegram\Actions\Filters\FilterSetAction;
 use App\Bots\Telegram\Actions\Filters\FilterSizeAction;
 use App\Bots\Telegram\Actions\Product\ProductIndexAction;
+use App\Bots\Telegram\Actions\Product\ProductRequestAction;
+use App\Bots\Telegram\Actions\Product\ProductRequestNextAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkJoinAction;
 use App\Bots\Telegram\Actions\StartAction;
@@ -29,6 +31,8 @@ class TelegramActionRouter
             ReferralLinkAction::getActionRouteInfo(),
             ReferralLinkJoinAction::getActionRouteInfo(),
             ProductIndexAction::getActionRouteInfo(),
+            ProductRequestAction::getActionRouteInfo(),
+            ProductRequestNextAction::getActionRouteInfo(),
             FilterBrandAction::getActionRouteInfo(),
             FilterCountryAction::getActionRouteInfo(),
             FilterGenderAction::getActionRouteInfo(),

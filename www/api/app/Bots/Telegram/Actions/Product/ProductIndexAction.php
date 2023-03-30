@@ -10,7 +10,7 @@ use App\Bots\Telegram\Facades\TelegramWebhook;
 use App\Enums\OptionGroupSlug;
 use App\Models\ListOption;
 use App\Models\Product;
-use App\Services\ProductService;
+use App\Utils\WordDeclension;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
@@ -28,43 +28,27 @@ class ProductIndexAction extends AbstractAction
     /** @var (Collection<int, ListOption>|ListOption[]|null)[] */
     protected array $listOptionsBySlug = [];
 
-    public function __construct(protected ProductService $productService)
+    public function __construct(protected WordDeclension $wordDeclension)
     {
     }
 
     public function __invoke(): void
     {
         $params = $this->getParamsFromWebhookData(TelegramWebhook::getFacadeRoot());
-        $page = $params['page'] ?? 1;
+        $page = (int)($params['page'] ?? 1);
 
-        $this->deleteCallbackQueryMessage(TelegramWebhook::getFacadeRoot());
+        if ($page > 1) {
+            $this->deleteCallbackQueryMessage(TelegramWebhook::getFacadeRoot());
+        }
 
-        $this->sendProducts((int)$page);
+        $this->sendProducts($page);
     }
 
     protected function sendProducts(int $page): void
     {
-        $perPage = 10;
+        $perPage = 1;
 
         $products = $this->getProducts($page, $perPage);
-
-        $sizes = $this->getFilterListOptionsBySlug(OptionGroupSlug::SIZE);
-        $brands = $this->getFilterListOptionsBySlug(OptionGroupSlug::BRAND);
-        $countries = $this->getFilterListOptionsBySlug(OptionGroupSlug::COUNTRY);
-        $genders = $this->getFilterListOptionsBySlug(OptionGroupSlug::GENDER);
-
-        $filterText = 'Размер: ' . ($sizes ? implode(', ', $sizes->pluck('title')->toArray()) : 'любой');
-        $filterText .= "\nБренд: " . ($brands ? implode(', ', $brands->pluck('title')->toArray()) : 'любой');
-        $filterText .= "\nСтрана: " . ($countries ? implode(', ', $countries->pluck('title')->toArray()) : 'любой');
-        $filterText .= $genders ? "\n" . implode(', ', $genders->pluck('title')->toArray()) : "\nНа мальчика и девочку";
-        if ($products->count() > 0 && $page === 1) {
-            $text = '🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽';
-            $text .= "\nТовары по вашему запросу:";
-            $text .= "\n$filterText";
-            TelegramWebhook::getBot()->sendMessage($text, [
-                'chat_id' => TelegramWebhook::getData()->getChat()->id,
-            ]);
-        }
 
         foreach ($products as $product) {
             $tgMessage = $product->tgMessages[0];
@@ -75,60 +59,47 @@ class ProductIndexAction extends AbstractAction
             );
         }
 
-        $count = 0;
-        $pageCount = 0;
-        $inlineKeyBoard = InlineKeyboardMarkup::make();
+        $count = $this->getProductMainQuery()->count();
+        $pageCount = (int)ceil($count / $perPage);
+
         if ($products->count() === 0) {
-            $text = "По вашему запросу не найдено товаров.";
-        } else {
-            $count = $this->getProductMainQuery()->count();
-            $pageCount = ceil($count / $perPage);
-            $buttons = [];
-//            if ($page > 1) {
-//                $prevPage = $page - 1;
-//                $buttons[] = InlineKeyboardButton::make('<-Назад', callback_data: "/products-page={$prevPage}");
-//            }
-            if ($page < $pageCount) {
-                $nextPage = $page + 1;
-                $buttons[] = InlineKeyboardButton::make('Показать еще', callback_data: "/products-page={$nextPage}");
-            }
-            if (count($buttons) > 0) {
-                $inlineKeyBoard->addRow(...$buttons);
-            }
-            $text = "Ваш запрос:";
+            $text = "По вашему запросу не найдено товаров. Попробуйте изменить запрос";
+            TelegramWebhook::getBot()->sendMessage($text, [
+                'chat_id' => TelegramWebhook::getData()->getChat()->id,
+            ]);
+            return;
         }
-        $text .= "\n$filterText";
-        if ($page < $pageCount) {
-            $productRemained = $count - ($page * $perPage);
-            $text .= "\n\nЕще не показано товаров: {$productRemained}";
-            $text .= "\nНажмите кнопку \"Показать еще\" чтобы посмотреть больше";
-        } else {
-            $text .= "\n\nПо вашему запросу показаны все товары.";
+
+        if ($page === $pageCount) {
+            $text = "Мы показали все товары по вашему запросу.";
+            TelegramWebhook::getBot()->sendMessage($text, [
+                'chat_id' => TelegramWebhook::getData()->getChat()->id,
+            ]);
+            return;
         }
+
+        $inlineKeyBoard = InlineKeyboardMarkup::make();
+
+        $buttons = [];
+        $buttons[] = InlineKeyboardButton::make(
+            'Показать еще',
+            callback_data: '/products_index-page=' . $page + 1,
+        );
+
+        $inlineKeyBoard->addRow(...$buttons);
+
+        $productRemained = $count - ($page * $perPage);
+
+        $productText = $this->wordDeclension->afterNumDeclension(
+            $productRemained,
+            ['товар', 'товара', 'товаров'],
+            false
+        );
+        $text = "Мы нашли еще {$productRemained} $productText. Нажмите на кнопку и мы продолжим :)";
 
         TelegramWebhook::getBot()->sendMessage($text, [
             'chat_id' => TelegramWebhook::getData()->getChat()->id,
-            'reply_markup' => $inlineKeyBoard
-                ->addRow(
-                    InlineKeyboardButton::make(
-                        'Выбрать бренд',
-                        callback_data: '/filterBrand'
-                    ),
-                    InlineKeyboardButton::make(
-                        'Выбрать страну',
-                        callback_data: '/filterCountry'
-                    ),
-                )
-                ->addRow(
-                    InlineKeyboardButton::make(
-                        'Выбрать размер',
-                        callback_data: '/filterSize'
-                    ),
-                    InlineKeyboardButton::make(
-                        'Выбрать пол',
-                        callback_data: '/filterGender'
-                    ),
-                )
+            'reply_markup' => $inlineKeyBoard,
         ]);
     }
 
@@ -226,11 +197,11 @@ class ProductIndexAction extends AbstractAction
 
     public static function getPaths(): array
     {
-        return ['/^\/products/ui'];
+        return ['/^\/products_index/ui'];
     }
 
     public static function getAvailableWebhookTypes(): array
     {
-        return [UpdateTypes::MESSAGE, UpdateTypes::CALLBACK_QUERY];
+        return [UpdateTypes::CALLBACK_QUERY];
     }
 }

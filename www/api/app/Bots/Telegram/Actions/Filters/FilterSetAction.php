@@ -24,18 +24,20 @@ class FilterSetAction extends AbstractAction
 
         $state = &TelegramWebhook::getState()->data;
 
-        if ($params['id'] === 'null' && count($state->filters->listOptionIds) !== 0) {
-            $listOptionIds = ListOption::query()
-                ->select('id', 'slug')
-                ->where('group_slug', $params['slug'])
-                ->whereIn('id', $state->filters->listOptionIds ?? [])
-                ->pluck('id')
-                ->toArray();
+        if ($params['id'] === 'null') {
+            if (count($state->filters->listOptionIds) !== 0) {
+                $listOptionIds = ListOption::query()
+                    ->select('id', 'group_slug')
+                    ->where('group_slug', $params['slug'])
+                    ->whereIn('id', $state->filters->listOptionIds ?? [])
+                    ->pluck('id')
+                    ->toArray();
 
-            $state->filters->listOptionIds = array_diff(
-                $state->filters->listOptionIds,
-                $listOptionIds
-            );
+                $state->filters->listOptionIds = array_diff(
+                    $state->filters->listOptionIds,
+                    $listOptionIds
+                );
+            }
         } else {
             $id = (int)$params['id'];
             if (!in_array($id, $state->filters->listOptionIds)) {
@@ -61,9 +63,9 @@ class FilterSetAction extends AbstractAction
             $this->handleBackParam($params['back'], TelegramWebhook::getFacadeRoot());
         }
 
-        if (filter_var($params['del'] ?? false, FILTER_VALIDATE_BOOL)) {
-            $this->deleteCallbackQueryMessage(TelegramWebhook::getFacadeRoot());
-        }
+//        if (filter_var($params['del'] ?? false, FILTER_VALIDATE_BOOL)) {
+//            $this->deleteCallbackQueryMessage(TelegramWebhook::getFacadeRoot());
+//        }
     }
 
     public static function getPaths(): array
@@ -73,6 +75,6 @@ class FilterSetAction extends AbstractAction
 
     public static function getAvailableWebhookTypes(): array
     {
-        return [UpdateTypes::MESSAGE, UpdateTypes::CALLBACK_QUERY];
+        return [UpdateTypes::CALLBACK_QUERY];
     }
 }

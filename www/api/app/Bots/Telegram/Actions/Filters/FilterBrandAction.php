@@ -10,7 +10,7 @@ class FilterBrandAction extends AbstractFilterAction
 {
     public static function getPaths(): array
     {
-        return ['/^\/filterBrand/ui'];
+        return ['/^\/filterBrand$/ui'];
     }
 
     protected function getListOptionIdsSubQuery(): Builder

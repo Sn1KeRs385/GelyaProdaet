@@ -11,7 +11,9 @@ class UserStateData extends Data implements Castable
     public Filters $filters;
 
     /** @var ActionContract[] */
-    public ?array $actionsQueue;
+    protected ?array $actionsQueue = [];
+
+    public ?int $productRequestStep;
 
     public static function from(...$payloads): static
     {
@@ -32,6 +34,11 @@ class UserStateData extends Data implements Castable
     {
         $this->actionsQueue = null;
         return $this;
+    }
+
+    public function getNextAction(): ?ActionContract
+    {
+        return array_shift($this->actionsQueue);
     }
 
     public function addActionsToQueue(ActionContract ...$actions): self

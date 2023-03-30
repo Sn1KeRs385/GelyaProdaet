@@ -10,7 +10,6 @@ use App\Enums\OptionGroupSlug;
 use App\Models\ListOption;
 use Illuminate\Database\Eloquent\Builder;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
-use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
@@ -21,8 +20,6 @@ abstract class AbstractFilterAction extends AbstractAction
 
     public function __invoke(): void
     {
-        $this->deleteCallbackQueryMessage(TelegramWebhook::getFacadeRoot());
-
         $this->sendOptions();
     }
 
@@ -46,6 +43,11 @@ abstract class AbstractFilterAction extends AbstractAction
         return $text;
     }
 
+    protected function getAllText(): string
+    {
+        return 'Любой';
+    }
+
     protected function sendOptions(): void
     {
         $listOptions = ListOption::query()
@@ -58,13 +60,17 @@ abstract class AbstractFilterAction extends AbstractAction
 
         $inlineKeyBoard = InlineKeyboardMarkup::make()
             ->addRow(
+//                InlineKeyboardButton::make(
+//                    'Сбросить',
+//                    callback_data: '/filterSet-id=null-back=/products-slug=' . $this->getOptionGroupSlug()->value,
+//                ),
                 InlineKeyboardButton::make(
-                    'Сбросить',
-                    callback_data: '/filterSet-id=null-back=/products-slug=' . $this->getOptionGroupSlug()->value,
+                    $this->getAllText(),
+                    callback_data: '/filterSet-id=null-back=/products_next-slug=' . $this->getOptionGroupSlug()->value,
                 ),
                 InlineKeyboardButton::make(
                     'Показать',
-                    callback_data: '/products',
+                    callback_data: '/products_next',
                 ),
             );
 
@@ -86,16 +92,31 @@ abstract class AbstractFilterAction extends AbstractAction
             $inlineKeyBoard->addRow(...$keyboardRow);
         }
 
+        $currentMessageText = TelegramWebhook::getData()->getMessage()->text;
+        $newMessageText = str_replace("\n", ' ', strip_tags($this->getMessageText()));
 
-        TelegramWebhook::getBot()->sendMessage($this->getMessageText(), [
-            'chat_id' => TelegramWebhook::getData()->getChat()->id,
-            'parse_mode' => ParseMode::HTML,
-            'reply_markup' => $inlineKeyBoard,
-        ]);
+        if (strcmp($currentMessageText, $newMessageText) > 0) {
+            TelegramWebhook::getBot()->sendMessage($this->getMessageText(), [
+                'chat_id' => TelegramWebhook::getData()->getChat()->id,
+                'parse_mode' => ParseMode::HTML,
+                'reply_markup' => $inlineKeyBoard,
+            ]);
+        } else {
+            TelegramWebhook::getBot()->editMessageReplyMarkup([
+                'chat_id' => TelegramWebhook::getData()->getChat()->id,
+                'message_id' => TelegramWebhook::getData()->getMessage()->message_id,
+                'reply_markup' => $inlineKeyBoard,
+            ]);
+        }
     }
 
     public static function getAvailableWebhookTypes(): array
     {
-        return [UpdateTypes::MESSAGE, UpdateTypes::CALLBACK_QUERY];
+        return [];
+    }
+
+    public static function getPaths(): array
+    {
+        return ['/^$/ui'];
     }
 }

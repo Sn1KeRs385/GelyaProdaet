@@ -10,7 +10,7 @@ class FilterCountryAction extends AbstractFilterAction
 {
     public static function getPaths(): array
     {
-        return ['/^\/filterCountry/ui'];
+        return ['/^\/filterCountry$/ui'];
     }
 
     protected function getListOptionIdsSubQuery(): Builder
