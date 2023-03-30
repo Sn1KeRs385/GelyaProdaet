@@ -26,7 +26,6 @@ class WithState
 
         $response = $next($request);
 
-        TelegramWebhook::getState()->data->clearForSave();
         $state = TelegramWebhook::getState();
         $this->stateService->saveState($state);
 

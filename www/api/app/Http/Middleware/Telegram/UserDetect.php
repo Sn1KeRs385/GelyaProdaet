@@ -8,6 +8,7 @@ use App\Models\UserIdentifier;
 use App\Repositories\UserRepository;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserDetect
@@ -23,10 +24,19 @@ class UserDetect
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $this->userRepository->findOrCreateByIdentifier(
-            IdentifierType::TG_USER_ID,
-            TelegramWebhook::getData()->getUser()->id
-        );
+        $key = config('cache.config.authUser.key')
+            . ':' . IdentifierType::TG_USER_ID->value
+            . ':' . TelegramWebhook::getData()->getUser()->id;
+
+        $user = Cache::remember($key, config('cache.config.authUser.ttl'), function () {
+            return $this->userRepository->findOrCreateByIdentifier(
+                IdentifierType::TG_USER_ID,
+                TelegramWebhook::getData()->getUser()->id
+            );
+        });
+
+        TelegramWebhook::setUser($user);
+        $response = $next($request);
 
         /** @var UserIdentifier $identifier */
         $identifier = $user->identifiers()
@@ -43,7 +53,6 @@ class UserDetect
         ];
         $identifier->save();
 
-        TelegramWebhook::setUser($user);
-        return $next($request);
+        return $response;
     }
 }

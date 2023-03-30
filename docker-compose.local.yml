@@ -11,6 +11,7 @@ services:
       - ${HOST_PORT_API}:9000
     volumes:
       - ${PATH_TO_API}:/var/www/
+#      - ./config/api/conf.d/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
     environment:
       TZ: UTC
 
