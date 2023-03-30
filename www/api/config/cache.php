@@ -111,6 +111,10 @@ return [
         'authUser' => [
             'key' => 'user',
             'ttl' => '3600',
-        ]
+        ],
+        'tgUserState' => [
+            'key' => 'tg-user-state',
+            'ttl' => '1800',
+        ],
     ]
 ];

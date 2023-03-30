@@ -8,12 +8,16 @@ use Illuminate\Support\Facades\Cache;
 
 class TgUserStateService
 {
-    const USER_STATE_KEY = "user-state";
+    protected function getStateCacheKey(int $userId): string
+    {
+        return config('cache.config.tgUserState.key') . ":$userId";
+    }
 
     public function getState(int $userId): TgUserState
     {
-        if (Cache::has(self::USER_STATE_KEY . "-{$userId}")) {
-            return Cache::get(self::USER_STATE_KEY . "-{$userId}");
+        $cacheKey = $this->getStateCacheKey($userId);
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
         }
 
         $state = TgUserState::firstWhere('user_id', $userId);
@@ -31,6 +35,6 @@ class TgUserStateService
     public function saveState(TgUserState $state): void
     {
         $state->save();
-        Cache::set(self::USER_STATE_KEY . "-{$state->user_id}", $state, 1800);
+        Cache::set($this->getStateCacheKey($state->user_id), $state, config('cache.config.tgUserState.ttl'));
     }
 }
