@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-function addAdminRoutes(string $name, string $controller): void
-{
-    Route::get("/$name/all", [$controller, 'all'])->name("$name.all");
-    Route::resource($name, $controller);
-}
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post("/product-items/{product_item}/mark-sold", [ProductItemController::class, 'markSold'])
@@ -30,8 +25,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         "/product-items/{product_item}/rollback-for-sale-status",
         [ProductItemController::class, 'rollbackForSaleStatus']
     )->name("product-items.rollback-for-sale-status");
-    addAdminRoutes('product-items', ProductItemController::class);
 
-    addAdminRoutes('products', ProductController::class);
-    addAdminRoutes('list-options', ListOptionController::class);
+    Route::get('/product-items/all', [ProductItemController::class, 'all'])->name('product-items.all');
+    Route::resource('product-items', ProductItemController::class);
+
+
+    Route::get('/products/all', [ProductController::class, 'all'])->name('products.all');
+    Route::resource('products', ProductController::class);
+
+    Route::get('/list-options/all', [ListOptionController::class, 'all'])->name('list-options.all');
+    Route::resource('list-options', ListOptionController::class);
 });

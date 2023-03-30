@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/send-code', [AuthController::class, 'sendCode']);
-Route::post('/get-tokens-by-code', [AuthController::class, 'getTokensByCode']);
-Route::post('/get-tokens-by-credentials', [AuthController::class, 'getTokensByCredentials']);
+Route::post('/send-code', [AuthController::class, 'sendCode'])
+    ->name('send-code');
+
+Route::post('/get-tokens-by-code', [AuthController::class, 'getTokensByCode'])
+    ->name('get-tokens-by-code');
+
+Route::post('/get-tokens-by-credentials', [AuthController::class, 'getTokensByCredentials'])
+    ->name('get-tokens-by-credentials');
