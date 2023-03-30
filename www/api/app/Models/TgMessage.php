@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $owner_type
  * @property int|null $owner_id
  * @property array $file_ids
+ * @property bool $is_forward_error
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -27,6 +28,7 @@ class TgMessage extends Model
         'owner_type',
         'owner_id',
         'file_ids',
+        'is_forward_error',
     ];
 
     protected $casts = [

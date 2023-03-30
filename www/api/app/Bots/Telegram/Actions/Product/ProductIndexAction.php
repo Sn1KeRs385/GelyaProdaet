@@ -10,10 +10,12 @@ use App\Bots\Telegram\Facades\TelegramWebhook;
 use App\Enums\OptionGroupSlug;
 use App\Models\ListOption;
 use App\Models\Product;
+use App\Models\TgMessage;
 use App\Utils\WordDeclension;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
+use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
@@ -51,12 +53,20 @@ class ProductIndexAction extends AbstractAction
         $products = $this->getProducts($page, $perPage);
 
         foreach ($products as $product) {
+            /** @var TgMessage $tgMessage */
             $tgMessage = $product->tgMessages[0];
-            TelegramWebhook::getBot()->forwardMessage(
-                TelegramWebhook::getData()->getChat()->id,
-                $tgMessage->chat_id,
-                $tgMessage->message_id,
-            );
+            try {
+                TelegramWebhook::getBot()->forwardMessage(
+                    TelegramWebhook::getData()->getChat()->id,
+                    $tgMessage->chat_id,
+                    $tgMessage->message_id,
+                );
+            } catch (TelegramException $exception) {
+                if (str_contains($exception->getMessage(), 'message to forward not found')) {
+                    $tgMessage->is_forward_error = true;
+                    $tgMessage->save();
+                }
+            }
         }
 
         $count = $this->getProductMainQuery()->count();
@@ -170,7 +180,9 @@ class ProductIndexAction extends AbstractAction
                         $query->whereIn('size_id', $sizes->pluck('id'));
                     });
             })
-            ->whereHas('tgMessages')
+            ->whereHas('tgMessages', function (Builder $query) {
+                $query->where('is_forward_error', false);
+            })
             ->when($brands, function (Builder $query) use ($brands) {
                 $query->whereIn('brand_id', $brands->pluck('id'));
             })
@@ -187,7 +199,8 @@ class ProductIndexAction extends AbstractAction
         return $this->getProductMainQuery()
             ->with([
                 'tgMessages' => function ($query) {
-                    $query->orderBy('created_at', 'desc');
+                    $query->where('is_forward_error', false)
+                        ->orderBy('created_at', 'desc');
                 }
             ])
             ->offset(($page - 1) * $perPage)
