@@ -24,8 +24,11 @@ class ProductRequestNextAction extends AbstractAction
                 TelegramWebhook::getState()->data->addActionToQueue(app(FilterGenderFormatChooseAction::class));
                 TelegramWebhook::getState()->data->addActionToQueue(app(FilterSizeAction::class));
                 break;
-            default:
+            case 2:
                 TelegramWebhook::getState()->data->addActionToQueue(app(FilterSizeFormatChooseAction::class));
+                TelegramWebhook::getState()->data->addActionToQueue(app(ProductSearchAction::class));
+                break;
+            default:
                 TelegramWebhook::getState()->data->addActionToQueue(app(ProductIndexAction::class));
                 break;
         }

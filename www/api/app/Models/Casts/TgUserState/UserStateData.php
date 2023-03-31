@@ -5,6 +5,7 @@ namespace App\Models\Casts\TgUserState;
 use App\Bots\Telegram\Actions\ActionContract;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 
 class UserStateData extends Data implements Castable
 {
@@ -14,12 +15,17 @@ class UserStateData extends Data implements Castable
     protected ?array $actionsQueue = [];
 
     public ?int $productRequestStep;
+    /** @var ProductMessageToSend[] */
+    public DataCollection $productMessagesToSend;
 
     public static function from(...$payloads): static
     {
         $dto = parent::from(...$payloads);
         if (!isset($dto->filters)) {
             $dto->filters = new Filters();
+        }
+        if (!isset($dto->productMessagesToSend)) {
+            $dto->productMessagesToSend = new DataCollection(ProductMessageToSend::class, []);
         }
 
         return $dto;

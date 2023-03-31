@@ -20,7 +20,7 @@ class WebhookController
         });
 
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $nextAction = TelegramWebhook::getState()->data->getNextAction();
             if (!$nextAction) {
                 break;
