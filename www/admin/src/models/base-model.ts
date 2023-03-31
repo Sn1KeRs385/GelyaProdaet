@@ -12,7 +12,7 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
 
   public readonly tablePageComponent = () => import('src/pages/models/TablePage.vue')
   public readonly formPageComponent = () => import('src/pages/models/FormPage.vue')
-  public readonly viewPageComponent = () => import('src/pages/models/ViewPage.vue')
+  public readonly viewPageComponent = () => import('src/pages/models/FormPage.vue')
   protected abstract readonly url: string
 
   protected readonly basePath: string = 'admin'
