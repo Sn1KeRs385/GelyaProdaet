@@ -68,6 +68,8 @@ class ProductIndexAction extends AbstractAction
             return;
         }
 
+        $productRemained = TelegramWebhook::getState()->data->productMessagesToSend->count();
+
         foreach ($productMessages as $productMessage) {
             try {
                 TelegramWebhook::getBot()->forwardMessage(
@@ -83,9 +85,6 @@ class ProductIndexAction extends AbstractAction
                 }
             }
         }
-
-        $productRemained = count(TelegramWebhook::getState()->data->productMessagesToSend);
-
 
         if ($productRemained === 0) {
             $text = "Мы показали все товары по вашему запросу.";
