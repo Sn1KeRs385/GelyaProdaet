@@ -61,6 +61,7 @@ class ProductService
         /** @var Message[] $response */
         $response = $bot->sendMediaGroup($inputMediaPhoto, [
             'chat_id' => $chatId,
+            'disable_notification' => true,
         ]);
         $product->tgMessages()->create([
             'chat_id' => $chatId,

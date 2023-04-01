@@ -40,6 +40,7 @@ class ProductTelegramUpdateAll extends Command
                     } catch (\Throwable $ex) {
                         dump("Product {$product->id} - {$ex->getMessage()}");
                     }
+                    sleep(2);
                 }
             });
     }
