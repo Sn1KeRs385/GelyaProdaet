@@ -61,8 +61,8 @@ class ProductService
 
         $disableNotification = true;
         $now = Carbon::now();
-        $start = Carbon::createFromTimeString('7:00');
-        $end = Carbon::createFromTimeString('22:00');
+        $start = Carbon::createFromTimeString('4:00');
+        $end = Carbon::createFromTimeString('18:00');
         if ($now->between($start, $end)) {
             $disableNotification = false;
         }
@@ -101,13 +101,21 @@ class ProductService
         }
 
         $price = $items[0]->price ?? 0;
+        $onePriceOnAllItems = true;
 
         foreach ($items as $item) {
+            if ($item->price !== $price) {
+                $onePriceOnAllItems = false;
+            }
             if ($item->price > $price) {
                 $price = $item->price;
             }
-            if (!isset($sizes[$item->size->title])) {
-                $sizes[$item->size->title] = [
+            $key = $item->size->title;
+            if ($item->count > 1) {
+                $key = "{$key}-{$item->count} шт";
+            }
+            if (!isset($sizes[$key])) {
+                $sizes[$key] = [
                     'weight' => $item->size->weight,
                     'title' => $item->size->title,
                     'id' => $item->size->id,
@@ -115,20 +123,21 @@ class ProductService
                     'for_sale' => 0,
                     'is_sold' => 0,
                     'colors' => [],
+                    'price' => $item->price,
                 ];
             }
 
             $itemIsSold = $item->is_sold || !$item->is_for_sale;
             if ($itemIsSold) {
-                $sizes[$item->size->title]['is_sold'] = $sizes[$item->size->title]['is_sold'] + 1;
+                $sizes[$key]['is_sold'] = $sizes[$key]['is_sold'] + 1;
             } else {
-                $sizes[$item->size->title]['for_sale'] = $sizes[$item->size->title]['for_sale'] + 1;
+                $sizes[$key]['for_sale'] = $sizes[$key]['for_sale'] + 1;
             }
 
             if ($item->color?->title
-                && (!isset($sizes[$item->size->title]['colors'][$item->color->title]) || !$itemIsSold)
+                && (!isset($sizes[$key]['colors'][$item->color->title]) || !$itemIsSold)
             ) {
-                $sizes[$item->size->title]['colors'][$item->color->title] = !$itemIsSold;
+                $sizes[$key]['colors'][$item->color->title] = !$itemIsSold;
             }
         }
         $sizes = collect($sizes)->sortBy([
@@ -175,9 +184,16 @@ class ProductService
                 }
                 $text .= ": " . implode(', ', $colors);
             }
+
+            if (!$onePriceOnAllItems) {
+                $price = round($info['price'] / 100, 2);
+                $text .= " - {$price} руб.";
+            }
         }
 
-        $text .= "\n\nЦена: " . round($price / 100, 2);
+        if ($onePriceOnAllItems) {
+            $text .= "\n\nЦена: " . round($price / 100, 2);
+        }
 
         return $text;
     }

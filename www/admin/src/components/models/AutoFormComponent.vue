@@ -31,17 +31,19 @@ const fieldsShowed = computed(() =>
 const resetForm = () => {
   fieldsShowed.value.forEach((field) => {
     formReadyComponents[field.key] = true
+    let value: unknown = field.defaultValue
+    if (props.modelData?.hasOwnProperty(field.key)) {
+      value = props.modelData?.[field.key]
+    }
     if (!formData[field.key]) {
       formData[field.key] = {
         // eslint-disable-next-line
         // @ts-ignore
-        value: props.modelData?.[field.key] || field.defaultValue,
+        value: value,
         errors: [],
       }
     } else {
-      // eslint-disable-next-line
-      // @ts-ignore
-      formData[field.key].value = props.modelData?.[field.key] || field.defaultValue
+      formData[field.key].value = value
       formData[field.key].errors.splice(0, formData[field.key].errors.length)
     }
   })

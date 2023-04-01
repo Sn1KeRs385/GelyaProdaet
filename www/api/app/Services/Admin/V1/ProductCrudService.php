@@ -69,8 +69,8 @@ class ProductCrudService extends BaseCrudService
     {
         if (isset($data['items'])) {
             foreach ($data['items'] as &$item) {
-                $item['price'] = $data['price_normalize'] ?? null;
-                $item['price_buy'] = $data['price_buy_normalize'] ?? null;
+                $item['price'] = $item['price_normalize'] ?? $data['price_normalize'] ?? null;
+                $item['price_buy'] = $item['price_buy_normalize'] ?? $data['price_buy_normalize'] ?? null;
 
                 if ($item['price']) {
                     $item['price'] = $item['price'] * 100;

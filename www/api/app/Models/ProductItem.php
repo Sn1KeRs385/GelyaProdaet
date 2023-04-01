@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $color_id
  * @property int $price_buy
  * @property int $price
+ * @property int $count
  * @property bool $is_sold
  * @property bool $is_for_sale
  * @property Carbon|null $created_at
@@ -37,6 +38,7 @@ class ProductItem extends Model
         'color_id',
         'price_buy',
         'price',
+        'count',
         'is_sold',
         'is_for_sale',
     ];
