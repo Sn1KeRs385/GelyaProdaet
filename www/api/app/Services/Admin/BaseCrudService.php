@@ -3,7 +3,6 @@
 namespace App\Services\Admin;
 
 use App\Models\File;
-use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,7 +26,7 @@ abstract class BaseCrudService
      *  ...
      * ]
      */
-    protected array $relationMapper = [];
+    protected array $hasManyRelationMapper = [];
 
     protected array $fileFields = [
         'files_ids',
@@ -43,9 +42,16 @@ abstract class BaseCrudService
     {
     }
 
-    public function index(int $page, int $perPage): LengthAwarePaginator
-    {
-        $query = $this->getModelQuery();
+    public function index(
+        int $page,
+        int $perPage,
+        ?string $orderBy = null,
+        ?bool $orderDesc = null
+    ): LengthAwarePaginator {
+        $query = $this->getModelQuery()
+            ->when($orderBy, function ($query) use ($orderBy, $orderDesc) {
+                $query->orderBy($orderBy, $orderDesc ? 'DESC' : 'ASC');
+            });
 
         $this->indexBeforeQueryExecHook($query);
 
@@ -91,22 +97,35 @@ abstract class BaseCrudService
 
     protected function storeOrUpdateRelationData(Model $model, array $data): void
     {
-        foreach ($this->relationMapper as $relationMapper) {
-            if (!isset($data[$relationMapper['name']])) {
+        foreach ($this->hasManyRelationMapper as $hasManyRelationMapper) {
+            if (!isset($data[$hasManyRelationMapper['name']])) {
                 continue;
             }
             /** @var BaseCrudService $crudService */
-            $crudService = app($relationMapper['crudService']);
-            foreach ($data[$relationMapper['name']] as $relationData) {
+            $crudService = app($hasManyRelationMapper['crudService']);
+
+            $existsId = [];
+            foreach ($data[$hasManyRelationMapper['name']] as $relationData) {
                 if (isset($relationData['id'])) {
-                    $crudService->update($relationData['id'], $relationData);
+                    $relationModel = $crudService->update($relationData['id'], $relationData);
                 } else {
-                    /** @var Product $model */
-                    $relationData[$relationMapper['foreignKey']] = $model->id;
-                    $crudService->store($relationData);
+                    $relationData[$hasManyRelationMapper['foreignKey']] = $model->id;
+                    $relationModel = $crudService->store($relationData);
                 }
+                $existsId[] = $relationModel->id;
             }
+
+            $model->{$hasManyRelationMapper['name']}()
+                ->whereNotIn('id', $existsId)
+                ->chunk(500, function (Collection $relationModels) use ($crudService) {
+                    foreach ($relationModels as $relationModel) {
+                        /** @var Model $relationModel */
+                        $crudService->destroy($relationModel->id);
+                    }
+                });
         }
+
+        $model->touch();
     }
 
     protected function processFiles(Model $model, array $data): void
@@ -246,8 +265,36 @@ abstract class BaseCrudService
         });
     }
 
-    public function destroy(string $id)
+
+    protected function destroyBeforeFindHook(Builder &$query): void
     {
-        //
+    }
+
+    protected function destroyBeforeDeleteHook(Model &$model): void
+    {
+    }
+
+    protected function destroyAfterDeleteHook(Model &$model): void
+    {
+    }
+
+    public function destroy(string $id): Model
+    {
+        return DB::transaction(function () use ($id) {
+            $query = $this->getModelQuery()
+                ->where('id', $id);
+
+            $this->destroyBeforeFindHook($query);
+
+            $model = $query->firstOrFail();
+
+            $this->destroyBeforeDeleteHook($model);
+
+            $model->delete();
+
+            $this->destroyAfterDeleteHook($model);
+
+            return $model;
+        });
     }
 }

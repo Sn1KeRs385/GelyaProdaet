@@ -16,6 +16,12 @@ export default {
     country: {
       label: 'Страна',
     },
+    send_to_telegram: {
+      label: 'Отправить в телеграм',
+    },
+    is_send_to_telegram: {
+      label: 'Отправлено в телеграм',
+    },
   },
   view: {
     title: {

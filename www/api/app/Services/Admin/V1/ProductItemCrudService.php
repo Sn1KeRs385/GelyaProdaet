@@ -7,6 +7,7 @@ use App\Exceptions\CanNotMarkSoldProductItemException;
 use App\Exceptions\CanNotRollbackForSaleStatusProductItemException;
 use App\Models\ProductItem;
 use App\Services\Admin\BaseCrudService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductItemCrudService extends BaseCrudService
@@ -14,6 +15,18 @@ class ProductItemCrudService extends BaseCrudService
     protected function getModelQuery(): Builder
     {
         return ProductItem::query();
+    }
+
+    protected function indexBeforeQueryExecHook(Builder &$query): void
+    {
+        $query->with(['color', 'size']);
+    }
+
+    protected function indexAfterPaginateHook(LengthAwarePaginator &$paginate): void
+    {
+        $paginate->each(function (ProductItem $item) {
+            $item->setAppends(['price_normalize', 'price_buy_normalize']);
+        });
     }
 
     protected function showBeforeQueryExecHook(Builder &$query): void

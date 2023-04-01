@@ -1,30 +1,31 @@
 import { BaseInput } from 'src/classes/inputs/base-input'
 import TableComponent from 'src/components/inputs/Table.vue'
-import QTableColParams from 'src/interfaces/quasar/q-table-params'
-import FormField from 'src/interfaces/admin/form-field'
+import BaseModel from 'src/models/base-model'
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 
 interface Constructor {
   label: string
-  columns: QTableColParams[]
-  formFields: FormField[]
+  model: BaseModel<BaseModelInterface, BaseModelInterface, BaseModelInterface>
+  columnsDelete?: string[]
 }
 
 class Table extends BaseInput {
   public readonly label: string
-  public readonly columns: QTableColParams[]
-  public readonly formFields: FormField[]
-  constructor({ label, columns, formFields }: Constructor) {
+  public readonly model: BaseModel<BaseModelInterface, BaseModelInterface, BaseModelInterface>
+
+  public readonly columnsDelete?: string[]
+  constructor({ label, model, columnsDelete }: Constructor) {
     super(TableComponent)
 
     this.label = label
-    this.columns = columns
-    this.formFields = formFields
+    this.model = model
+    this.columnsDelete = columnsDelete
   }
   public getParams(): unknown {
     return {
       label: this.label,
-      columns: this.columns,
-      formFields: this.formFields,
+      model: this.model,
+      columnsDelete: this.columnsDelete,
     }
   }
 }

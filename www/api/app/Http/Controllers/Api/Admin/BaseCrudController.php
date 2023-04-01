@@ -26,7 +26,9 @@ abstract class BaseCrudController extends BaseAdminController
             BaseIndexResources::make(
                 $this->crudService->index(
                     $request->page ?? 1,
-                    $request->per_page ?? 25
+                    $request->per_page ?? 25,
+                    $request->order_by,
+                    filter_var($request->order_desc, FILTER_VALIDATE_BOOLEAN),
                 )
             ),
             Response::HTTP_OK
@@ -45,15 +47,15 @@ abstract class BaseCrudController extends BaseAdminController
         return response()->json($this->crudService->show($id), Response::HTTP_OK);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $data = $request->toArray();
 
         return response()->json(['id' => $this->crudService->update($id, $data)->id], Response::HTTP_OK);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['id' => $this->crudService->destroy($id)->id], Response::HTTP_OK);
     }
 }

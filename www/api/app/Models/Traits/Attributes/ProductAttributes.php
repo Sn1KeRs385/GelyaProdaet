@@ -7,6 +7,7 @@ namespace App\Models\Traits\Attributes;
  * @property int|null $priceBuy
  * @property float|null $priceNormalize
  * @property float|null $priceBuyNormalize
+ * @property bool $is_send_to_telegram
  */
 trait ProductAttributes
 {
@@ -36,5 +37,10 @@ trait ProductAttributes
         }
 
         return $this->priceBuy / 100;
+    }
+
+    public function getIsSendToTelegramAttribute(): bool
+    {
+        return !!$this->tgMessages->where('is_forward_error', '=', false)->first();
     }
 }

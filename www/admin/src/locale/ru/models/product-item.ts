@@ -16,6 +16,9 @@ export default {
     price: {
       label: 'Цена',
     },
+    count: {
+      label: 'Количество в комплекте',
+    },
     is_sold: {
       label: 'Продано',
     },

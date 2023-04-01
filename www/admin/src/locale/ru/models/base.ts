@@ -7,6 +7,12 @@ export default {
   updateModel: 'Редактирование',
   viewModel: 'Просмотр',
   addModel: 'Добавление',
+  table: {
+    actions: {
+      label: 'Действия',
+    },
+    confirmationDelete: 'Вы уверены что хотите удалить объект?',
+  },
   form: {
     submit: 'Создать',
     save: 'Сохранить',

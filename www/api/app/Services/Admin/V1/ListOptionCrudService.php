@@ -15,6 +15,14 @@ class ListOptionCrudService extends BaseCrudService
         return ListOption::query();
     }
 
+    protected function indexBeforeQueryExecHook(Builder &$query): void
+    {
+        $query->orderBy('group_slug')
+            ->orderBy('weight', 'desc')
+            ->orderBy('title')
+            ->orderBy('id', 'desc');
+    }
+
     protected function indexAfterPaginateHook(LengthAwarePaginator|Collection &$paginate): void
     {
         $paginate->each(function (ListOption $listOption) {

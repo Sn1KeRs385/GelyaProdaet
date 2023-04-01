@@ -1,4 +1,4 @@
-import BaseModel, { CreateItemInterface } from 'src/models/base-model'
+import BaseModel, { CreateItemInterface, DefaultSortInterface } from 'src/models/base-model'
 import QTableColParams from 'src/interfaces/quasar/q-table-params'
 import FormField from 'src/interfaces/admin/form-field'
 import { t } from 'src/boot/i18n'
@@ -16,9 +16,23 @@ class ListOption extends BaseModel<AllItemInterface, IndexItemInterface, GetById
   protected readonly title = t('models.listOptions.title')
   protected readonly url = 'list-options'
 
+  getTableDefaultSort(): DefaultSortInterface {
+    const params = super.getTableDefaultSort()
+
+    params.sortBy = undefined
+    params.desc = undefined
+
+    return params
+  }
   getTableSettings(): QTableColParams[] {
     return [
-      { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
+      {
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: false,
+        align: 'left',
+      },
       {
         name: 'group_slug',
         label: t('models.listOptions.table.group_slug.label'),

@@ -5,11 +5,17 @@ import { t } from 'src/boot/i18n'
 import ListOptionInterface from 'src/interfaces/models/list-option-interface'
 import ProductItemInterface from 'src/interfaces/models/product-item-interface'
 import { api } from 'src/boot/axios'
+import QuasarSelect from 'src/classes/inputs/quasar/quasar-select'
+import { useListOptionsStore } from 'src/stores/list-options-store'
+import OptionGroupSlug from 'src/enums/option-group-slug'
+import QuasarToggle from 'src/classes/inputs/quasar/quasar-toggle'
+import BaseModelInterface from 'src/interfaces/models/base-model-interface'
+import QuasarInput from 'src/classes/inputs/quasar/quasar-input'
 
-interface AllItemInterface {
+interface AllItemInterface extends BaseModelInterface {
   id: number
 }
-interface IndexItemInterface {
+interface IndexItemInterface extends BaseModelInterface {
   id: number
 }
 interface GetByIdItemInterface extends ProductItemInterface {
@@ -27,11 +33,111 @@ class ProductItemModel extends BaseModel<
   protected readonly url = 'product-items'
 
   getTableSettings(): QTableColParams[] {
-    return [{ name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' }]
+    return [
+      {
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: true,
+        align: 'left',
+      },
+      {
+        name: 'product',
+        label: t('models.productItem.table.product.label'),
+        field: 'product',
+        format: (val) => val?.title || '-',
+      },
+      {
+        name: 'size',
+        label: t('models.productItem.table.size.label'),
+        field: 'size',
+        format: (val) => val?.title || '-',
+      },
+      {
+        name: 'color',
+        label: t('models.productItem.table.color.label'),
+        field: 'color',
+        format: (val) => val?.title || '-',
+      },
+      {
+        name: 'price_buy_normalize',
+        label: t('models.productItem.table.price_buy.label'),
+        field: 'price_buy_normalize',
+      },
+      {
+        name: 'price_normalize',
+        label: t('models.productItem.table.price.label'),
+        field: 'price_normalize',
+      },
+      {
+        name: 'count',
+        label: t('models.productItem.table.count.label'),
+        field: 'count',
+      },
+      {
+        name: 'is_sold',
+        label: t('models.productItem.table.is_sold.label'),
+        field: 'is_sold',
+        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+      },
+      {
+        name: 'is_for_sale',
+        label: t('models.productItem.table.is_for_sale.label'),
+        field: 'is_for_sale',
+        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+      },
+    ]
   }
 
   getFormFields(): FormField[] {
-    return []
+    return [
+      {
+        key: 'size_id',
+        input: new QuasarSelect({
+          label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE),
+          optionsCallback: () =>
+            useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE),
+        }),
+      },
+      {
+        key: 'color_id',
+        input: new QuasarSelect({
+          label: useListOptionsStore().getHumanSlug(OptionGroupSlug.COLOR),
+          optionsCallback: () =>
+            useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COLOR),
+        }),
+      },
+      {
+        key: 'count',
+        input: new QuasarInput({
+          label: t('models.productItem.form.count.label'),
+          type: 'number',
+        }),
+        defaultValue: 1,
+      },
+      {
+        key: 'price_buy_normalize',
+        input: new QuasarInput({
+          label: t('models.product.form.price_buy.label'),
+          type: 'number',
+        }),
+      },
+      {
+        key: 'price_normalize',
+        input: new QuasarInput({
+          label: t('models.product.form.price.label'),
+          type: 'number',
+        }),
+      },
+      {
+        key: 'is_for_sale',
+        input: new QuasarToggle({
+          label: t('models.productItem.form.is_for_sale.label'),
+        }),
+        defaultValue: true,
+        hideInUpdate: true,
+      },
+    ]
   }
 
   markSold(id: number): Promise<ProductItemInterface> {

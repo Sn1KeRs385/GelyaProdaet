@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCrudService extends BaseCrudService
 {
-    protected array $relationMapper = [
+    protected array $hasManyRelationMapper = [
         [
             'name' => 'items',
             'crudService' => ProductItemCrudService::class,
@@ -39,21 +39,23 @@ class ProductCrudService extends BaseCrudService
         $model->files->each(function (File $file) {
             $file->setAppends(['url']);
         });
+
+        $model->items->each(function (ProductItem $item) {
+            $item->setAppends(['price_normalize', 'price_buy_normalize']);
+        });
     }
 
     protected function indexBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', 'country', 'type', 'gender']);
+        $query->with(['brand', 'country', 'type', 'gender', 'tgMessages']);
     }
 
-//    protected function indexAfterPaginateHook(LengthAwarePaginator|Collection &$paginate): void
-//    {
-//        $paginate->each(function (Product $product) {
-//            $product->items->each(function (ProductItem $item) {
-//                $item->setAppends(['price_normalize', 'price_buy_normalize']);
-//            });
-//        });
-//    }
+    protected function indexAfterPaginateHook(LengthAwarePaginator|Collection &$paginate): void
+    {
+        $paginate->each(function (Product $product) {
+            $product->setAppends(['is_send_to_telegram']);
+        });
+    }
 
     protected function storeDataHook(array &$data): void
     {

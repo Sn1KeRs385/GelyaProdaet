@@ -6,6 +6,20 @@ import QTableColParams from 'src/interfaces/quasar/q-table-params'
 interface CreateItemInterface {
   id: number
 }
+interface UpdateItemInterface {
+  id: number
+}
+interface DeleteItemInterface {
+  id: number
+}
+interface DefaultSortInterface {
+  sortBy: string | undefined
+  desc: boolean | undefined
+}
+interface ActionsInterface {
+  editButton: boolean
+  deleteButton: boolean
+}
 
 abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterface> {
   protected readonly apiVersion = 1
@@ -24,9 +38,25 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
   getUrl(): string {
     return this.url
   }
+
   getTitle(): string {
     return this.title
   }
+
+  getTableDefaultSort(): DefaultSortInterface {
+    return {
+      sortBy: 'id',
+      desc: true,
+    }
+  }
+
+  getTableActions(): ActionsInterface {
+    return {
+      editButton: true,
+      deleteButton: true,
+    }
+  }
+
   all(): Promise<AllItemInterface[]> {
     return api
       .request({
@@ -35,7 +65,13 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
       })
       .then((response) => response.data)
   }
-  index(page = 1, perPage = 25): Promise<ApiPaginationResponseInterface<IndexItemInterface>> {
+
+  index(
+    page = 1,
+    perPage = 25,
+    orderBy?: string,
+    orderDesc?: boolean
+  ): Promise<ApiPaginationResponseInterface<IndexItemInterface>> {
     return api
       .request({
         method: 'get',
@@ -43,10 +79,13 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
         params: {
           page: page,
           per_page: perPage,
+          order_by: orderBy,
+          order_desc: orderDesc,
         },
       })
       .then((response) => response.data)
   }
+
   create(data: unknown): Promise<CreateItemInterface> {
     return api
       .request({
@@ -57,7 +96,7 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
       .then((response) => response.data)
   }
 
-  update(id: number, data: unknown): Promise<null> {
+  update(id: number, data: unknown): Promise<UpdateItemInterface> {
     return api
       .request({
         method: 'put',
@@ -66,6 +105,16 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
       })
       .then((response) => response.data)
   }
+
+  delete(id: number): Promise<DeleteItemInterface> {
+    return api
+      .request({
+        method: 'delete',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}`,
+      })
+      .then((response) => response.data)
+  }
+
   getById(id: number): Promise<GetByIdItemInterface> {
     return api
       .request({ method: 'get', url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}` })
@@ -75,4 +124,4 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
 
 export default BaseModel
 
-export type { CreateItemInterface }
+export type { CreateItemInterface, DefaultSortInterface }

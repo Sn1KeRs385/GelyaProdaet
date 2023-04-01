@@ -15,6 +15,7 @@ import ProductItemInterface from 'src/interfaces/models/product-item-interface'
 import ApiFileInterface from 'src/interfaces/Api/file-interface'
 import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
+import ProductItem from 'src/models/product-item'
 
 interface AllItemInterface {
   id: number
@@ -43,7 +44,13 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
 
   getTableSettings(): QTableColParams[] {
     return [
-      { name: 'id', label: 'Id', field: 'id', sortable: true, align: 'left' },
+      {
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: true,
+        align: 'left',
+      },
       {
         name: 'title',
         label: t('models.product.table.title.label'),
@@ -76,6 +83,20 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         label: t('models.product.table.country.label'),
         field: 'country',
         format: (val) => val?.title || '-',
+        align: 'left',
+      },
+      {
+        name: 'send_to_telegram',
+        label: t('models.product.table.send_to_telegram.label'),
+        field: 'send_to_telegram',
+        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+        align: 'left',
+      },
+      {
+        name: 'is_send_to_telegram',
+        label: t('models.product.table.is_send_to_telegram.label'),
+        field: 'is_send_to_telegram',
+        format: (val) => (val ? t('texts.yes') : t('texts.no')),
         align: 'left',
       },
     ]
@@ -139,6 +160,7 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: t('models.product.form.price_buy.label'),
           type: 'number',
         }),
+        hideInUpdate: true,
       },
       {
         key: 'price_normalize',
@@ -146,6 +168,7 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: t('models.product.form.price.label'),
           type: 'number',
         }),
+        hideInUpdate: true,
       },
       {
         key: 'send_to_telegram',
@@ -158,90 +181,8 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         key: 'items',
         input: new Table({
           label: t('models.product.form.items.label'),
-          columns: [
-            {
-              name: 'id',
-              label: 'Id',
-              field: 'id',
-              align: 'left',
-            },
-            {
-              name: 'size_id',
-              label: t('models.productItem.table.size.label'),
-              field: 'size_id',
-              format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
-              align: 'left',
-            },
-            {
-              name: 'color_id',
-              label: t('models.productItem.table.color.label'),
-              field: 'color_id',
-              format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
-              align: 'left',
-            },
-            {
-              name: 'is_sold',
-              label: t('models.productItem.table.is_sold.label'),
-              field: 'is_sold',
-              format: (val) => (val ? t('texts.yes') : t('texts.no')),
-              align: 'left',
-            },
-            {
-              name: 'is_for_sale',
-              label: t('models.productItem.table.is_for_sale.label'),
-              field: 'is_for_sale',
-              format: (val) => (val ? t('texts.yes') : t('texts.no')),
-              align: 'left',
-            },
-          ],
-          formFields: [
-            {
-              key: 'size_id',
-              input: new QuasarSelect({
-                label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE),
-                optionsCallback: () =>
-                  useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE),
-              }),
-            },
-            {
-              key: 'color_id',
-              input: new QuasarSelect({
-                label: useListOptionsStore().getHumanSlug(OptionGroupSlug.COLOR),
-                optionsCallback: () =>
-                  useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COLOR),
-              }),
-            },
-            {
-              key: 'count',
-              input: new QuasarInput({
-                label: t('models.productItem.form.count.label'),
-                type: 'number',
-              }),
-              defaultValue: 1,
-            },
-            {
-              key: 'price_buy_normalize',
-              input: new QuasarInput({
-                label: t('models.product.form.price_buy.label'),
-                type: 'number',
-              }),
-            },
-            {
-              key: 'price_normalize',
-              input: new QuasarInput({
-                label: t('models.product.form.price.label'),
-                type: 'number',
-              }),
-            },
-            {
-              key: 'is_for_sale',
-              input: new QuasarToggle({
-                label: t('models.productItem.form.is_for_sale.label'),
-              }),
-              defaultValue: true,
-              hideInUpdate: true,
-            },
-          ],
+          model: ProductItem,
+          columnsDelete: ['product'],
         }),
       },
     ]
