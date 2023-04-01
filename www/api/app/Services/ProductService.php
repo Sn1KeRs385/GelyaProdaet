@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\TgMessage;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
@@ -58,10 +59,18 @@ class ProductService
             $inputMediaPhoto[] = $photo;
         }
 
+        $disableNotification = true;
+        $now = Carbon::now();
+        $start = Carbon::createFromTimeString('7:00');
+        $end = Carbon::createFromTimeString('22:00');
+        if ($now->between($start, $end)) {
+            $disableNotification = false;
+        }
+
         /** @var Message[] $response */
         $response = $bot->sendMediaGroup($inputMediaPhoto, [
             'chat_id' => $chatId,
-            'disable_notification' => true,
+            'disable_notification' => $disableNotification,
         ]);
         $product->tgMessages()->create([
             'chat_id' => $chatId,
