@@ -16,11 +16,14 @@ export default {
     country: {
       label: 'Страна',
     },
-    send_to_telegram: {
-      label: 'Отправить в телеграм',
+    telegram_info: {
+      label: 'Телеграм',
     },
-    is_send_to_telegram: {
-      label: 'Отправлено в телеграм',
+    sizes: {
+      label: 'Размеры',
+    },
+    is_sold: {
+      label: 'Продано',
     },
   },
   view: {

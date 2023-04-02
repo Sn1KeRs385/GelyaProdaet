@@ -86,17 +86,31 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         align: 'left',
       },
       {
-        name: 'send_to_telegram',
-        label: t('models.product.table.send_to_telegram.label'),
-        field: 'send_to_telegram',
-        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+        name: 'telegram_info',
+        label: t('models.product.table.telegram_info.label'),
+        field: 'telegram_info',
+        format: (val, row) =>
+          (row.send_to_telegram ? t('texts.yes') : t('texts.no')) +
+          '/' +
+          (row.is_send_to_telegram ? t('texts.yes') : t('texts.no')),
         align: 'left',
       },
       {
-        name: 'is_send_to_telegram',
-        label: t('models.product.table.is_send_to_telegram.label'),
-        field: 'is_send_to_telegram',
-        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+        name: 'sizes',
+        label: t('models.product.table.sizes.label'),
+        field: 'sizes',
+        format: (val, row) =>
+          row.items.map((item: ProductItemWithSizeInterface) => item.size.title).join(', '),
+        align: 'left',
+      },
+      {
+        name: 'is_sold',
+        label: t('models.product.table.is_sold.label'),
+        field: 'is_sold',
+        format: (val, row) =>
+          row.items.filter((item: ProductItemInterface) => item.is_sold).length +
+          '/' +
+          row.items.length,
         align: 'left',
       },
     ]

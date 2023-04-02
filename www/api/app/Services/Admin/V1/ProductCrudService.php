@@ -47,7 +47,7 @@ class ProductCrudService extends BaseCrudService
 
     protected function indexBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['brand', 'country', 'type', 'gender', 'tgMessages']);
+        $query->with(['brand', 'country', 'type', 'gender', 'tgMessages', 'items.size']);
     }
 
     protected function indexAfterPaginateHook(LengthAwarePaginator|Collection &$paginate): void
