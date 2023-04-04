@@ -44,6 +44,21 @@ export default {
         sold: 'Продано',
         toNotSale: 'Снять с продажи',
       },
+      count: {
+        label: 'Кол-во',
+      },
+      price_buy: {
+        label: 'Покупка',
+        amount: '{amount} ₽',
+      },
+      price: {
+        label: 'Стоимость',
+        amount: '{amount} ₽',
+      },
+      price_sell: {
+        label: 'Продано',
+        amount: '{amount} ₽',
+      },
     },
     images: {
       imageNotFound: 'Изображений не найдено',

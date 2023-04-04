@@ -2,22 +2,61 @@
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import ProductItemInterface from 'src/interfaces/models/product-item-interface'
-import ProductItemModel from 'src/models/product-item'
+import ProductItemModel, {
+  AfterStatusManipulateInterface as ProductItemAfterStatusManipulateInterface,
+} from 'src/models/product-item'
 import { useListOptionsStore } from 'src/stores/list-options-store'
 import OptionGroupSlug from '../../../enums/option-group-slug'
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
 import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
+import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
+
+type ProductItemInterfaceUnited = ProductItemInterface &
+  ProductItemWithSizeInterface &
+  ProductItemWithColorInterface &
+  ProductItemWithNormalizePricesInterface
 
 interface Props {
-  items: (ProductItemInterface & ProductItemWithSizeInterface & ProductItemWithColorInterface)[]
+  items: ProductItemInterfaceUnited[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const { t } = useI18n()
 const listOptionsStore = useListOptionsStore()
 
-const getItemCardClasses = computed(() => (item: ProductItemInterface) => {
+const itemsSorted = computed(() =>
+  [...props.items].sort((itemA, itemB) => {
+    const forSaleA = itemA.is_for_sale ? 1 : 0
+    const forSaleB = itemB.is_for_sale ? 1 : 0
+    if (forSaleA !== forSaleB) {
+      return forSaleB - forSaleA
+    }
+
+    const weightA = itemA.size.weight
+    const weightB = itemB.size.weight
+
+    if (weightA !== weightB) {
+      return weightA - weightB
+    }
+
+    const titleA = itemA.size.title.toLowerCase()
+    const titleB = itemB.size.title.toLowerCase()
+
+    if (titleA < titleB) {
+      return -1
+    } else if (titleA > titleB) {
+      return 1
+    }
+
+    const idA = itemA.id
+    const idB = itemB.id
+
+    return idA - idB
+  })
+)
+
+const getItemCardClasses = computed(() => (item: ProductItemInterfaceUnited) => {
   if (!item.is_for_sale) {
     return ['bg-black', 'text-white']
   }
@@ -29,7 +68,7 @@ const getItemCardClasses = computed(() => (item: ProductItemInterface) => {
   return ['bg-primary', 'text-white']
 })
 
-const getItemCardStatus = computed(() => (item: ProductItemInterface) => {
+const getItemCardStatus = computed(() => (item: ProductItemInterfaceUnited) => {
   if (!item.is_for_sale) {
     return t('models.product.view.item.statuses.isNotForSale')
   }
@@ -41,20 +80,79 @@ const getItemCardStatus = computed(() => (item: ProductItemInterface) => {
   return t('models.product.view.item.statuses.isForSale')
 })
 
-const syncItemFromResponse = (item: ProductItemInterface, response: ProductItemInterface) => {
-  item.is_sold = response.is_sold
-  item.is_for_sale = response.is_for_sale
+const getSubtitleTextForItem = computed(() => (item: ProductItemInterfaceUnited) => {
+  const values: { label: string; value: string }[] = []
+
+  if (item.color) {
+    values.push({
+      label: listOptionsStore.getHumanSlug(OptionGroupSlug.COLOR),
+      value: item.color.title,
+    })
+  }
+
+  if (item.count > 1) {
+    values.push({
+      label: t('models.product.view.item.count.label'),
+      value: item.count.toString(),
+    })
+  }
+
+  return values
+})
+
+const getPriceInfoForItem = computed(() => (item: ProductItemInterfaceUnited) => {
+  const values: { label: string; value: string; isPriceSell?: boolean }[] = []
+
+  values.push({
+    label: t('models.product.view.item.price_buy.label'),
+    value: t('models.product.view.item.price_buy.amount', { amount: item.price_buy_normalize }),
+  })
+
+  if (item.price_sell_normalize) {
+    values.push({
+      label: t('models.product.view.item.price_sell.label'),
+      value: t('models.product.view.item.price_sell.amount', { amount: item.price_sell_normalize }),
+      isPriceSell: true,
+    })
+  }
+
+  values.push({
+    label: t('models.product.view.item.price.label'),
+    value: t('models.product.view.item.price.amount', { amount: item.price_normalize }),
+  })
+
+  return values
+})
+
+const onPriceSellSave = (value: number, initialValue: number, item: ProductItemInterfaceUnited) => {
+  changePriceSell(item, value)
 }
 
-const markSold = (item: ProductItemInterface) => {
+const syncItemFromResponse = (
+  item: ProductItemInterfaceUnited,
+  response: ProductItemAfterStatusManipulateInterface
+) => {
+  item.is_sold = response.is_sold
+  item.is_for_sale = response.is_for_sale
+  item.price_sell = response.price_sell
+  item.price_sell_normalize = response.price_sell_normalize
+}
+
+const markSold = (item: ProductItemInterfaceUnited) => {
   ProductItemModel.markSold(item.id).then((response) => syncItemFromResponse(item, response))
 }
 
-const markNotForSale = (item: ProductItemInterface) => {
+const changePriceSell = (item: ProductItemInterfaceUnited, price: number) => {
+  ProductItemModel.changePriceSell(item.id, price).then((response) =>
+    syncItemFromResponse(item, response)
+  )
+}
+
+const markNotForSale = (item: ProductItemInterfaceUnited) => {
   ProductItemModel.markNotForSale(item.id).then((response) => syncItemFromResponse(item, response))
 }
 
-const rollbackForSaleStatus = (item: ProductItemInterface) => {
+const rollbackForSaleStatus = (item: ProductItemInterfaceUnited) => {
   ProductItemModel.rollbackForSaleStatus(item.id).then((response) =>
     syncItemFromResponse(item, response)
   )
@@ -62,7 +160,7 @@ const rollbackForSaleStatus = (item: ProductItemInterface) => {
 </script>
 
 <template>
-  <q-card v-for="item in items" :key="`item_${item.id}`">
+  <q-card v-for="item in itemsSorted" :key="`item_${item.id}`">
     <q-card-section :class="getItemCardClasses(item)">
       <div class="text-h6">
         <span class="tw-font-bold">
@@ -71,11 +169,59 @@ const rollbackForSaleStatus = (item: ProductItemInterface) => {
         {{ item.size.title }}
       </div>
       <div class="text-subtitle2 tw-font-bold">{{ getItemCardStatus(item) }}</div>
-      <div v-if="item.color" class="text-subtitle2">
-        <span>
-          {{ listOptionsStore.getHumanSlug(OptionGroupSlug.COLOR) }}
-        </span>
-        {{ item.color.title }}
+      <div v-if="getSubtitleTextForItem(item).length > 0" class="text-subtitle2">
+        <template
+          v-for="(subtitle, index) in getSubtitleTextForItem(item)"
+          :key="`subtitle_${subtitle.label}`"
+        >
+          <span v-if="index > 0">;</span>
+          <span class="tw-font-medium">{{ subtitle.label }}:</span>
+          {{ subtitle.value }}
+        </template>
+      </div>
+
+      <div class="row tw-justify-between tw-w-full tw-mt-6px">
+        <div
+          v-for="(priceInfo, index) in getPriceInfoForItem(item)"
+          :key="`priceInfo_${index}`"
+          class="col"
+          :class="{
+            'tw-text-12px': !priceInfo.isPriceSell,
+            'tw-text-13px': priceInfo.isPriceSell,
+            'tw-text-gray-400': !priceInfo.isPriceSell,
+            'tw-text-gray-600': priceInfo.isPriceSell,
+            'tw-text-center': index > 0 && index < getPriceInfoForItem(item).length - 1,
+            'tw-text-right': index === getPriceInfoForItem(item).length - 1,
+          }"
+        >
+          <div
+            :class="{
+              'tw-font-bold': !priceInfo.isPriceSell,
+              'tw-font-extrabold': priceInfo.isPriceSell,
+            }"
+          >
+            {{ priceInfo.label }}
+          </div>
+          <div
+            :class="{
+              'tw-font-medium': !priceInfo.isPriceSell,
+              'tw-font-bold': priceInfo.isPriceSell,
+            }"
+          >
+            {{ priceInfo.value }}
+            <q-popup-edit
+              v-if="priceInfo.isPriceSell"
+              v-slot="scope"
+              v-model.number="item.price_sell_normalize"
+              buttons
+              :label-set="t('models.base.form.save')"
+              :label-cancel="t('models.base.form.cancel')"
+              @save="(value, initialValue) => onPriceSellSave(value, initialValue, item)"
+            >
+              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set" />
+            </q-popup-edit>
+          </div>
+        </div>
       </div>
     </q-card-section>
 

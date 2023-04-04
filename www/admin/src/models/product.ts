@@ -16,6 +16,7 @@ import ApiFileInterface from 'src/interfaces/Api/file-interface'
 import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
 import ProductItem from 'src/models/product-item'
+import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
 
 interface AllItemInterface {
   id: number
@@ -31,10 +32,8 @@ interface GetByIdItemInterface extends ProductInterface {
   country?: ListOptionInterface
   items: (ProductItemInterface &
     ProductItemWithColorInterface &
-    ProductItemWithSizeInterface & {
-      price_buy_normalize: number
-      price_normalize: number
-    })[]
+    ProductItemWithSizeInterface &
+    ProductItemWithNormalizePricesInterface)[]
 }
 
 class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterface> {

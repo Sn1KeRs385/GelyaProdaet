@@ -2,16 +2,18 @@
 
 namespace App\Services\Admin\V1;
 
-use App\Exceptions\CanNotMarkNotForSaleProductItemException;
-use App\Exceptions\CanNotMarkSoldProductItemException;
-use App\Exceptions\CanNotRollbackForSaleStatusProductItemException;
 use App\Models\ProductItem;
 use App\Services\Admin\BaseCrudService;
+use App\Services\ProductItemService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductItemCrudService extends BaseCrudService
 {
+    public function __construct(protected ProductItemService $productItemService)
+    {
+    }
+
     protected function getModelQuery(): Builder
     {
         return ProductItem::query();
@@ -25,7 +27,7 @@ class ProductItemCrudService extends BaseCrudService
     protected function indexAfterPaginateHook(LengthAwarePaginator &$paginate): void
     {
         $paginate->each(function (ProductItem $item) {
-            $item->setAppends(['price_normalize', 'price_buy_normalize']);
+            $item->setAppends(['price_buy_normalize', 'price_normalize', 'price_sell_normalize']);
         });
     }
 
@@ -34,46 +36,27 @@ class ProductItemCrudService extends BaseCrudService
         $query->with(['size', 'color', 'product']);
     }
 
-    public function markSold(string $id): ProductItem
+    public function markSold(string $id, int $priceSell = null): ProductItem
     {
         $productItem = ProductItem::findOrFail($id);
+        return $this->productItemService->markSold($productItem, $priceSell);
+    }
 
-        if (!$productItem->is_for_sale || $productItem->is_sold) {
-            throw new CanNotMarkSoldProductItemException();
-        }
-
-        $productItem->is_sold = true;
-        $productItem->save();
-        $productItem->product->touch();
-        return $productItem;
+    public function changePriceSell(string $id, int $priceSell): ProductItem
+    {
+        $productItem = ProductItem::findOrFail($id);
+        return $this->productItemService->changePriceSell($productItem, $priceSell);
     }
 
     public function markNotForSale(string $id): ProductItem
     {
         $productItem = ProductItem::findOrFail($id);
-
-        if (!$productItem->is_for_sale || $productItem->is_sold) {
-            throw new CanNotMarkNotForSaleProductItemException();
-        }
-
-        $productItem->is_for_sale = false;
-        $productItem->save();
-        $productItem->product->touch();
-        return $productItem;
+        return $this->productItemService->markNotForSale($productItem);
     }
 
     public function rollbackForSaleStatus(string $id): ProductItem
     {
         $productItem = ProductItem::findOrFail($id);
-
-        if ($productItem->is_for_sale && !$productItem->is_sold) {
-            throw new CanNotRollbackForSaleStatusProductItemException();
-        }
-
-        $productItem->is_sold = false;
-        $productItem->is_for_sale = true;
-        $productItem->save();
-        $productItem->product->touch();
-        return $productItem;
+        return $this->productItemService->rollbackForSaleStatus($productItem);
     }
 }

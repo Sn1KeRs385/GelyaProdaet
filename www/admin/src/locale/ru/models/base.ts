@@ -17,6 +17,7 @@ export default {
     submit: 'Создать',
     save: 'Сохранить',
     reset: 'Сбросить',
+    cancel: 'Отмена',
     fileUploader: {
       showReadyFiles: 'Показать загруженные файлы',
       hideReadyFiles: 'Скрыть загруженные файлы',

@@ -36,6 +36,59 @@ const tableRows = computed<ModelValueInterface[]>(() => [
   ...deletedRows.value,
 ])
 
+const tableDefaultSort = computed(() => props.model.getTableDefaultSort())
+
+const sortMethod = (rows: ModelValueInterface[], sortBy: string, descending: boolean) => {
+  const colSetting = columns.value.find(({ name }) => name === sortBy)
+
+  if (!colSetting) {
+    return rows
+  }
+
+  const getValue = (row: ModelValueInterface) => {
+    let value: unknown
+
+    if (typeof colSetting.field === 'string') {
+      value = row[colSetting.field]
+    } else {
+      value = colSetting.field(row)
+    }
+
+    if (colSetting.format) {
+      return colSetting.format(value, row)
+    }
+
+    return value
+  }
+
+  return rows.sort((rowA, rowB) => {
+    let valueA = descending ? getValue(rowB) : getValue(rowA)
+    let valueB = descending ? getValue(rowA) : getValue(rowB)
+
+    if (typeof valueA === 'string' && typeof valueB === 'string') {
+      const valA = valueA.toLowerCase()
+      const valB = valueB.toLowerCase()
+      if (valA < valB) {
+        return -1
+      }
+      if (valA > valB) {
+        return 1
+      }
+    } else if (typeof valueA === 'number' && typeof valueB === 'number') {
+      return valueA - valueB
+    }
+
+    return 0
+  })
+}
+
+const pagination = ref({
+  sortBy: tableDefaultSort.value.sortBy,
+  descending: tableDefaultSort.value.desc,
+  page: 1,
+  rowsPerPage: 0,
+})
+
 const onFormSubmit = (formData: FormData) => {
   showForm.value = false
 
@@ -66,7 +119,9 @@ const onFormSubmit = (formData: FormData) => {
 const actionSettings = computed(() => props.model.getTableActions())
 
 const columns = computed(() => {
-  let settings = props.model.getTableSettings()
+  let settings: QTableColParams[] = props.model
+    .getTableSettings()
+    .map((setting) => ({ ...setting, sortable: true }))
 
   const columnsDelete = props.columnsDelete
   if (columnsDelete && columnsDelete.length > 0) {
@@ -143,12 +198,15 @@ const restoreActionClick = (row: ModelValueInterface) => {
 <template>
   <div>
     <q-table
+      v-model:pagination="pagination"
       color="primary"
       :title="label"
       :columns="columns"
-      :row-key="columns[0].field"
+      :row-key="columns[0].field || ''"
       :rows="tableRows"
-      hide-pagination
+      :rows-per-page-options="[0]"
+      binary-state-sort
+      :sort-method="sortMethod"
     >
       <template #top-right>
         <q-btn color="primary" no-caps unelevated @click="onAddClick">

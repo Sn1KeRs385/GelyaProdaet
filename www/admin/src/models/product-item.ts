@@ -11,6 +11,7 @@ import OptionGroupSlug from 'src/enums/option-group-slug'
 import QuasarToggle from 'src/classes/inputs/quasar/quasar-toggle'
 import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 import QuasarInput from 'src/classes/inputs/quasar/quasar-input'
+import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
 
 interface AllItemInterface extends BaseModelInterface {
   id: number
@@ -22,6 +23,8 @@ interface GetByIdItemInterface extends ProductItemInterface {
   size: ListOptionInterface
   color?: ListOptionInterface
 }
+
+type AfterStatusManipulateInterface = ProductItemInterface & ProductItemWithNormalizePricesInterface
 
 class ProductItemModel extends BaseModel<
   AllItemInterface,
@@ -140,15 +143,32 @@ class ProductItemModel extends BaseModel<
     ]
   }
 
-  markSold(id: number): Promise<ProductItemInterface> {
+  markSold(
+    id: number,
+    priceSell: number | undefined = undefined
+  ): Promise<AfterStatusManipulateInterface> {
     return api
       .request({
         method: 'post',
         url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/mark-sold`,
+        params: {
+          price_sell: priceSell,
+        },
       })
       .then((response) => response.data)
   }
-  markNotForSale(id: number): Promise<ProductItemInterface> {
+  changePriceSell(id: number, priceSell: number): Promise<AfterStatusManipulateInterface> {
+    return api
+      .request({
+        method: 'post',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/change-price-sell`,
+        params: {
+          price_sell: priceSell,
+        },
+      })
+      .then((response) => response.data)
+  }
+  markNotForSale(id: number): Promise<AfterStatusManipulateInterface> {
     return api
       .request({
         method: 'post',
@@ -156,7 +176,7 @@ class ProductItemModel extends BaseModel<
       })
       .then((response) => response.data)
   }
-  rollbackForSaleStatus(id: number): Promise<ProductItemInterface> {
+  rollbackForSaleStatus(id: number): Promise<AfterStatusManipulateInterface> {
     return api
       .request({
         method: 'post',
@@ -169,4 +189,9 @@ class ProductItemModel extends BaseModel<
 const modelClass = new ProductItemModel()
 export default modelClass
 
-export type { AllItemInterface, IndexItemInterface, GetByIdItemInterface }
+export type {
+  AllItemInterface,
+  IndexItemInterface,
+  GetByIdItemInterface,
+  AfterStatusManipulateInterface,
+}

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Exceptions;
+namespace app\Exceptions\Models\ProductItem;
 
+use App\Exceptions\Models\AbstractModelException;
 use Illuminate\Http\Response;
 
-class CanNotMarkSoldProductItemException extends AbstractApiException
+class CanNotMarkSoldException extends AbstractModelException
 {
     protected int $errorCode = Response::HTTP_BAD_REQUEST;
     protected string $errorMessageCode = 'CAN_NOT_MARK_SOLD_PRODUCT_ITEM';

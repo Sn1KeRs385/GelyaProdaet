@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property ListOption|null $brand
  * @property ListOption|null $country
  * @property Collection<int, File> $files
- * @property Collection<int, ProductItem> $items
+ * @property Collection<int, ProductItem>|ProductItem[] $items
  * @property Collection<int, TgMessage>|TgMessage[] $tgMessages
  */
 trait ProductRelations

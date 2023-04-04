@@ -17,14 +17,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post("/product-items/{product_item}/mark-sold", [ProductItemController::class, 'markSold'])
-        ->name("product-items.mark-sold");
-    Route::post("/product-items/{product_item}/mark-not-for-sale", [ProductItemController::class, 'markNotForSale'])
-        ->name("product-items.mark-not-for-sale");
+    Route::post('/product-items/{product_item}/mark-sold', [ProductItemController::class, 'markSold'])
+        ->name('product-items.mark-sold');
+    Route::post('/product-items/{product_item}/change-price-sell', [ProductItemController::class, 'changePriceSell'])
+        ->name('product-items.change-price-sell');
+    Route::post('/product-items/{product_item}/mark-not-for-sale', [ProductItemController::class, 'markNotForSale'])
+        ->name('product-items.mark-not-for-sale');
     Route::post(
-        "/product-items/{product_item}/rollback-for-sale-status",
+        '/product-items/{product_item}/rollback-for-sale-status',
         [ProductItemController::class, 'rollbackForSaleStatus']
-    )->name("product-items.rollback-for-sale-status");
+    )->name('product-items.rollback-for-sale-status');
 
     Route::get('/product-items/all', [ProductItemController::class, 'all'])->name('product-items.all');
     Route::resource('product-items', ProductItemController::class);

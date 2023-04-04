@@ -34,14 +34,14 @@ class ProductCrudService extends BaseCrudService
     protected function showAfterQueryExecHook(Model &$model): void
     {
         /** @var Product $model */
-        $model->setAppends(['price_normalize', 'price_buy_normalize']);
+        $model->setAppends(['price_normalize', 'price_buy_normalize', 'price_sell_normalize']);
 
         $model->files->each(function (File $file) {
             $file->setAppends(['url']);
         });
 
         $model->items->each(function (ProductItem $item) {
-            $item->setAppends(['price_normalize', 'price_buy_normalize']);
+            $item->setAppends(['price_normalize', 'price_buy_normalize', 'price_sell_normalize']);
         });
     }
 
