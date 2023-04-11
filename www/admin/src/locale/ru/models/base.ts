@@ -25,5 +25,9 @@ export default {
       rollback: 'Восстановить',
       fileOnDeleting: 'На удалении',
     },
+    select: {
+      noResult: 'Не найдено',
+      createButton: 'Создать {name}',
+    },
   },
 }

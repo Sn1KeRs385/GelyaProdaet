@@ -18,6 +18,7 @@ import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-wit
 import ProductItem from 'src/models/product-item'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
 import ProductItemWithSizeYearInterface from 'src/interfaces/models/product-item-with-size-year-interface'
+import ListOption from 'src/models/list-option'
 
 interface AllItemInterface {
   id: number
@@ -168,6 +169,11 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.PRODUCT_TYPE),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.PRODUCT_TYPE),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.PRODUCT_TYPE,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {
@@ -176,6 +182,11 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.GENDER),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.GENDER),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.GENDER,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {
@@ -184,6 +195,11 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.BRAND),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.BRAND),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.BRAND,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {
@@ -192,6 +208,11 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.COUNTRY),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COUNTRY),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.COUNTRY,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {

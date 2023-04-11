@@ -12,6 +12,7 @@ import QuasarToggle from 'src/classes/inputs/quasar/quasar-toggle'
 import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 import QuasarInput from 'src/classes/inputs/quasar/quasar-input'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
+import ListOption from 'src/models/list-option'
 
 interface AllItemInterface extends BaseModelInterface {
   id: number
@@ -112,6 +113,11 @@ class ProductItemModel extends BaseModel<
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.SIZE,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {
@@ -120,6 +126,11 @@ class ProductItemModel extends BaseModel<
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE_YEAR),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE_YEAR),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.SIZE_YEAR,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {
@@ -128,6 +139,11 @@ class ProductItemModel extends BaseModel<
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.COLOR),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.COLOR),
+          createCallback: (value: string) =>
+            ListOption.create({
+              group_slug: OptionGroupSlug.COLOR,
+              title: value,
+            }).then((response) => response.id),
         }),
       },
       {

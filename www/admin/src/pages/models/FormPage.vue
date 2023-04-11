@@ -10,6 +10,7 @@ import { AxiosError } from 'axios'
 import ApiErrorInterface from 'src/interfaces/Api/error-interface'
 import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 import { Loading } from 'quasar'
+import { useListOptionsStore } from 'src/stores/list-options-store'
 
 interface Props {
   model: BaseModel<BaseModelInterface, BaseModelInterface, BaseModelInterface>
@@ -23,6 +24,9 @@ const modelData = ref<BaseModelInterface | undefined>()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const listOptionsStore = useListOptionsStore()
+
+const listOptions = ref(listOptionsStore.options)
 
 const fields = computed(() => props.model.getFormFields())
 
@@ -74,7 +78,7 @@ const submitForm = (formData: FormData) => {
 </script>
 
 <template>
-  <q-page v-if="!modelDataLoading" padding>
+  <q-page v-if="!modelDataLoading && listOptions.length > 0" padding>
     <div class="row justify-between tw-mb-6">
       <h4 class="tw-my-0 tw-font-bold">
         {{ model.getTitle() }} -
