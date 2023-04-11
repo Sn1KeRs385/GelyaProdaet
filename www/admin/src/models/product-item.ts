@@ -51,16 +51,22 @@ class ProductItemModel extends BaseModel<
         format: (val) => val?.title || '-',
       },
       {
-        name: 'size',
+        name: 'size_id',
         label: t('models.productItem.table.size.label'),
-        field: 'size',
-        format: (val) => val?.title || '-',
+        field: 'size_id',
+        format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
       },
       {
-        name: 'color',
+        name: 'size_year_id',
+        label: t('models.productItem.table.size_year.label'),
+        field: 'size_year_id',
+        format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
+      },
+      {
+        name: 'color_id',
         label: t('models.productItem.table.color.label'),
-        field: 'color',
-        format: (val) => val?.title || '-',
+        field: 'color_id',
+        format: (val) => useListOptionsStore().getOptionById(val)?.title || '-',
       },
       {
         name: 'price_buy_normalize',
@@ -89,6 +95,12 @@ class ProductItemModel extends BaseModel<
         field: 'is_for_sale',
         format: (val) => (val ? t('texts.yes') : t('texts.no')),
       },
+      {
+        name: 'is_reserved',
+        label: t('models.productItem.table.is_reserved.label'),
+        field: 'is_reserved',
+        format: (val) => (val ? t('texts.yes') : t('texts.no')),
+      },
     ]
   }
 
@@ -100,6 +112,14 @@ class ProductItemModel extends BaseModel<
           label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE),
           optionsCallback: () =>
             useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE),
+        }),
+      },
+      {
+        key: 'size_year_id',
+        input: new QuasarSelect({
+          label: useListOptionsStore().getHumanSlug(OptionGroupSlug.SIZE_YEAR),
+          optionsCallback: () =>
+            useListOptionsStore().getSelectMappedOptionBySlug(OptionGroupSlug.SIZE_YEAR),
         }),
       },
       {
@@ -181,6 +201,14 @@ class ProductItemModel extends BaseModel<
       .request({
         method: 'post',
         url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/rollback-for-sale-status`,
+      })
+      .then((response) => response.data)
+  }
+  switchReserve(id: number): Promise<AfterStatusManipulateInterface> {
+    return api
+      .request({
+        method: 'post',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/switch-reserve`,
       })
       .then((response) => response.data)
   }

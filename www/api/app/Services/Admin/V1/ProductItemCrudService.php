@@ -21,7 +21,7 @@ class ProductItemCrudService extends BaseCrudService
 
     protected function indexBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['color', 'size']);
+        $query->with(['color', 'size', 'sizeYear']);
     }
 
     protected function indexAfterPaginateHook(LengthAwarePaginator &$paginate): void
@@ -33,7 +33,7 @@ class ProductItemCrudService extends BaseCrudService
 
     protected function showBeforeQueryExecHook(Builder &$query): void
     {
-        $query->with(['size', 'color', 'product']);
+        $query->with(['size', 'sizeYear', 'color', 'product']);
     }
 
     public function markSold(string $id, int $priceSell = null): ProductItem
@@ -58,5 +58,11 @@ class ProductItemCrudService extends BaseCrudService
     {
         $productItem = ProductItem::findOrFail($id);
         return $this->productItemService->rollbackForSaleStatus($productItem);
+    }
+
+    public function switchReserve(string $id): ProductItem
+    {
+        $productItem = ProductItem::findOrFail($id);
+        return $this->productItemService->switchReserve($productItem);
     }
 }

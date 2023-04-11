@@ -27,6 +27,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         '/product-items/{product_item}/rollback-for-sale-status',
         [ProductItemController::class, 'rollbackForSaleStatus']
     )->name('product-items.rollback-for-sale-status');
+    Route::post('/product-items/{product_item}/switch-reserve', [ProductItemController::class, 'switchReserve'])
+        ->name('product-items.switch-reserve');
 
     Route::get('/product-items/all', [ProductItemController::class, 'all'])->name('product-items.all');
     Route::resource('product-items', ProductItemController::class);

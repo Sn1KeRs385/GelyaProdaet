@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property-read int $id
  * @property int $product_id
- * @property int $size_id
+ * @property int|null $size_id
+ * @property int|null $size_year_id
  * @property int|null $color_id
  * @property int $price_buy
  * @property int $price
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $count
  * @property bool $is_sold
  * @property bool $is_for_sale
+ * @property bool $is_reserved
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -36,6 +38,7 @@ class ProductItem extends Model
     protected $fillable = [
         'product_id',
         'size_id',
+        'size_year_id',
         'color_id',
         'price_buy',
         'price',
@@ -43,6 +46,7 @@ class ProductItem extends Model
         'count',
 //        'is_sold',
         'is_for_sale',
+//        'is_reserved',
     ];
 
     public function getMorphClass(): string

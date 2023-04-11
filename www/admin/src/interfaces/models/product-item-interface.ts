@@ -9,5 +9,6 @@ export default interface ProductItemInterface extends BaseModelInterface {
   price_sell: number
   is_sold: boolean
   is_for_sale: boolean
+  is_reserved: boolean
   count: number
 }

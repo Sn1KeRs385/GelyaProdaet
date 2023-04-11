@@ -33,7 +33,7 @@ trait EnumUpdate
                 );
 
                 DB::statement(
-                    "ALTER TABLE {$table} ADD CONSTRAINT {$checkConstraintName} CHECK (type::text = ANY (ARRAY[$availableTypes]::text[]))"
+                    "ALTER TABLE {$table} ADD CONSTRAINT {$checkConstraintName} CHECK ({$colName}::text = ANY (ARRAY[$availableTypes]::text[]))"
                 );
             });
         }

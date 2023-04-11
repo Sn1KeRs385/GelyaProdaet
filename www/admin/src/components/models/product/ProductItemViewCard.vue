@@ -10,9 +10,11 @@ import OptionGroupSlug from '../../../enums/option-group-slug'
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
 import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
+import ProductItemWithSizeYearInterface from 'src/interfaces/models/product-item-with-size-year-interface'
 
 type ProductItemInterfaceUnited = ProductItemInterface &
   ProductItemWithSizeInterface &
+  ProductItemWithSizeYearInterface &
   ProductItemWithColorInterface &
   ProductItemWithNormalizePricesInterface
 
@@ -33,15 +35,27 @@ const itemsSorted = computed(() =>
       return forSaleB - forSaleA
     }
 
-    const weightA = itemA.size.weight
-    const weightB = itemB.size.weight
+    const isReservedA = itemA.is_reserved ? 1 : 0
+    const isReservedB = itemB.is_reserved ? 1 : 0
+    if (isReservedA !== isReservedB) {
+      return isReservedB - isReservedA
+    }
+
+    const weightA = itemA.size_year?.weight || itemA.size?.weight || 0
+    const weightB = itemB.size_year?.weight || itemB.size?.weight || 0
 
     if (weightA !== weightB) {
       return weightA - weightB
     }
 
-    const titleA = itemA.size.title.toLowerCase()
-    const titleB = itemB.size.title.toLowerCase()
+    const titleA =
+      itemA.size_year?.title.toLowerCase() ||
+      itemA.size?.title.toLowerCase() ||
+      'zzzzzzzzzzzzzzzzzz'
+    const titleB =
+      itemB.size_year?.title.toLowerCase() ||
+      itemB.size?.title.toLowerCase() ||
+      'zzzzzzzzzzzzzzzzzz'
 
     if (titleA < titleB) {
       return -1
@@ -65,6 +79,10 @@ const getItemCardClasses = computed(() => (item: ProductItemInterfaceUnited) => 
     return ['bg-grey-4']
   }
 
+  if (item.is_reserved) {
+    return ['text-primary']
+  }
+
   return ['bg-primary', 'text-white']
 })
 
@@ -77,7 +95,25 @@ const getItemCardStatus = computed(() => (item: ProductItemInterfaceUnited) => {
     return t('models.product.view.item.statuses.isSold')
   }
 
+  if (item.is_reserved) {
+    return t('models.product.view.item.statuses.isReserved')
+  }
+
   return t('models.product.view.item.statuses.isForSale')
+})
+
+const getItemCardTitle = computed(() => (item: ProductItemInterfaceUnited) => {
+  if (item.size_year) {
+    let title = item.size_year.title
+    if (item.size) {
+      title += ` (${item.size.title})`
+    }
+    return title
+  } else if (item.size) {
+    return item.size.title
+  }
+
+  return t('texts.unknown')
 })
 
 const getSubtitleTextForItem = computed(() => (item: ProductItemInterfaceUnited) => {
@@ -134,6 +170,7 @@ const syncItemFromResponse = (
 ) => {
   item.is_sold = response.is_sold
   item.is_for_sale = response.is_for_sale
+  item.is_reserved = response.is_reserved
   item.price_sell = response.price_sell
   item.price_sell_normalize = response.price_sell_normalize
 }
@@ -157,6 +194,10 @@ const rollbackForSaleStatus = (item: ProductItemInterfaceUnited) => {
     syncItemFromResponse(item, response)
   )
 }
+
+const switchReserve = (item: ProductItemInterfaceUnited) => {
+  ProductItemModel.switchReserve(item.id).then((response) => syncItemFromResponse(item, response))
+}
 </script>
 
 <template>
@@ -166,7 +207,7 @@ const rollbackForSaleStatus = (item: ProductItemInterfaceUnited) => {
         <span class="tw-font-bold">
           {{ listOptionsStore.getHumanSlug(OptionGroupSlug.SIZE) }}
         </span>
-        {{ item.size.title }}
+        {{ getItemCardTitle(item) }}
       </div>
       <div class="text-subtitle2 tw-font-bold">{{ getItemCardStatus(item) }}</div>
       <div v-if="getSubtitleTextForItem(item).length > 0" class="text-subtitle2">
@@ -228,6 +269,20 @@ const rollbackForSaleStatus = (item: ProductItemInterfaceUnited) => {
     <q-card-actions align="around" vertical>
       <q-btn
         v-if="item.is_for_sale && !item.is_sold"
+        :label="
+          item.is_reserved
+            ? t('models.product.view.item.statusButton.rollbackReserve')
+            : t('models.product.view.item.statusButton.reserve')
+        "
+        color="primary"
+        :icon="item.is_reserved ? 'remove_shopping_cart' : 'shopping_cart'"
+        no-caps
+        outline
+        class="tw-w-full"
+        @click="switchReserve(item)"
+      />
+      <q-btn
+        v-if="item.is_for_sale && !item.is_sold"
         no-caps
         :label="t('models.product.view.item.statusButton.toNotSale')"
         icon="delete"
@@ -237,14 +292,13 @@ const rollbackForSaleStatus = (item: ProductItemInterfaceUnited) => {
       <q-btn
         v-if="item.is_for_sale && !item.is_sold"
         color="primary"
-        :label="t('models.product.view.item.statuses.isSold')"
+        :label="t('models.product.view.item.statusButton.sold')"
         icon="done"
         no-caps
         unelevated
         class="tw-w-full"
         @click="markSold(item)"
       />
-
       <q-btn
         v-if="!item.is_for_sale || item.is_sold"
         no-caps

@@ -6,6 +6,7 @@ export default {
     [OptionGroupSlug.COUNTRY]: 'Страна',
     [OptionGroupSlug.COLOR]: 'Цвет',
     [OptionGroupSlug.SIZE]: 'Размер',
+    [OptionGroupSlug.SIZE_YEAR]: 'Возраст',
     [OptionGroupSlug.PRODUCT_TYPE]: 'Тип товара',
     [OptionGroupSlug.GENDER]: 'Пол',
   },

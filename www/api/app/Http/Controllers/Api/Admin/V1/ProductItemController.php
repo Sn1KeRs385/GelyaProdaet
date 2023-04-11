@@ -60,4 +60,12 @@ class ProductItemController extends BaseCrudController
             Response::HTTP_OK
         );
     }
+
+    public function switchReserve(string $id): \Illuminate\Http\JsonResponse
+    {
+        return response()->json(
+            AfterStatusManipulateResource::make($this->crudService->switchReserve($id)),
+            Response::HTTP_OK
+        );
+    }
 }

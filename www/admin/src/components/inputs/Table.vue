@@ -91,7 +91,6 @@ const pagination = ref({
 
 const onFormSubmit = (formData: FormData) => {
   showForm.value = false
-
   if (rowEditIndex.value !== undefined) {
     const newValue = [...(props.modelValue || [])]
     const valueForChange = newValue[rowEditIndex.value]
@@ -145,12 +144,12 @@ const columns = computed(() => {
 
 const formFields = computed(() => props.model.getFormFields())
 
-const onRowClick = (row: BaseModelInterface, index: number) => {
+const onRowClick = (row: BaseModelInterface) => {
   if (rowIsDeleted.value(row)) {
     return
   }
   rowEditData.value = row
-  rowEditIndex.value = index
+  rowEditIndex.value = (props.modelValue || []).findIndex((search) => search === row)
   showForm.value = true
 }
 const onAddClick = () => {
@@ -214,10 +213,7 @@ const restoreActionClick = (row: ModelValueInterface) => {
         </q-btn>
       </template>
       <template #body="tableBodyProps">
-        <q-tr
-          :props="tableBodyProps"
-          @click="onRowClick(tableBodyProps.row, tableBodyProps.rowIndex)"
-        >
+        <q-tr :props="tableBodyProps" @click="onRowClick(tableBodyProps.row)">
           <q-td
             v-for="colSetting in columns"
             :key="colSetting.name"

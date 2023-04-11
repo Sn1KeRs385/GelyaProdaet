@@ -7,6 +7,9 @@ export default {
     size: {
       label: 'Размер',
     },
+    size_year: {
+      label: 'Возраст',
+    },
     color: {
       label: 'Цвет',
     },
@@ -24,6 +27,9 @@ export default {
     },
     is_for_sale: {
       label: 'Находится в продаже',
+    },
+    is_reserved: {
+      label: 'Зарезервировано',
     },
   },
   form: {

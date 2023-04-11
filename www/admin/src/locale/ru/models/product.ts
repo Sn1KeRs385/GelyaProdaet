@@ -22,6 +22,9 @@ export default {
     sizes: {
       label: 'Размеры',
     },
+    size_years: {
+      label: 'Возраст',
+    },
     is_sold: {
       label: 'Продано',
     },
@@ -38,11 +41,14 @@ export default {
         isNotForSale: 'Выведен из продажи',
         isForSale: 'В продаже',
         isSold: 'Продано',
+        isReserved: 'Зарезервировано',
       },
       statusButton: {
         toSale: 'Вернуть в продажу',
         sold: 'Продано',
         toNotSale: 'Снять с продажи',
+        reserve: 'Зарезервировать',
+        rollbackReserve: 'Снять резерв',
       },
       count: {
         label: 'Кол-во',

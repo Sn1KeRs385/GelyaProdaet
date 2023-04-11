@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property Product $product
- * @property ListOption $size
+ * @property ListOption|null $size
+ * @property ListOption|null $sizeYear
  * @property ListOption|null $color
  */
 trait ProductItemRelations
@@ -20,6 +21,11 @@ trait ProductItemRelations
     }
 
     public function size(): BelongsTo
+    {
+        return $this->belongsTo(ListOption::class);
+    }
+
+    public function sizeYear(): BelongsTo
     {
         return $this->belongsTo(ListOption::class);
     }

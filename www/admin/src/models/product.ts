@@ -17,6 +17,7 @@ import ProductItemWithColorInterface from 'src/interfaces/models/product-item-wi
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
 import ProductItem from 'src/models/product-item'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
+import ProductItemWithSizeYearInterface from 'src/interfaces/models/product-item-with-size-year-interface'
 
 interface AllItemInterface {
   id: number
@@ -98,8 +99,34 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         name: 'sizes',
         label: t('models.product.table.sizes.label'),
         field: 'sizes',
-        format: (val, row) =>
-          row.items.map((item: ProductItemWithSizeInterface) => item.size.title).join(', '),
+        format: (val, row) => {
+          const titles = row.items
+            .map((item: ProductItemWithSizeInterface) => item.size?.title)
+            .filter((title: string) => !!title)
+
+          if (titles.length === 0) {
+            return '-'
+          }
+
+          return titles.join(', ')
+        },
+        align: 'left',
+      },
+      {
+        name: 'size_years',
+        label: t('models.product.table.size_years.label'),
+        field: 'size_years',
+        format: (val, row) => {
+          const titles = row.items
+            .map((item: ProductItemWithSizeYearInterface) => item.size_year?.title)
+            .filter((title: string) => !!title)
+
+          if (titles.length === 0) {
+            return '-'
+          }
+
+          return titles.join(', ')
+        },
         align: 'left',
       },
       {
