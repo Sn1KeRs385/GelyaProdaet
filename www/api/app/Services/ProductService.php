@@ -6,14 +6,21 @@ use App\Bots\Telegram\TelegramBot;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\TgMessage;
+use App\Utils\TagCreator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
 
 class ProductService
 {
+    public function __construct(protected TagCreator $tagCreator)
+    {
+    }
+
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
     {
         $bot = new TelegramBot(config('telegram.bot_api_key'));
@@ -117,6 +124,7 @@ class ProductService
         }
 
         $price = $items[0]->price ?? 0;
+        $priceFinal = $items[0]->price_final ?? null;
         $onePriceOnAllItems = true;
 
         foreach ($items as $item) {
@@ -125,6 +133,13 @@ class ProductService
             }
             if ($item->price > $price) {
                 $price = $item->price;
+            }
+
+            if ($item->price_final !== $priceFinal) {
+                $onePriceOnAllItems = false;
+            }
+            if ($item->price_final > $priceFinal) {
+                $priceFinal = $item->price_final;
             }
 
             if ($item->sizeYear) {
@@ -150,6 +165,7 @@ class ProductService
                     'is_no_reserved' => 0,
                     'colors' => [],
                     'price' => $item->price,
+                    'price_final' => $item->price_final,
                 ];
             }
 
@@ -233,12 +249,34 @@ class ProductService
 
             if (!$onePriceOnAllItems) {
                 $price = round($info['price'] / 100, 2);
-                $text .= " - {$price} руб.";
+                if ($info['price_final'] && $info['price_final'] > 0) {
+                    $priceFinal = round($info['price_final'] / 100, 2);
+                    $text .= " - <s>{$price} ₽</s> {$priceFinal} ₽";
+                } else {
+                    $text .= " - {$price} ₽";
+                }
             }
         }
 
         if ($onePriceOnAllItems) {
-            $text .= "\n\nЦена: " . round($price / 100, 2);
+            $text .= "\n\nЦена: ";
+            $price = round($price / 100, 2);
+            if ($priceFinal && $priceFinal > 0) {
+                $priceFinal = round($priceFinal / 100, 2);
+                $text .= "<s>{$price} ₽</s> {$priceFinal} ₽";
+            } else {
+                $text .= "{$price} ₽";
+            }
+        }
+
+        $tags = $this->tagCreator->getTagsForProduct($product, $items);
+
+        if (!empty($tags)) {
+            $text .= "\n\n"
+                . implode(
+                    ' ',
+                    Arr::map($tags, fn(string $tag) => Str::replace(' ', '', "#$tag"))
+                );
         }
 
         return $text;

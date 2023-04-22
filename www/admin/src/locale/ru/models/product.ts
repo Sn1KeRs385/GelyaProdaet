@@ -61,6 +61,10 @@ export default {
         label: 'Стоимость',
         amount: '{amount} ₽',
       },
+      price_final: {
+        label: 'Цена со скидкой',
+        amount: '{amount} ₽',
+      },
       price_sell: {
         label: 'Продано',
         amount: '{amount} ₽',
@@ -85,6 +89,9 @@ export default {
     },
     price: {
       label: 'Цена продажи одной вещи',
+    },
+    price_final: {
+      label: 'Скидка',
     },
     sendToTelegram: {
       label: 'Отправить в телеграм',

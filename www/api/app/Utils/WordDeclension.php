@@ -14,6 +14,10 @@ class WordDeclension
      */
     public function afterNumDeclension(string $value, array $words, bool $show = true): string
     {
+        while (count($words) < 3) {
+            $words[] = '';
+        }
+
         $num = $value % 100;
         if ($num > 19) {
             $num = $num % 10;

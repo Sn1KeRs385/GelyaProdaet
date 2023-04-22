@@ -232,6 +232,14 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         hideInUpdate: true,
       },
       {
+        key: 'price_final_normalize',
+        input: new QuasarInput({
+          label: t('models.product.form.price_final.label'),
+          type: 'number',
+        }),
+        hideInCreate: true,
+      },
+      {
         key: 'send_to_telegram',
         input: new QuasarToggle({
           label: t('models.product.form.sendToTelegram.label'),

@@ -80,6 +80,11 @@ class ProductItemModel extends BaseModel<
         field: 'price_normalize',
       },
       {
+        name: 'price_final_normalize',
+        label: t('models.productItem.table.price_final.label'),
+        field: 'price_final_normalize',
+      },
+      {
         name: 'count',
         label: t('models.productItem.table.count.label'),
         field: 'count',
@@ -157,14 +162,21 @@ class ProductItemModel extends BaseModel<
       {
         key: 'price_buy_normalize',
         input: new QuasarInput({
-          label: t('models.product.form.price_buy.label'),
+          label: t('models.productItem.form.price_buy.label'),
           type: 'number',
         }),
       },
       {
         key: 'price_normalize',
         input: new QuasarInput({
-          label: t('models.product.form.price.label'),
+          label: t('models.productItem.form.price.label'),
+          type: 'number',
+        }),
+      },
+      {
+        key: 'price_final_normalize',
+        input: new QuasarInput({
+          label: t('models.productItem.form.price_final.label'),
           type: 'number',
         }),
       },

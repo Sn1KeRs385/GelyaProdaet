@@ -34,14 +34,24 @@ class ProductCrudService extends BaseCrudService
     protected function showAfterQueryExecHook(Model &$model): void
     {
         /** @var Product $model */
-        $model->setAppends(['price_normalize', 'price_buy_normalize', 'price_sell_normalize']);
+//        $model->setAppends([
+//            'price_normalize',
+//            'price_buy_normalize',
+//            'price_sell_normalize',
+//            'price_final_normalize'
+//        ]);
 
         $model->files->each(function (File $file) {
             $file->setAppends(['url']);
         });
 
         $model->items->each(function (ProductItem $item) {
-            $item->setAppends(['price_normalize', 'price_buy_normalize', 'price_sell_normalize']);
+            $item->setAppends([
+                'price_normalize',
+                'price_buy_normalize',
+                'price_sell_normalize',
+                'price_final_normalize'
+            ]);
         });
     }
 
@@ -73,12 +83,16 @@ class ProductCrudService extends BaseCrudService
             foreach ($data['items'] as &$item) {
                 $item['price'] = $item['price_normalize'] ?? $data['price_normalize'] ?? null;
                 $item['price_buy'] = $item['price_buy_normalize'] ?? $data['price_buy_normalize'] ?? null;
+                $item['price_final'] = $item['price_final_normalize'] ?? $data['price_final_normalize'] ?? null;
 
                 if ($item['price']) {
                     $item['price'] = $item['price'] * 100;
                 }
                 if ($item['price_buy']) {
                     $item['price_buy'] = $item['price_buy'] * 100;
+                }
+                if ($item['price_final']) {
+                    $item['price_final'] = $item['price_final'] * 100;
                 }
             }
         }

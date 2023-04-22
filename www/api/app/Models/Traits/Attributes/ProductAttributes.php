@@ -4,9 +4,11 @@ namespace App\Models\Traits\Attributes;
 
 /**
  * @property int|null $price
+ * @property int|null $priceFinal
  * @property int|null $priceBuy
  * @property int|null $priceSell
  * @property float|null $priceNormalize
+ * @property float|null $priceFinalNormalize
  * @property float|null $priceBuyNormalize
  * @property float|null $priceSellNormalize
  * @property bool $isSendToTelegram
@@ -16,6 +18,11 @@ trait ProductAttributes
     public function getPriceAttribute(): int|null
     {
         return $this->items[0]?->price ?? null;
+    }
+
+    public function getPriceFinalAttribute(): int|null
+    {
+        return $this->items[0]?->price_final ?? null;
     }
 
     public function getPriceBuyAttribute(): int|null
@@ -35,6 +42,15 @@ trait ProductAttributes
         }
 
         return $this->price / 100;
+    }
+
+    public function getPriceFinalNormalizeAttribute(): float|null
+    {
+        if (!$this->priceFinal) {
+            return null;
+        }
+
+        return $this->priceFinal / 100;
     }
 
     public function getPriceBuyNormalizeAttribute(): float|null

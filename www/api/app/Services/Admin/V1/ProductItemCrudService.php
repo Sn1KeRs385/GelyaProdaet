@@ -27,7 +27,12 @@ class ProductItemCrudService extends BaseCrudService
     protected function indexAfterPaginateHook(LengthAwarePaginator &$paginate): void
     {
         $paginate->each(function (ProductItem $item) {
-            $item->setAppends(['price_buy_normalize', 'price_normalize', 'price_sell_normalize']);
+            $item->setAppends([
+                'price_buy_normalize',
+                'price_normalize',
+                'price_sell_normalize',
+                'price_final_normalize'
+            ]);
         });
     }
 

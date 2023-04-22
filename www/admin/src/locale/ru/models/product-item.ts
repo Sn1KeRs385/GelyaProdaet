@@ -19,6 +19,9 @@ export default {
     price: {
       label: 'Цена',
     },
+    price_final: {
+      label: 'Скидка',
+    },
     count: {
       label: 'Количество в комплекте',
     },
@@ -47,6 +50,9 @@ export default {
     },
     price: {
       label: 'Цена',
+    },
+    price_final: {
+      label: 'Скидка',
     },
     count: {
       label: 'Количество в комплекте',
