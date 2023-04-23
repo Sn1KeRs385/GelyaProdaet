@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $owner_id
  * @property array $file_ids
  * @property array $extra_message_ids
- * @property bool $is_forward_error
+ * @property bool $is_not_found_error
  * @property bool $is_messages_deleted
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -32,7 +32,7 @@ class TgMessage extends Model
         'owner_type',
         'owner_id',
         'file_ids',
-        'is_forward_error',
+        'is_not_found_error',
         'is_messages_deleted',
         'extra_message_ids',
     ];

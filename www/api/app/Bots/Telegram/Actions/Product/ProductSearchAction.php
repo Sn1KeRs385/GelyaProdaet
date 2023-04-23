@@ -115,7 +115,7 @@ class ProductSearchAction extends AbstractAction
                     });
             })
             ->whereHas('tgMessages', function (Builder $query) {
-                $query->where('is_forward_error', false);
+                $query->where('is_not_found_error', false);
             })
             ->when($brands, function (Builder $query) use ($brands) {
                 $query->whereIn('brand_id', $brands->pluck('id'));
@@ -141,10 +141,10 @@ class ProductSearchAction extends AbstractAction
                             'message_id',
                             'owner_type',
                             'owner_id',
-                            'is_forward_error',
+                            'is_not_found_error',
                             'created_at'
                         )
-                        ->where('is_forward_error', false)
+                        ->where('is_not_found_error', false)
                         ->orderBy('created_at', 'desc');
                 }
             ])

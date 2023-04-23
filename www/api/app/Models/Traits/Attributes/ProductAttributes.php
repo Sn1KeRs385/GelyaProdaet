@@ -73,6 +73,6 @@ trait ProductAttributes
 
     public function getIsSendToTelegramAttribute(): bool
     {
-        return !!$this->tgMessages->where('is_forward_error', '=', false)->first();
+        return !!$this->tgMessages->where('is_not_found_error', '=', false)->first();
     }
 }

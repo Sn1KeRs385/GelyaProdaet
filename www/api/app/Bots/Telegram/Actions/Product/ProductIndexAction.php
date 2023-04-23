@@ -81,7 +81,7 @@ class ProductIndexAction extends AbstractAction
                 if (str_contains($exception->getMessage(), 'message to forward not found')) {
                     TgMessage::query()
                         ->where('id', $productMessage->id)
-                        ->update(['is_forward_error' => true]);
+                        ->update(['is_not_found_error' => true]);
                 }
             }
         }

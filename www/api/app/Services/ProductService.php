@@ -55,6 +55,10 @@ class ProductService
                     'parse_mode' => ParseMode::HTML,
                 ]);
             } catch (\Throwable $exception) {
+                if (str_contains($exception->getMessage(), 'message to edit not found')) {
+                    $message->is_not_found_error = true;
+                    $message->save();
+                }
                 if (!str_contains($exception->getMessage(), 'message is not modified')) {
                     throw $exception;
                 }

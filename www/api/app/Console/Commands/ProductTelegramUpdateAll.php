@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
+use App\Models\TgMessage;
 use App\Services\ProductService;
 use Illuminate\Console\Command;
 
@@ -36,7 +37,7 @@ class ProductTelegramUpdateAll extends Command
                 /** @var Product[] $products */
                 foreach ($products as $product) {
                     $this->trySend($product);
-                    sleep(2);
+                    sleep(3);
                 }
             });
     }
@@ -52,9 +53,13 @@ class ProductTelegramUpdateAll extends Command
 
         try {
             $productService->sendProductToTelegram($product);
+            dump("Product {$product->id} - ready");
         } catch (\Throwable $ex) {
             dump("Product {$product->id} - {$ex->getMessage()}");
-            sleep(2);
+            if (str_contains($ex->getMessage(), 'Bad Request')) {
+                return;
+            }
+            sleep(3);
             $this->trySend($product, $try + 1);
         }
     }
