@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Traits\EntityPhpDoc;
-use App\Models\Traits\Relations\ProductRelations;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property-read int $id
@@ -14,13 +14,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $owner_type
  * @property int|null $owner_id
  * @property array $file_ids
+ * @property array $extra_message_ids
  * @property bool $is_forward_error
+ * @property bool $is_messages_deleted
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  */
 class TgMessage extends Model
 {
     use EntityPhpDoc;
+    use SoftDeletes;
 
     protected $fillable = [
         'chat_id',
@@ -29,10 +33,13 @@ class TgMessage extends Model
         'owner_id',
         'file_ids',
         'is_forward_error',
+        'is_messages_deleted',
+        'extra_message_ids',
     ];
 
     protected $casts = [
         'file_ids' => 'array',
+        'extra_message_ids' => 'array',
     ];
 
     public function getMorphClass(): string

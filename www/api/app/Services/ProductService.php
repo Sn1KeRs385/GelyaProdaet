@@ -21,6 +21,17 @@ class ProductService
     {
     }
 
+    public function resendToTelegram(Product $product): Product
+    {
+        $product->tgMessages->each(function (TgMessage $tgMessage) {
+            $tgMessage->delete();
+        });
+
+        $product->touch();
+
+        return $product;
+    }
+
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
     {
         $bot = new TelegramBot(config('telegram.bot_api_key'));
@@ -87,10 +98,20 @@ class ProductService
             'disable_notification' => $disableNotification,
             'parse_mode' => ParseMode::HTML,
         ]);
+
+        $messageIds = [];
+        foreach ($response as $index => $message) {
+            if ($index === 0) {
+                continue;
+            }
+            $messageIds[] = $message->message_id;
+        }
+
         $product->tgMessages()->create([
             'chat_id' => $chatId,
             'message_id' => $response[0]->message_id,
             'file_ids' => $product->files->pluck('id'),
+            'extra_message_ids' => $messageIds
         ]);
     }
 

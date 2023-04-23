@@ -17,6 +17,7 @@ class AfterStatusManipulateResource extends JsonResource
             'price_buy_normalize' => $this->priceBuyNormalize,
             'price_normalize' => $this->priceNormalize,
             'price_sell_normalize' => $this->priceSellNormalize,
+            'price_final_normalize' => $this->priceFinalNormalize,
         ];
     }
 }

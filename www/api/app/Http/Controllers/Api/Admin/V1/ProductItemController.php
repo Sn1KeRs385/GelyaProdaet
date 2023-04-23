@@ -13,7 +13,6 @@ class ProductItemController extends BaseCrudController
 {
     public function __construct()
     {
-        /** @var ProductItemCrudService $this- >crudService */
         $this->crudService = self::getCrudService();
     }
 

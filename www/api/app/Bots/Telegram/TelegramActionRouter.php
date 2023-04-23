@@ -14,6 +14,7 @@ use App\Bots\Telegram\Actions\Product\ProductRequestNextAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkAction;
 use App\Bots\Telegram\Actions\Promotion\ReferralLinkJoinAction;
 use App\Bots\Telegram\Actions\StartAction;
+use App\Bots\Telegram\Actions\System\CheckDeleteAction;
 use App\Bots\Telegram\Dto\ActionRouteInfo;
 use Illuminate\Support\Collection;
 use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
@@ -38,6 +39,7 @@ class TelegramActionRouter
             FilterGenderAction::getActionRouteInfo(),
             FilterSizeAction::getActionRouteInfo(),
             FilterSetAction::getActionRouteInfo(),
+            CheckDeleteAction::getActionRouteInfo(),
         ]);
     }
 

@@ -114,6 +114,16 @@ const itemsNotActive = computed(
         class="row tw-gap-12px row tw-justify-between md:tw-justify-start tw-w-full md:tw-w-auto tw-mt-8px md:tw-mt-0"
       >
         <q-btn
+          color="white"
+          text-color="primary"
+          icon="send"
+          no-caps
+          rounded
+          :label="t('models.product.resendToTelegram')"
+          @click="model.resendToTelegram(modelId)"
+        />
+
+        <q-btn
           color="primary"
           no-caps
           unelevated

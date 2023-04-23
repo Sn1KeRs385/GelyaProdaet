@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Services\Admin\BaseCrudService;
+use App\Services\ProductService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,6 +14,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCrudService extends BaseCrudService
 {
+    public function __construct(protected ProductService $productService)
+    {
+    }
+
     protected array $hasManyRelationMapper = [
         [
             'name' => 'items',
@@ -96,5 +101,12 @@ class ProductCrudService extends BaseCrudService
                 }
             }
         }
+    }
+
+    public function resendToTelegram(string $id): Product
+    {
+        $product = Product::findOrFail($id);
+
+        return $this->productService->resendToTelegram($product);
     }
 }

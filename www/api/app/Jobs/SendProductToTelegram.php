@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\HasUnreadyFileOnModelException;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Bus\Queueable;
@@ -14,7 +13,10 @@ use Sn1KeRs385\FileUploader\App\Enums\FileStatus;
 
 class SendProductToTelegram implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected ProductService $productService;
 

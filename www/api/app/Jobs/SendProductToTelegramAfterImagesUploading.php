@@ -14,7 +14,10 @@ use Sn1KeRs385\FileUploader\App\Models\File;
 
 class SendProductToTelegramAfterImagesUploading implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected ProductService $productService;
 

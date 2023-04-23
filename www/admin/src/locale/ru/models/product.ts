@@ -1,5 +1,6 @@
 export default {
   title: 'Товары',
+  resendToTelegram: 'Переотправить в телеграм',
   table: {
     title: {
       label: 'Заголовок',

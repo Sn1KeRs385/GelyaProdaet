@@ -19,6 +19,7 @@ import ProductItem from 'src/models/product-item'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
 import ProductItemWithSizeYearInterface from 'src/interfaces/models/product-item-with-size-year-interface'
 import ListOption from 'src/models/list-option'
+import { api } from 'src/boot/axios'
 
 interface AllItemInterface {
   id: number
@@ -255,6 +256,15 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         }),
       },
     ]
+  }
+
+  resendToTelegram(id: number): Promise<ProductInterface> {
+    return api
+      .request({
+        method: 'post',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/resend-to-telegram`,
+      })
+      .then((response) => response.data)
   }
 }
 

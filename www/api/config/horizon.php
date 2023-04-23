@@ -231,6 +231,19 @@ return [
             'tries' => 1,
             'timeout' => 60,
             'nice' => 0,
+        ],
+        'supervisor-5' => [
+            'connection' => 'redis',
+            'queue' => ['tg_system_notification'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 1,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 128,
+            'tries' => 3,
+            'timeout' => 15,
+            'nice' => 0,
         ]
     ],
 

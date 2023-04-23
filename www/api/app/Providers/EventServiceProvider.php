@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Product;
+use App\Models\TgMessage;
 use App\Observers\ProductObserver;
+use App\Observers\TgMessageObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +30,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Product::observe(ProductObserver::class);
+        TgMessage::observe(TgMessageObserver::class);
     }
 
     /**
