@@ -79,11 +79,15 @@ class TelegramActionRouter
 
     /**
      * @param  Collection<int, ActionRouteInfo>  $routes
-     * @param  string  $text
+     * @param  string|null  $text
      * @return Collection<int, ActionContract>
      */
-    protected function getRoutesListFromText(Collection $routes, string $text): Collection
+    protected function getRoutesListFromText(Collection $routes, ?string $text): Collection
     {
+        if(!$text) {
+            return collect([]);
+        }
+        
         return $routes->filter(function (ActionRouteInfo $actionRouteInfo) use ($text) {
             $pregTest = false;
             foreach ($actionRouteInfo->paths as $path) {
