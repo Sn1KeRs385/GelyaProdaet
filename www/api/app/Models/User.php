@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property-read int $id
@@ -22,6 +23,7 @@ class User extends Authenticatable
     use HasApiTokens;
     use Notifiable;
     use UserRelations;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.

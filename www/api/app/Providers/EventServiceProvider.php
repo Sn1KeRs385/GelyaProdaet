@@ -2,14 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
 use App\Models\Product;
+use App\Models\RolePermission;
 use App\Models\TgMessage;
+use App\Observers\PermissionObserver;
 use App\Observers\ProductObserver;
+use App\Observers\RolePermissionObserver;
 use App\Observers\TgMessageObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,8 @@ class EventServiceProvider extends ServiceProvider
     {
         Product::observe(ProductObserver::class);
         TgMessage::observe(TgMessageObserver::class);
+        Permission::observe(PermissionObserver::class);
+        RolePermission::observe(RolePermissionObserver::class);
     }
 
     /**

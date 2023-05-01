@@ -3,6 +3,7 @@
 namespace App\Bots\Telegram;
 
 use App\Bots\Telegram\Actions\ActionContract;
+use App\Bots\Telegram\Actions\Default\EmptyMessageHandlerAction;
 use App\Bots\Telegram\Actions\Filters\FilterBrandAction;
 use App\Bots\Telegram\Actions\Filters\FilterCountryAction;
 use App\Bots\Telegram\Actions\Filters\FilterGenderAction;
@@ -85,9 +86,9 @@ class TelegramActionRouter
     protected function getRoutesListFromText(Collection $routes, ?string $text): Collection
     {
         if(!$text) {
-            return collect([]);
+            return collect([EmptyMessageHandlerAction::getActionRouteInfo()]);
         }
-        
+
         return $routes->filter(function (ActionRouteInfo $actionRouteInfo) use ($text) {
             $pregTest = false;
             foreach ($actionRouteInfo->paths as $path) {

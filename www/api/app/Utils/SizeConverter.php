@@ -30,10 +30,18 @@ class SizeConverter
             if (isset(self::SIZE_TO_YEAR_LIST[$size])) {
                 $years = array_merge($years, self::SIZE_TO_YEAR_LIST[$size]);
             } else {
-                $prevSize = 0;
+                $prevSize = 86;
                 foreach (self::SIZE_TO_YEAR_LIST as $sizeFromTable => $yearsFromTable) {
                     if ($size < $sizeFromTable && $size > $prevSize) {
-                        $years = array_merge($years, $yearsFromTable, (self::SIZE_TO_YEAR_LIST[$prevSize] ?? []));
+                        $sizesOfPrev = self::SIZE_TO_YEAR_LIST[$prevSize] ?? [];
+                        if(count($sizesOfPrev) > 0) {
+                            $sizesOfPrev = [end($sizesOfPrev)];
+                        }
+                        $years = array_merge(
+                            $years,
+                            [$yearsFromTable[0]],
+                            $sizesOfPrev
+                        );
                     }
 
                     $prevSize = $sizeFromTable;

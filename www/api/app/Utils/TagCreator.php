@@ -3,6 +3,8 @@
 namespace App\Utils;
 
 
+use App\Enums\OptionGroupSlug;
+use App\Models\ListOption;
 use App\Models\Product;
 use App\Models\ProductItem;
 use Illuminate\Database\Eloquent\Builder;
@@ -94,10 +96,22 @@ class TagCreator
             }
         }
 
-        $tags[mb_strtolower($product->gender->title)] = true;
+        if($product->gender->is_hidden_from_user_filters) {
+            $genderOptions = ListOption::query()
+                ->where('group_slug', OptionGroupSlug::GENDER)
+                ->where('is_hidden_from_user_filters', false)
+                ->get();
+            foreach($genderOptions as $genderOption) {
+                $tags[mb_strtolower($genderOption->title)] = true;
+            }
+        } else {
+            $tags[mb_strtolower($product->gender->title)] = true;
+        }
+
         if ($product->brand) {
             $tags[mb_strtolower($product->brand->title)] = true;
         }
+
         $tags[mb_strtolower($product->type->title)] = true;
 
         $tagsFinal = array_keys($tags);
