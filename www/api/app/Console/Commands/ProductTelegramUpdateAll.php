@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
-use App\Models\TgMessage;
 use App\Services\ProductService;
 use Illuminate\Console\Command;
 
