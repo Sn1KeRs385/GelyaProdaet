@@ -57,7 +57,10 @@ class CheckDeleteAction extends AbstractAction
         } catch (\Throwable $exception) {
             if (str_contains($exception->getMessage(), 'message is not modified')) {
                 $messageExists = true;
-            } elseif (!str_contains($exception->getMessage(), 'MESSAGE_ID_INVALID')) {
+            } elseif (
+                !str_contains($exception->getMessage(), 'MESSAGE_ID_INVALID') ||
+                !str_contains($exception->getMessage(), 'message to edit not found')
+            ) {
                 throw $exception;
             }
         }

@@ -42,7 +42,7 @@ class EmptyMessageHandlerAction extends AbstractAction
         }
 
         $messageId = TelegramWebhook::getData()->getMessage()->forward_from_message_id ?? 0;
-        $tgMessage = TgMessage::query()
+        $tgMessage = TgMessage::withTrashed()
             ->where('message_id', $messageId)
             ->orWhereRaw("extra_message_ids @> '$messageId'")
             ->first();
