@@ -65,19 +65,6 @@ services:
     volumes:
       - ./.docker/redis-data:/data
 
-  minio:
-    container_name: "${COMPOSE_PROJECT_NAME}_minio"
-    image: minio/minio
-    ports:
-      - "${MINIO_9000_CONTAINER_PORT}:9000"
-      - "${MINIO_9001_CONTAINER_PORT}:9001"
-    volumes:
-      - minio_storage:/data
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    command: server --console-address ":9001" /data
-
   supervisord:
     container_name: "${COMPOSE_PROJECT_NAME}_supervisord"
     build:
@@ -87,6 +74,3 @@ services:
       - ./config/supervisord/conf.d:/etc/supervisord.d
     depends_on:
       - api
-
-volumes:
-  minio_storage:
