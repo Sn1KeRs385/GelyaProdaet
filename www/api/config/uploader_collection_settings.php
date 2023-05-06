@@ -20,4 +20,17 @@ return [
             \App\Jobs\SendProductToTelegramAfterImagesUploading::class,
         ],
     ],
+    \App\Enums\FileCollection::LIST_OPTION_LOGO->value => [
+
+        'queue' => 'file-converter',
+        'disk' => 's3',
+        'jobs' => [
+            \Sn1KeRs385\FileUploader\App\Jobs\StartConverting::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\FileConverter::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromFile::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\ExtractMetaDataFromImage::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\ImageToWebp::class,
+            \Sn1KeRs385\FileUploader\App\Jobs\EndConverting::class,
+        ],
+    ],
 ];

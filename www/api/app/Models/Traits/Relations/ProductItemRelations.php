@@ -2,10 +2,13 @@
 
 namespace App\Models\Traits\Relations;
 
-
+use App\Enums\FileCollection;
+use App\Enums\OptionGroupSlug;
+use App\Models\File;
 use App\Models\ListOption;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property Product $product
@@ -22,7 +25,8 @@ trait ProductItemRelations
 
     public function size(): BelongsTo
     {
-        return $this->belongsTo(ListOption::class);
+        return $this->belongsTo(ListOption::class)
+            ->where('group_slug', OptionGroupSlug::SIZE);
     }
 
     public function sizeYear(): BelongsTo
@@ -32,6 +36,7 @@ trait ProductItemRelations
 
     public function color(): BelongsTo
     {
-        return $this->belongsTo(ListOption::class);
+        return $this->belongsTo(ListOption::class)
+            ->where('group_slug', OptionGroupSlug::COLOR);
     }
 }

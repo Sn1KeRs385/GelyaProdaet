@@ -18,6 +18,8 @@ interface Props {
   isReady: boolean
   label: string
   fileUploaderOptions?: QFileParams
+  collectionName?: CollectionName
+  filesField?: string
 }
 
 const props = defineProps<Props>()
@@ -31,8 +33,12 @@ const fileUploadStore = useFileUploadStore()
 
 const fileInput = ref<InstanceType<typeof QFile>>()
 
+const filesFromModelData = computed<ApiFileInterface[]>(
+  () => props.modelData?.[props.filesField || 'files'] || []
+)
+
 onMounted(() => {
-  const fileIds = (props.modelData?.files || []).map(({ id }) => id)
+  const fileIds = filesFromModelData.value.map(({ id }) => id)
   emit('update:modelValue', fileIds)
 })
 
@@ -74,7 +80,7 @@ const hasReadyFiles = computed(() => readyFiles.value.length > 0)
 const isShowReadyFiles = computed(() => _isShowReadyFiles.value && hasReadyFiles.value)
 
 const readyFiles = computed(() => {
-  return (props.modelData?.files || []).sort((a, b) => {
+  return [...filesFromModelData.value].sort((a, b) => {
     if (a.type?.indexOf('image/') === 0 && b.type?.indexOf('image/') !== 0) {
       return -1
     } else if (a.type?.indexOf('image/') !== 0 && b.type?.indexOf('image/') === 0) {
@@ -89,21 +95,30 @@ const readyFileIsDeleted = computed(
   () => (file: ApiFileInterface) => !props.modelValue?.includes(file.id)
 )
 
-const onChooseFiles = (files: File[]) => {
-  files.forEach((file) => {
-    let collectionName
-    if (/^video/gi.test(file.type)) {
-      collectionName = CollectionName.VIDEO
-    } else if (/^image/gi.test(file.type)) {
-      collectionName = CollectionName.IMAGE
-    } else {
-      collectionName = CollectionName.FILE
+const onChooseFiles = (files: File[] | File) => {
+  const handleFile = (file: File) => {
+    let collectionName = props.collectionName
+
+    if (!collectionName) {
+      if (/^video/gi.test(file.type)) {
+        collectionName = CollectionName.VIDEO
+      } else if (/^image/gi.test(file.type)) {
+        collectionName = CollectionName.IMAGE
+      } else {
+        collectionName = CollectionName.FILE
+      }
     }
+
     if (collectionName) {
       const uploadFile = fileUploadStore.addFileToUploadQueue(file, collectionName)
       uploadFiles.value.push(uploadFile)
     }
-  })
+  }
+  if (Array.isArray(files)) {
+    files.forEach(handleFile)
+  } else {
+    handleFile(files)
+  }
   fileUploadStore.startUpload()
 }
 

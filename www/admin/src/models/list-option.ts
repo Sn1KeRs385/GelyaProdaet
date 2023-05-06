@@ -7,6 +7,8 @@ import QuasarSelect from 'src/classes/inputs/quasar/quasar-select'
 import { useListOptionsStore } from 'src/stores/list-options-store'
 import OptionGroupSlug from 'src/enums/option-group-slug'
 import ListOptionInterface from 'src/interfaces/models/list-option-interface'
+import FileUploader from 'src/classes/inputs/file-uploader'
+import CollectionName from 'file-uploader/enums/collection-name'
 
 type AllItemInterface = ListOptionInterface
 type IndexItemInterface = ListOptionInterface
@@ -81,6 +83,18 @@ class ListOption extends BaseModel<AllItemInterface, IndexItemInterface, GetById
           type: 'number',
         }),
         defaultValue: 0,
+      },
+      {
+        key: 'logo_ids',
+        input: new FileUploader({
+          label: t('models.listOptions.form.logo.label'),
+          collectionName: CollectionName.LIST_OPTION_LOGO,
+          filesField: 'logo',
+          fileUploaderOptions: {
+            multiple: false,
+            accept: 'image/*',
+          },
+        }),
       },
     ]
   }

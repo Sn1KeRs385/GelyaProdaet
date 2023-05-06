@@ -21,5 +21,8 @@ export default {
     weight: {
       label: 'Вес для сортировки',
     },
+    logo: {
+      label: 'Логотип',
+    },
   },
 }
