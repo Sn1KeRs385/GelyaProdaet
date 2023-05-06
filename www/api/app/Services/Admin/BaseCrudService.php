@@ -133,7 +133,7 @@ abstract class BaseCrudService
         $filesIds = [];
         foreach ($this->fileFields as $fileField) {
             if (!isset($data[$fileField])) {
-                return;
+                continue;
             }
             $filesIds = [...$filesIds, ...$data[$fileField]];
         }

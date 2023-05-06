@@ -69,10 +69,6 @@ class ProductService
             return;
         }
 
-        if (!$product->items()->where('is_for_sale', true)->exists()) {
-            return;
-        }
-
         $inputMediaPhoto = [];
         foreach ($product->files as $file) {
             $photo = new InputMediaPhoto();
@@ -125,24 +121,8 @@ class ProductService
 
         /** @var ProductItem[] $items */
         $items = $product->items()
-            ->where(function (Builder $query) {
-                $query->whereHas('size')
-                    ->orWhereHas('sizeYear');
-            })
             ->with(['size', 'sizeYear', 'color'])
-            ->where('is_for_sale', true)
             ->get();
-
-        if (count($items) === 0) {
-            /** @var ProductItem[] $items */
-            $items = $product->items()
-                ->where(function (Builder $query) {
-                    $query->whereHas('size')
-                        ->orWhereHas('sizeYear');
-                })
-                ->with(['size', 'sizeYear', 'color'])
-                ->get();
-        }
 
         if (count($items) === 0) {
             throw new \Exception('ProductItem is empty to send');
@@ -151,6 +131,8 @@ class ProductService
         $price = $items[0]->price ?? 0;
         $priceFinal = $items[0]->price_final ?? null;
         $onePriceOnAllItems = true;
+        $hasSizes = false;
+        $hasColor = false;
 
         foreach ($items as $item) {
             if ($item->price !== $price) {
@@ -167,13 +149,23 @@ class ProductService
                 $priceFinal = $item->price_final;
             }
 
+            $colorAsKey = false;
+
             if ($item->sizeYear) {
                 $key = $item->sizeYear->title;
                 if ($item->size) {
                     $key = "{$key} ({$item->size->title})";
                 }
-            } else {
+                $hasSizes = true;
+            } elseif ($item->size) {
                 $key = $item->size->title;
+                $hasSizes = true;
+            } elseif ($item->color) {
+                $key = $item->color->title;
+                $colorAsKey = true;
+                $hasColor = true;
+            } else {
+                $key = '-';
             }
 
             if ($item->count > 1) {
@@ -181,9 +173,9 @@ class ProductService
             }
             if (!isset($sizes[$key])) {
                 $sizes[$key] = [
-                    'weight' => $item->sizeYear->weight ?? $item->size->weight,
-                    'title' => $item->sizeYear->title ?? $item->size->title,
-                    'id' => $item->sizeYear->id ?? $item->size->id,
+                    'weight' => $item->sizeYear->weight ?? $item->size->weight ?? $item->color->weight ?? 0,
+                    'title' => $item->sizeYear->title ?? $item->size->title ?? $item->color->title ?? '-',
+                    'id' => $item->sizeYear->id ?? $item->size->id ?? $item->color->id ?? $item->id,
 
                     'for_sale' => 0,
                     'is_sold' => 0,
@@ -205,7 +197,7 @@ class ProductService
                 $sizes[$key]['is_no_reserved'] = $sizes[$key]['is_no_reserved'] + 1;
             }
 
-            if ($item->color?->title && ($sizes[$key]['colors'][$item->color->title] ?? '') !== 'for_sale') {
+            if (!$colorAsKey && $item->color?->title && ($sizes[$key]['colors'][$item->color->title] ?? '') !== 'for_sale') {
                 if (!$itemIsSold) {
                     if (!$item->is_reserved) {
                         $sizes[$key]['colors'][$item->color->title] = 'for_sale';
@@ -240,46 +232,69 @@ class ProductService
             $text .= "\n$product->description";
         }
 
-        $text .= "\n\nРазмеры: ";
-        foreach ($sizes as $size => $info) {
-            if (count($info['colors']) === 0) {
-                if ($info['for_sale'] > 0) {
-                    if ($info['is_no_reserved'] === 0) {
-                        $text .= "\n⚠️{$size}<b>(бронь)</b>";
+        if ($hasSizes && !$hasColor) {
+            $text .= "\n\nРазмеры: ";
+        } elseif (!$hasSizes && $hasColor) {
+            $text .= "\n\nЦвета: ";
+        } elseif ($hasSizes && $hasColor) {
+            $text .= "\n\nРазмеры и цвета: ";
+        }
+
+        if ($hasSizes || $hasColor) {
+            foreach ($sizes as $size => $info) {
+                if (count($info['colors']) === 0) {
+                    if ($info['for_sale'] > 0) {
+                        if ($info['is_no_reserved'] === 0) {
+                            $text .= "\n⚠️{$size}<b>(бронь)</b>";
+                        } else {
+                            $text .= "\n✅{$size}";
+                        }
                     } else {
-                        $text .= "\n✅{$size}";
+                        $text .= "\n❌<s>{$size}</s>";
                     }
                 } else {
-                    $text .= "\n❌<s>{$size}</s>";
+                    $text .= "\n{$size}";
+                    $colorsForSale = [];
+                    $colorsReserved = [];
+                    $colorsSold = [];
+                    foreach ($info['colors'] as $color => $status) {
+                        switch ($status) {
+                            case 'for_sale':
+                                $colorsForSale[] = "✅{$color}";
+                                break;
+                            case 'reserved':
+                                $colorsReserved[] = "⚠️{$color}<b>(бронь)</b>";
+                                break;
+                            default:
+                                $colorsSold[] = "❌<s>{$color}</s>";
+                        }
+                    }
+                    $text .= ": " . implode(', ', [...$colorsForSale, ...$colorsReserved, ...$colorsSold]);
                 }
-            } else {
-                $text .= "\n{$size}";
-                $colorsForSale = [];
-                $colorsReserved = [];
-                $colorsSold = [];
-                foreach ($info['colors'] as $color => $status) {
-                    switch ($status) {
-                        case 'for_sale':
-                            $colorsForSale[] = "✅{$color}";
-                            break;
-                        case 'reserved':
-                            $colorsReserved[] = "⚠️{$color}<b>(бронь)</b>";
-                            break;
-                        default:
-                            $colorsSold[] = "❌<s>{$color}</s>";
+
+                if (!$onePriceOnAllItems) {
+                    $price = round($info['price'] / 100, 2);
+                    if ($info['price_final'] && $info['price_final'] > 0) {
+                        $priceFinal = round($info['price_final'] / 100, 2);
+                        $text .= " - <s>{$price} ₽</s> {$priceFinal} ₽";
+                    } else {
+                        $text .= " - {$price} ₽";
                     }
                 }
-                $text .= ": " . implode(', ', [...$colorsForSale, ...$colorsReserved, ...$colorsSold]);
+            }
+        } else {
+            $hasForSale = false;
+            foreach ($sizes as $size => $info) {
+                if ($info['for_sale'] > 0) {
+                    $hasForSale = true;
+                    break;
+                }
             }
 
-            if (!$onePriceOnAllItems) {
-                $price = round($info['price'] / 100, 2);
-                if ($info['price_final'] && $info['price_final'] > 0) {
-                    $priceFinal = round($info['price_final'] / 100, 2);
-                    $text .= " - <s>{$price} ₽</s> {$priceFinal} ₽";
-                } else {
-                    $text .= " - {$price} ₽";
-                }
+            if ($hasForSale) {
+                $text .= "\n\n✅ В наличии!";
+            } else {
+                $text .= "\n\n❌ Распродано!";
             }
         }
 
