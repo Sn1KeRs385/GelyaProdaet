@@ -7,6 +7,8 @@ namespace App\Models\Traits\Attributes;
  * @property float $priceBuyNormalize
  * @property float|null $priceFinalNormalize
  * @property float|null $priceSellNormalize
+ * @property int|null $earn
+ * @property float|null $earnNormalize
  */
 trait ProductItemAttributes
 {
@@ -36,5 +38,23 @@ trait ProductItemAttributes
         }
 
         return $this->price_sell / 100;
+    }
+
+    public function getEarnAttribute(): ?int
+    {
+        if (!$this->price_sell) {
+            return null;
+        }
+
+        return $this->price_sell - $this->price_buy;
+    }
+
+    public function getEarnNormalizeAttribute(): ?float
+    {
+        if (!$this->earn) {
+            return null;
+        }
+
+        return $this->earn / 100;
     }
 }

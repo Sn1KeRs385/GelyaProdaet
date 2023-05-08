@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_sold
  * @property bool $is_for_sale
  * @property bool $is_reserved
+ * @property Carbon|null $sold_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -49,6 +50,10 @@ class ProductItem extends Model
 //        'is_sold',
         'is_for_sale',
 //        'is_reserved',
+    ];
+
+    protected $casts = [
+        'sold_at' => 'datetime',
     ];
 
     public function getMorphClass(): string

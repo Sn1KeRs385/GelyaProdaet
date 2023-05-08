@@ -18,6 +18,7 @@ class ProductItemService
         }
 
         $productItem->is_sold = true;
+        $productItem->sold_at = now();
         $productItem->is_reserved = false;
         $productItem->price_sell = $priceSell ?? $productItem->price;
         $productItem->save();
@@ -58,6 +59,7 @@ class ProductItemService
         }
 
         $productItem->is_sold = false;
+        $productItem->sold_at = null;
         $productItem->is_for_sale = true;
         $productItem->price_sell = null;
         $productItem->is_reserved = false;

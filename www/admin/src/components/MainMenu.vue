@@ -11,7 +11,7 @@ interface Link {
   children?: Link[]
 }
 interface ModelToLink {
-  model: BaseModel<unknown>
+  model: BaseModel<unknown, unknown, unknown>
   icon?: string
   caption?: string
   children?: ModelToLink[]

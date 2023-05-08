@@ -3,7 +3,7 @@ import Dashboard from 'src/components/Dashboard.vue'
 </script>
 
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page>
     <dashboard />
   </q-page>
 </template>
