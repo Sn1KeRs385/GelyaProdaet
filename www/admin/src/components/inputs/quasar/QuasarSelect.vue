@@ -58,7 +58,7 @@ const createElement = (label: string) => {
     use-input
     input-debounce="0"
     @filter="filterFn"
-    @update:modelValue="(value) => emit('update:modelValue', value)"
+    @update:model-value="(value) => emit('update:modelValue', value)"
   >
     <template #no-option>
       <q-item>
