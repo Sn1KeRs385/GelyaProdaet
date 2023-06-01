@@ -44,6 +44,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/products/{product}/resend-to-telegram', [ProductController::class, 'resendToTelegram'])
         ->name('products.resend-to-telegram');
+    Route::post('/products/{product}/send-to-my-telegram', [ProductController::class, 'sendToMyTelegram'])
+        ->name('products.send-to-my-telegram');
 
     Route::get('/products/all', [ProductController::class, 'all'])->name('products.all');
     Route::resource('products', ProductController::class);

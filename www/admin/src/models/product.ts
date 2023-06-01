@@ -266,6 +266,15 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
       })
       .then((response) => response.data)
   }
+
+  sendToMyTelegram(id: number): Promise<ProductInterface> {
+    return api
+      .request({
+        method: 'post',
+        url: `${this.basePath}/v${this.apiVersion}/${this.url}/${id}/send-to-my-telegram`,
+      })
+      .then((response) => response.data)
+  }
 }
 
 const modelClass = new ProductModel()

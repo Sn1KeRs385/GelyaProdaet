@@ -5,6 +5,7 @@ namespace App\Services\Admin\V1;
 use App\Models\File;
 use App\Models\Product;
 use App\Models\ProductItem;
+use App\Models\User;
 use App\Services\Admin\BaseCrudService;
 use App\Services\ProductService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -108,5 +109,12 @@ class ProductCrudService extends BaseCrudService
         $product = Product::findOrFail($id);
 
         return $this->productService->resendToTelegram($product);
+    }
+
+    public function sendToUserTelegram(User $user, string $productId): Product
+    {
+        $product = Product::findOrFail($productId);
+
+        return $this->productService->sendToUserTelegram($product, $user);
     }
 }

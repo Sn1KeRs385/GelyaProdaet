@@ -3,16 +3,20 @@
 namespace App\Services;
 
 use App\Bots\Telegram\TelegramBot;
+use App\Enums\IdentifierType;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\TgMessage;
+use App\Models\User;
+use App\Models\UserIdentifier;
 use App\Utils\TagCreator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
 
 class ProductService
@@ -30,6 +34,20 @@ class ProductService
         $product->touch();
 
         return $product;
+    }
+
+    public function sendToUserTelegram(Product $product, User $user): void
+    {
+        /** @var UserIdentifier $userTelegramIdentifier */
+        $userTelegramIdentifier = $user->identifiers()
+            ->where('type', IdentifierType::TG_USER_ID)
+            ->first();
+
+        if (!$userTelegramIdentifier) {
+            throw new \Exception('Идентификатор телеграма не найден');
+        }
+
+        $this->sendProductToTelegramWithNoSaveAndCheck($product, $userTelegramIdentifier->value);
     }
 
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
@@ -113,6 +131,60 @@ class ProductService
             'file_ids' => $product->files->pluck('id'),
             'extra_message_ids' => $messageIds
         ]);
+    }
+
+    public function sendProductToTelegramWithNoSaveAndCheck(Product $product, string|int $chatId): array
+    {
+        $bot = new TelegramBot(config('telegram.bot_api_key'));
+
+        $inputMediaPhoto = [];
+        foreach ($product->files as $file) {
+            $photo = new InputMediaPhoto();
+            $photo->type = 'photo';
+            $photo->media = $file->url;
+            if (count($inputMediaPhoto) === 0) {
+                $photo->caption = $this->getTgMessageText($product);
+            } else {
+                $photo->caption = '';
+            }
+            $photo->parse_mode = ParseMode::HTML;
+            $photo->has_spoiler = false;
+            $inputMediaPhoto[] = $photo;
+        }
+
+        $disableNotification = true;
+        $now = Carbon::now();
+        $start = Carbon::createFromTimeString('4:00');
+        $end = Carbon::createFromTimeString('18:00');
+        if ($now->between($start, $end)) {
+            $disableNotification = false;
+        }
+
+        /** @var Message[] $response */
+        $response = $bot->sendMediaGroup($inputMediaPhoto, [
+            'chat_id' => $chatId,
+            'disable_notification' => $disableNotification,
+            'parse_mode' => ParseMode::HTML,
+        ]);
+
+        $showUrl = implode(
+            '/',
+            [config('app.admin_url'), strtolower($product->getMorphClass()) . 's', $product->id]
+        );
+
+        $bot->sendMessage('Управление', [
+            'chat_id' => $chatId,
+            'reply_to_message_id' => $response[0]->message_id,
+            'reply_markup' => InlineKeyboardMarkup::make()
+                ->addRow(
+                    InlineKeyboardButton::make(
+                        'В админку',
+                        url: $showUrl,
+                    ),
+                )
+        ]);
+
+        return $response;
     }
 
     protected function getTgMessageText(Product $product): string
