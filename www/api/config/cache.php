@@ -110,11 +110,29 @@ return [
     'config' => [
         'authUser' => [
             'key' => 'user',
-            'ttl' => '3600',
+            'ttl' => 3600,
         ],
         'tgUserState' => [
             'key' => 'tg-user-state',
-            'ttl' => '1800',
+            'ttl' => 1800,
+        ],
+        'api' => [
+            'v1' => [
+                'products' => [
+                    'tag' => 'ApiV1Product',
+                    'index' => [
+                        'key' => 'Index',
+                        'ttl' => env('CACHE_ENABLED', true) ? 3600 : 0
+                    ],
+                ],
+                'site' => [
+                    'tag' => 'ApiV1Site',
+                    'index_page' => [
+                        'key' => 'IndexPage',
+                        'ttl' => env('CACHE_ENABLED', true) ? 3600 : 0
+                    ]
+                ],
+            ],
         ],
     ]
 ];

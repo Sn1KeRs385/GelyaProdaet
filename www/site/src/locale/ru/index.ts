@@ -1,7 +1,13 @@
-// This is just an example,
-// so you can safely delete all default props below
+import enums from './enums'
+import footer from './footer'
+import header from './header'
+import products from './products'
+import texts from './texts'
 
 export default {
-  failed: 'Ошибка',
-  success: 'Успешно',
+  enums,
+  footer,
+  header,
+  products,
+  texts,
 }

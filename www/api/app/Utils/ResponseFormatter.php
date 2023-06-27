@@ -12,10 +12,10 @@ class ResponseFormatter
 {
     public function formatPaginator(Paginator $paginator, string|JsonResource $itemResourceClass): PaginationResource
     {
-        $paginatorDto = new PaginationResourceDto(
-            paginator: $paginator,
-            itemResourceClass: $itemResourceClass,
-        );
+        $paginatorDto = PaginationResourceDto::from([
+            'paginator' => $paginator,
+            'itemResourceClass' => $itemResourceClass,
+        ]);
 
         return PaginationResource::make($paginatorDto);
     }

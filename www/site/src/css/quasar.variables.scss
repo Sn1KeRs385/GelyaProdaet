@@ -17,7 +17,8 @@ $secondary: #26a69a;
 $accent: #9c27b0;
 
 $dark: #222325;
-$semidark: #91929e;
+$semidark: #969696;
+$lightdark: #F0F0F5;
 $dark-page: #121212;
 
 $positive: #21ba45;
@@ -27,4 +28,5 @@ $warning: #f2c037;
 
 :root {
   --q-semidark: #{$semidark};
+  --q-lightdark: #{$lightdark};
 }

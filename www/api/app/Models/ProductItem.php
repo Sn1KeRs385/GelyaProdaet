@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\Attributes\ProductItemAttributes;
 use App\Models\Traits\EntityPhpDoc;
 use App\Models\Traits\Relations\ProductItemRelations;
+use App\Models\Traits\Scopes\ProductItemScopes;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,6 +32,7 @@ class ProductItem extends Model
     use EntityPhpDoc;
     use ProductItemRelations;
     use ProductItemAttributes;
+    use ProductItemScopes;
 
     /**
      * The attributes that are mass assignable.

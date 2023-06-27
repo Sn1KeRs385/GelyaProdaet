@@ -2,6 +2,8 @@
 
 namespace App\Models\Traits\Attributes;
 
+use App\Models\ProductItem;
+
 /**
  * @property int|null $price
  * @property int|null $priceFinal
@@ -11,6 +13,7 @@ namespace App\Models\Traits\Attributes;
  * @property float|null $priceFinalNormalize
  * @property float|null $priceBuyNormalize
  * @property float|null $priceSellNormalize
+ * @property bool $isSameCostItems
  * @property bool $isSendToTelegram
  */
 trait ProductAttributes
@@ -69,6 +72,20 @@ trait ProductAttributes
         }
 
         return $this->priceSell / 100;
+    }
+
+    public function getIsSameCostItemsAttribute(): bool
+    {
+        $items = $this->items->filter(fn(ProductItem $item) => $item->is_for_sale)->values();
+
+        foreach ($items as $item) {
+            /** @var ProductItem $item */
+            if ($item->price !== $this->price || $item->price_final !== $this->priceFinal) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getIsSendToTelegramAttribute(): bool

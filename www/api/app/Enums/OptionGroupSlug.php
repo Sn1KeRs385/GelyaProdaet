@@ -12,4 +12,19 @@ enum OptionGroupSlug: string
     case SIZE_YEAR = 'size_year';
     case PRODUCT_TYPE = 'product_type';
     case GENDER = 'gender';
+
+    public static function getCategoryPriority(): array
+    {
+        return [self::PRODUCT_TYPE, self::GENDER, self::BRAND, self::COUNTRY];
+    }
+
+    public static function getCategorySizes(): array
+    {
+        return [self::SIZE, self::SIZE_YEAR];
+    }
+
+    public static function getCategorySmallFirstLetter(): array
+    {
+        return [self::GENDER];
+    }
 }

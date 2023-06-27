@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Compilation;
 use App\Models\ListOption;
 use App\Models\Product;
 use App\Models\User;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
             (new User())->getMorphClass() => User::class,
             (new Product())->getMorphClass() => Product::class,
             (new ListOption())->getMorphClass() => ListOption::class,
+            (new Compilation())->getMorphClass() => Compilation::class,
         ]);
     }
 }

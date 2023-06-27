@@ -16,7 +16,8 @@ module.exports = {
       colors: {
         primary: '#604AEC',
         dark: '#222325',
-        semidark: '#91929E',
+        semidark: '#969696',
+        lightdark: '#F0F0F5',
         light: '#FFFFFF',
       },
       borderWidth: {
@@ -41,6 +42,14 @@ module.exports = {
 
       fontSize: {
         ...spacing0to100,
+      },
+
+      lineHeight: {
+        100: '100%',
+        110: '110%',
+        120: '120%',
+        130: '130%',
+        140: '140%',
       },
     },
   },

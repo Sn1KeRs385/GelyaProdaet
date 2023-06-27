@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('telescope:prune --hours=168')->daily();
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('page-generator:categories')->dailyAt('03:00');
+        $schedule->command('page-generator:product')->hourly();
     }
 
     /**

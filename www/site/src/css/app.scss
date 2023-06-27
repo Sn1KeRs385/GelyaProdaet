@@ -1,1 +1,11 @@
-// app global css in SCSS form
+.image-inside-container-hover-scale {
+  display: inline-block;
+  overflow: hidden;
+}
+.image-inside-container-hover-scale img{
+  transition: 1s;
+  display: block;
+}
+.image-inside-container-hover-scale img:hover {
+  transform: scale(1.15);
+}

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property string $groupSlugHuman
+ * @property Collection<int, File>|File[] $logo
  */
 trait ListOptionAttributes
 {

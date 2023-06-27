@@ -6,6 +6,7 @@ use App\Enums\OptionGroupSlug;
 use App\Models\File;
 use App\Models\ListOption;
 use App\Models\ProductItem;
+use App\Models\SitePage;
 use App\Models\TgMessage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,5 +61,10 @@ trait ProductRelations
     public function tgMessages(): MorphMany
     {
         return $this->morphMany(TgMessage::class, 'owner');
+    }
+
+    public function sitePages(): MorphMany
+    {
+        return $this->morphMany(SitePage::class, 'owner');
     }
 }
