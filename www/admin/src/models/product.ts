@@ -15,7 +15,7 @@ import ProductItemInterface from 'src/interfaces/models/product-item-interface'
 import ApiFileInterface from 'src/interfaces/Api/file-interface'
 import ProductItemWithColorInterface from 'src/interfaces/models/product-item-with-color-interface'
 import ProductItemWithSizeInterface from 'src/interfaces/models/product-item-with-size-interface'
-import ProductItem from 'src/models/product-item'
+import ProductItemModel from 'src/models/product-item'
 import ProductItemWithNormalizePricesInterface from 'src/interfaces/models/product-item-with-normalize-prices-interface'
 import ProductItemWithSizeYearInterface from 'src/interfaces/models/product-item-with-size-year-interface'
 import ListOption from 'src/models/list-option'
@@ -251,7 +251,7 @@ class ProductModel extends BaseModel<AllItemInterface, IndexItemInterface, GetBy
         key: 'items',
         input: new Table({
           label: t('models.product.form.items.label'),
-          model: ProductItem,
+          model: ProductItemModel,
           columnsDelete: ['product'],
         }),
       },

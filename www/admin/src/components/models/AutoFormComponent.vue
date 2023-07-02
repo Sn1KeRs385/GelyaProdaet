@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import FormField from 'src/interfaces/admin/form-field'
+import FormField, { BaseInputOrCallback } from 'src/interfaces/admin/form-field'
 import FormData from 'src/interfaces/admin/form-data'
 import { useI18n } from 'vue-i18n'
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
+import { BaseInput } from 'src/classes/inputs/base-input'
+import ApiFileInterface from 'src/interfaces/Api/file-interface'
 import BaseModelInterface from 'src/interfaces/models/base-model-interface'
 
 interface Props {
   fields: FormField[]
   modelData?: BaseModelInterface
+  tab?: string
+  hideButtons?: boolean
+  globalFiles?: ApiFileInterface[]
+  autoSave?: boolean
 }
 
 const props = defineProps<Props>()
@@ -19,6 +25,16 @@ const { t } = useI18n()
 
 const formData = reactive<FormData>({})
 const formReadyComponents = reactive<{ [key: string]: boolean }>({})
+
+if (props.autoSave) {
+  watch(
+    formData,
+    () => {
+      submitForm()
+    },
+    { deep: true }
+  )
+}
 
 const isEditForm = computed(() => !!props.modelData)
 const fieldsShowed = computed(() =>
@@ -72,24 +88,36 @@ const formReady = computed(() => {
 
   return ready
 })
+
+const getInput = computed(() => (input: BaseInputOrCallback) => {
+  if (input instanceof BaseInput) {
+    return input
+  }
+
+  return input(props.modelData)
+})
 </script>
 
 <template>
   <q-form @submit="submitForm" @reset="resetForm">
     <template v-for="field in fields" :key="field.key">
       <component
-        :is="field.input.component"
+        :is="getInput(field.input).component"
         v-if="isEditForm ? !field.hideInUpdate : !field.hideInCreate"
-        v-bind="field.input.getParams()"
+        v-bind="getInput(field.input).getParams()"
         v-model="formData[field.key].value"
         v-model:is-ready="formReadyComponents[field.key]"
+        :field-key="field.key"
         :model-data="modelData"
+        :global-files="modelData?.files || props.globalFiles"
         :error="formData[field.key].errors.length > 0"
         :error-message="formData[field.key].errors.join('\r\n')"
-      ></component>
+        :style="{ display: !tab || tab === field.tabName ? undefined : 'none !important' }"
+        class="tw-mt-6px md:tw-mt-12px lg:tw-mt-18px"
+      />
     </template>
 
-    <div class="row tw-space-x-8px tw-mt-6">
+    <div v-if="!hideButtons" class="row tw-space-x-8px tw-mt-6">
       <q-btn
         :label="isEditForm ? t('models.base.form.save') : t('models.base.form.submit')"
         type="submit"

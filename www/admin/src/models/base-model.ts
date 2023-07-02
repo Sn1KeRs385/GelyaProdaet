@@ -2,6 +2,7 @@ import { api } from 'src/boot/axios'
 import ApiPaginationResponseInterface from 'src/interfaces/Api/pagination-response-interface'
 import FormField from 'src/interfaces/admin/form-field'
 import QTableColParams from 'src/interfaces/quasar/q-table-params'
+import FormTabData from 'src/interfaces/admin/form-tab-data'
 
 interface CreateItemInterface {
   id: number
@@ -55,6 +56,10 @@ abstract class BaseModel<AllItemInterface, IndexItemInterface, GetByIdItemInterf
       editButton: true,
       deleteButton: true,
     }
+  }
+
+  getFormTabs(): FormTabData[] {
+    return []
   }
 
   all(): Promise<AllItemInterface[]> {

@@ -28,6 +28,9 @@ const listOptionsStore = useListOptionsStore()
 
 const listOptions = ref(listOptionsStore.options)
 
+const tabs = computed(() => props.model.getFormTabs())
+const activeTab = ref(tabs.value?.[0]?.name || undefined)
+
 const fields = computed(() => props.model.getFormFields())
 
 onBeforeMount(() => {
@@ -88,6 +91,27 @@ const submitForm = (formData: FormData) => {
         {{ t('models.base.back') }}
       </q-btn>
     </div>
-    <auto-form-component :fields="fields" :model-data="modelData" @submit-form="submitForm" />
+    <q-tabs
+      v-if="tabs.length > 0"
+      v-model="activeTab"
+      inline-label
+      outside-arrows
+      mobile-arrows
+      class="bg-primary text-white shadow-2"
+    >
+      <q-tab
+        v-for="tab in tabs"
+        :key="tab.name"
+        :name="tab.name"
+        :icon="tab.icon"
+        :label="tab.label"
+      />
+    </q-tabs>
+    <auto-form-component
+      :fields="fields"
+      :tab="activeTab"
+      :model-data="modelData"
+      @submit-form="submitForm"
+    />
   </q-page>
 </template>
