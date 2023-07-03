@@ -22,14 +22,14 @@ const filter = ref('')
 const filterRef = ref<InstanceType<typeof HTMLInputElement> | null>(null)
 const treeRef = ref<InstanceType<typeof QTree> | null>(null)
 const options = ref(props.optionsCallback())
-const selected = ref<number | string | undefined>(props.modelValue)
+const selected = ref(props.modelValue || null)
 const selectedNode = ref<QTreeNode | undefined>()
 const treeOpened = ref(false)
 
 watch(
   () => props.modelValue,
   () => {
-    selected.value = props.modelValue
+    selected.value = props.modelValue || null
   },
   { deep: true }
 )
