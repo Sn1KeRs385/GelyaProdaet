@@ -109,7 +109,7 @@ class OzonExportService
 
             $taskResult->status = $item->status;
             $taskResult->errors = $item->errors;
-            $taskResult->result();
+            $taskResult->save();
 
             if ($taskResult->product_id) {
                 $productItem = ProductItem::find($taskResult->product_item_id);
