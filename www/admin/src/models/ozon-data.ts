@@ -3,7 +3,6 @@ import QTableColParams from 'src/interfaces/quasar/q-table-params'
 import FormField from 'src/interfaces/admin/form-field'
 import { t } from 'src/boot/i18n'
 import QuasarInput from 'src/classes/inputs/quasar/quasar-input'
-import ProductInterface from 'src/interfaces/models/product-interface'
 import { api } from 'src/boot/axios'
 import OzonDataInterface from 'src/interfaces/models/ozon-data-interface'
 
