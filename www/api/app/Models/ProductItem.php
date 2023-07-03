@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_sold
  * @property bool $is_for_sale
  * @property bool $is_reserved
+ * @property int|null $ozon_product_id
  * @property Carbon|null $sold_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -50,6 +51,7 @@ class ProductItem extends Model
 //        'is_sold',
         'is_for_sale',
 //        'is_reserved',
+        'ozon_product_id',
     ];
 
     protected $casts = [

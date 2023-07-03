@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useUserStore } from 'src/stores/user-store'
 import MainMenu from 'src/components/MainMenu.vue'
+import OzonDataFormPopup from 'src/components/models/ozon-data/OzonDataFormPopup.vue'
 
 const userStore = useUserStore()
 const { logout } = userStore
@@ -31,6 +32,7 @@ const toggleLeftDrawer = () => {
 
     <q-page-container>
       <router-view />
+      <ozon-data-form-popup />
     </q-page-container>
   </q-layout>
 </template>

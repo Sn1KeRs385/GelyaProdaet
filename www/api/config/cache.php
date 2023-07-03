@@ -116,5 +116,35 @@ return [
             'key' => 'tg-user-state',
             'ttl' => '1800',
         ],
+        'ozonData' => [
+            'tag' => 'ozonData',
+            'attribute' => [
+                'key' => 'attribute',
+                'ttl' => env('CACHE_ENABLED', true) ? 86400 : 0
+            ],
+            'attributeValues' => [
+                'key' => 'attributeValues',
+                'ttl' => env('CACHE_ENABLED', true) ? 86400 : 0
+            ],
+        ],
+        'admin' => [
+            'v1' => [
+                'ozonData' => [
+                    'tag' => 'AdminV1OzonData',
+                    'categories' => [
+                        'key' => 'Categories',
+                        'ttl' => env('CACHE_ENABLED', true) ? 3600 : 0
+                    ],
+                    'attributes' => [
+                        'key' => 'Attributes',
+                        'ttl' => env('CACHE_ENABLED', true) ? 3600 : 0
+                    ],
+                    'attribute_values' => [
+                        'key' => 'AttributeValues',
+                        'ttl' => env('CACHE_ENABLED', true) ? 3600 : 0
+                    ],
+                ],
+            ],
+        ],
     ]
 ];

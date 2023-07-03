@@ -8,6 +8,9 @@ interface Props {
   optionsCallback: OptionsCallback
   createCallback?: CreateCallback
   label?: string
+  tooltip?: string
+  multiple: boolean
+  required: boolean
 }
 
 const { t } = useI18n()
@@ -57,9 +60,22 @@ const createElement = (label: string) => {
     :label="label"
     use-input
     input-debounce="0"
+    :multiple="multiple"
+    :use-chips="multiple"
     @filter="filterFn"
     @update:model-value="(value) => emit('update:modelValue', value)"
   >
+    <template #label>
+      {{ label }}
+      <span v-if="required" class="tw-text-red-600">*</span>
+    </template>
+    <template v-if="tooltip" #prepend>
+      <q-icon v-if="tooltip" name="info">
+        <q-tooltip transition-show="scale" transition-hide="scale" class="tw-text-16px">
+          {{ tooltip }}
+        </q-tooltip>
+      </q-icon>
+    </template>
     <template #no-option>
       <q-item>
         <q-item-section class="text-grey" side>

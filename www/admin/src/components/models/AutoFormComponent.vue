@@ -36,6 +36,28 @@ if (props.autoSave) {
   )
 }
 
+watch(
+  () => props.fields,
+  (value) => {
+    value.forEach((field) => {
+      if (!formData[field.key]) {
+        let fieldValue: unknown = field.defaultValue
+        if (props.modelData?.hasOwnProperty(field.key)) {
+          fieldValue = props.modelData?.[field.key]
+        }
+
+        formData[field.key] = {
+          // eslint-disable-next-line
+            // @ts-ignore
+          value: fieldValue,
+          errors: [],
+        }
+      }
+    })
+  },
+  { deep: true }
+)
+
 const isEditForm = computed(() => !!props.modelData)
 const fieldsShowed = computed(() =>
   props.fields.filter(

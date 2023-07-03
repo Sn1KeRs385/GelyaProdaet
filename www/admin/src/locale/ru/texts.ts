@@ -5,4 +5,6 @@ export default {
   noFind: 'Не найдено',
   quarterWithNumberAndYear: '{quarter} квартал {year}',
   close: 'Закрыть',
+  somethingWrong: 'Что-то не так, попробуйте повторить позже!',
+  search: 'Поиск',
 }

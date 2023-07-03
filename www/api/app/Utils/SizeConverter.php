@@ -34,7 +34,7 @@ class SizeConverter
                 foreach (self::SIZE_TO_YEAR_LIST as $sizeFromTable => $yearsFromTable) {
                     if ($size < $sizeFromTable && $size > $prevSize) {
                         $sizesOfPrev = self::SIZE_TO_YEAR_LIST[$prevSize] ?? [];
-                        if(count($sizesOfPrev) > 0) {
+                        if (count($sizesOfPrev) > 0) {
                             $sizesOfPrev = [end($sizesOfPrev)];
                         }
                         $years = array_merge(
@@ -59,7 +59,7 @@ class SizeConverter
         $years = explode('-', $years);
         foreach ($years as $year) {
             foreach (self::SIZE_TO_YEAR_LIST as $sizeFromTable => $yearsFromTable) {
-                if (in_array($year, $yearsFromTable)) {
+                if (in_array((int)$year, $yearsFromTable)) {
                     $sizes[] = $sizeFromTable;
                 }
             }

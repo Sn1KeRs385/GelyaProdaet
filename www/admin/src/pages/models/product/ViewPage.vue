@@ -10,6 +10,7 @@ import imagesUrl from 'src/enums/images-url'
 import ApiFileInterface from 'src/interfaces/Api/file-interface'
 import FileStatus from 'file-uploader/enums/file-status'
 import ImagesUrl from 'src/enums/images-url'
+import { useOzonDataStore } from 'src/stores/ozon-data-store'
 
 interface Props {
   model: typeof ProductModel
@@ -21,6 +22,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const listOptionsStore = useListOptionsStore()
+const ozonDataStore = useOzonDataStore()
 
 const data = ref<GetByIdItemInterface | undefined>()
 const slide = ref(1)
@@ -113,6 +115,16 @@ const itemsNotActive = computed(
       <div
         class="row tw-gap-12px row tw-justify-between md:tw-justify-start tw-w-full md:tw-w-auto tw-mt-8px md:tw-mt-0"
       >
+        <q-btn
+          v-if="modelId"
+          text-color="primary"
+          flat
+          class="tw-p-0"
+          @click="ozonDataStore.openPopup(modelId)"
+        >
+          <img :src="ImagesUrl.OZON" alt="Озон" />
+        </q-btn>
+
         <q-btn
           v-if="modelId"
           color="white"

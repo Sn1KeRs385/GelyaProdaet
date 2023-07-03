@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\V1\DashboardController;
 use App\Http\Controllers\Api\Admin\V1\ListOptionController;
+use App\Http\Controllers\Api\Admin\V1\OzonDataController;
 use App\Http\Controllers\Api\Admin\V1\ProductController;
 use App\Http\Controllers\Api\Admin\V1\ProductItemController;
 use Illuminate\Support\Facades\Route;
@@ -53,4 +54,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/list-options/all', [ListOptionController::class, 'all'])->name('list-options.all');
     Route::resource('list-options', ListOptionController::class);
+
+    Route::get('/ozon-data/get-by-product-id/{id}', [OzonDataController::class, 'getByProductId'])
+        ->name('ozon-data.get-by-product-id');
+    Route::get('/ozon-data/categories', [OzonDataController::class, 'getCategories'])
+        ->name('ozon-data.categories');
+    Route::get('/ozon-data/category/{id}/attributes', [OzonDataController::class, 'getAttributesByCategoryId'])
+        ->name('ozon-data.category.attributes');
+    Route::get(
+        '/ozon-data/category/{categoryId}/attribute/{attributeId}/values',
+        [OzonDataController::class, 'getAttributeValues']
+    )
+        ->name('ozon-data.category.attribute.values');
+    Route::resource('ozon-data', OzonDataController::class);
 });
