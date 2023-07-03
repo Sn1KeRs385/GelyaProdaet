@@ -51,20 +51,22 @@ class OzonExportService
                     ]);
                 }
             ])
-            ->when($lastTask, function (Builder $query) use ($lastTask) {
-                $query->where('updated_at', '>=', $lastTask->created_at)
-                    ->orWhere(function (Builder $query) {
+            ->where(function (Builder $query) use ($lastTask) {
+                $query->when($lastTask, function (Builder $query) use ($lastTask) {
+                    $query->where('updated_at', '>=', $lastTask->created_at)
+                        ->orWhere(function (Builder $query) {
+                            $query->whereNull('ozon_product_id')
+                                ->where('is_sold', false)
+                                ->where('is_for_sale', true)
+                                ->where('is_reserved', false);
+                        });
+                })
+                    ->when(!$lastTask, function (Builder $query) use ($lastTask) {
                         $query->whereNull('ozon_product_id')
                             ->where('is_sold', false)
                             ->where('is_for_sale', true)
                             ->where('is_reserved', false);
                     });
-            })
-            ->when(!$lastTask, function (Builder $query) use ($lastTask) {
-                $query->whereNull('ozon_product_id')
-                    ->where('is_sold', false)
-                    ->where('is_for_sale', true)
-                    ->where('is_reserved', false);
             })
             ->chunk(500, function (Collection $productItems) use (&$ozonExportChunk) {
                 foreach ($productItems as $productItem) {
