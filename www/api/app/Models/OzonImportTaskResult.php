@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property-read int $id
  * @property int $import_task_id
- * @property int $product_item_id
+ * @property int $ozon_product_id
  * @property string|null $offer_id
- * @property int|null $product_id
+ * @property int|null $external_product_id
  * @property string|null $status
  * @property array $errors
  * @property Carbon|null $created_at
@@ -28,9 +28,9 @@ class OzonImportTaskResult extends Model
      */
     protected $fillable = [
         'import_task_id',
-        'product_item_id',
+        'ozon_product_id',
         'offer_id',
-        'product_id',
+        'external_product_id',
         'status',
         'errors',
     ];

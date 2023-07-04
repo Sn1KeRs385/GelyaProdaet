@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-    use EntityPhpDoc;
+//    use EntityPhpDoc;
     use ProductRelations;
     use ProductAttributes;
 

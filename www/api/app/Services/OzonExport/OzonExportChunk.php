@@ -3,14 +3,15 @@
 namespace App\Services\OzonExport;
 
 use App\Enums\OzonAttributeBindingType;
-use App\Exceptions\OzonRequiredAttributeMissingException;
 use App\Models\File;
 use App\Models\OzonAttributeBinding;
 use App\Models\OzonImportTask;
 use App\Models\OzonImportTaskResult;
+use App\Models\OzonProduct;
 use App\Models\ProductItem;
 use App\Services\OzonDataService;
 use App\Utils\SizeConverter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Modules\Ozon\Dto\Attribute;
 use Modules\Ozon\Services\OzonApiService;
@@ -30,92 +31,122 @@ class OzonExportChunk
         $this->sizeConverter = app(SizeConverter::class);
     }
 
-    public function addProductItem(ProductItem $productItem): bool
+    public function addProductItem(OzonProduct $product): bool
     {
         if (count($this->items) >= 100) {
             return false;
         }
 
-        $this->handleProductItem($productItem);
+        $this->handleProductItem($product);
 
         return true;
     }
 
-    protected function handleProductItem(ProductItem $productItem): void
+    protected function handleProductItem(OzonProduct $product): void
     {
-        $categoryId = $productItem->product->ozonData->category_id;
-        $price = round($productItem->priceNormalize * 3) - 1;
+        $categoryId = $product->product->ozonData->category_id;
+        $price = $this->getPrice($product);
 
         $item = [
-            'originalId' => $productItem->id,
-            'attributes' => $this->getAttributes($productItem, $categoryId),
+            'originalId' => $product->id,
+            'attributes' => $this->getAttributes($product, $categoryId),
             'category_id' => $categoryId,
             'dimension_unit' => 'mm',
             'weight_unit' => 'g',
             'vat' => '0',
-            'depth' => $productItem->product->ozonData->dept,
-            'height' => $productItem->product->ozonData->height,
-            'width' => $productItem->product->ozonData->width,
-            'weight' => $productItem->product->ozonData->weight,
+            'depth' => $product->product->ozonData->dept,
+            'height' => $product->product->ozonData->height,
+            'width' => $product->product->ozonData->width,
+            'weight' => $product->product->ozonData->weight,
             'old_price' => (string)$price,
             'price' => (string)$price,
-            'offer_id' => (string)$productItem->id,
-            'name' => $this->getName($productItem),
-            'images' => $this->getImageUrls($productItem),
+            'offer_id' => (string)$product->id,
+            'name' => $this->getName($product),
+            'images' => $this->getImageUrls($product),
         ];
 
         $this->items[] = $item;
     }
 
-    protected function getImageUrls(ProductItem $productItem): array
+    protected function getProductItemQuery(OzonProduct $product): Builder
     {
-        return $productItem->product->files->map(fn(File $file) => $file->permanentUrl)->toArray();
+        return ProductItem::query()
+            ->where('product_id', $product->product_id)
+            ->where('size_id', $product->size_id)
+            ->where('size_year_id', $product->size_year_id)
+            ->where('color_id', $product->color_id)
+            ->where('count', $product->count);
     }
 
-    protected function getName(ProductItem $productItem): string
+    protected function getOldPrice(OzonProduct $product): int
     {
-        $name = $productItem->product->type->title;
+        /** @var ProductItem $productItem */
+        $productItem = $this->getProductItemQuery($product)
+            ->orderByDesc('price')
+            ->first();
 
-        if ($productItem->product->brand) {
-            $name .= ' ' . mb_strtolower($productItem->product->brand->title);
+        return (int)(round($productItem->priceNormalize * 3)) - 10;
+    }
+
+    protected function getPrice(OzonProduct $product): int
+    {
+        /** @var ProductItem $productItem */
+        $productItem = $this->getProductItemQuery($product)
+            ->orderByDesc('price')
+            ->first();
+
+        return (int)(round($productItem->priceNormalize * 3)) - 10;
+    }
+
+    protected function getImageUrls(OzonProduct $product): array
+    {
+        return $product->product->files->map(fn(File $file) => $file->permanentUrl)->toArray();
+    }
+
+    protected function getName(OzonProduct $product): string
+    {
+        $name = $product->product->type->title;
+
+        if ($product->product->brand) {
+            $name .= ' ' . mb_strtolower($product->product->brand->title);
         }
 
-        if ($productItem->color) {
-            $name .= ' ' . mb_strtolower($productItem->color->title);
+        if ($product->color) {
+            $name .= ' ' . mb_strtolower($product->color->title);
         }
 
         return $name;
     }
 
-    protected function getFullName(ProductItem $productItem): string
+    protected function getFullName(OzonProduct $product): string
     {
-        $name = $productItem->product->type->title;
+        $name = $product->product->type->title;
 
 
-        if ($productItem->product->gender) {
-            $name .= ' ' . mb_strtolower($productItem->product->gender->title);
+        if ($product->product->gender) {
+            $name .= ' ' . mb_strtolower($product->product->gender->title);
         }
 
-        if ($productItem->product->brand) {
-            $name .= ' ' . mb_strtolower($productItem->product->brand->title);
+        if ($product->product->brand) {
+            $name .= ' ' . mb_strtolower($product->product->brand->title);
         }
 
-        if ($productItem->product->country) {
-            $name .= ' ' . mb_strtolower($productItem->product->country->title);
+        if ($product->product->country) {
+            $name .= ' ' . mb_strtolower($product->product->country->title);
         }
 
-        if ($productItem->color) {
-            $name .= ' ' . mb_strtolower($productItem->color->title);
+        if ($product->color) {
+            $name .= ' ' . mb_strtolower($product->color->title);
         }
 
-        if ($productItem->size) {
-            $name .= ' ' . mb_strtolower($productItem->size->title);
+        if ($product->size) {
+            $name .= ' ' . mb_strtolower($product->size->title);
         }
 
-        if ($productItem->sizeYear) {
+        if ($product->sizeYear) {
             $size = $this->sizeConverter
                 ->getSizeFromYear(
-                    preg_replace('[^0-9-]', '', $productItem->sizeYear->title)
+                    preg_replace('[^0-9-]', '', $product->sizeYear->title)
                 );
             $name .= ' ' . mb_strtolower($size);
         }
@@ -123,21 +154,21 @@ class OzonExportChunk
         return $name;
     }
 
-    protected function getUnionId(ProductItem $productItem): string
+    protected function getUnionId(OzonProduct $product): string
     {
-        return "Product_{$productItem->product->id}";
+        return "Product_{$product->product->id}";
     }
 
-    protected function getAttributes(ProductItem $productItem, int $categoryId): array
+    protected function getAttributes(OzonProduct $product, int $categoryId): array
     {
         $optionIds = [
-            $productItem->color_id,
-            $productItem->size_id,
-            $productItem->size_year_id,
-            $productItem->product->type_id,
-            $productItem->product->brand_id,
-            $productItem->product->country_id,
-            $productItem->product->gender_id,
+            $product->color_id,
+            $product->size_id,
+            $product->size_year_id,
+            $product->product->type_id,
+            $product->product->brand_id,
+            $product->product->country_id,
+            $product->product->gender_id,
         ];
         $resultAttributes = [];
 
@@ -156,14 +187,6 @@ class OzonExportChunk
                 'values' => [],
             ];
 
-//            if ($attribute->id === 31 && !$productItem->product->brand_id) {
-//                $config = config('ozon.attribute_bindings')[31];
-//                $tempAttribute['values'][] = [
-//                    'dictionary_value_id' => $config['fallback_id'],
-//                    'value' => $config['fallback_value'],
-//                ];
-//            }
-
             $findBindings = $attributeBindings->where('attribute_id', $attribute->id)->values();
             if ($findBindings->count() > 0) {
                 foreach ($findBindings as $findBinding) {
@@ -175,7 +198,7 @@ class OzonExportChunk
                 }
             }
 
-            $attributes = $productItem->product->ozonData->attributes;
+            $attributes = $product->product->ozonData->attributes;
             if (isset($attributes[$attribute->id])) {
                 $values = $attributes[$attribute->id];
                 if (!is_array($values)) {
@@ -208,11 +231,11 @@ class OzonExportChunk
                     }
                 } elseif ($config['type'] === OzonAttributeBindingType::UNION_ID) {
                     $tempAttribute['values'][] = [
-                        'value' => $this->getUnionId($productItem),
+                        'value' => $this->getUnionId($product),
                     ];
                 } elseif ($config['type'] === OzonAttributeBindingType::NAME) {
                     $tempAttribute['values'][] = [
-                        'value' => $this->getFullName($productItem),
+                        'value' => $this->getFullName($product),
                     ];
                 } elseif ($config['type'] === OzonAttributeBindingType::CONSTANT) {
                     $tempAttribute['values'][] = [
@@ -220,9 +243,9 @@ class OzonExportChunk
                         'value' => $config['value'],
                     ];
                 } elseif ($config['type'] === OzonAttributeBindingType::PRODUCT_ITEM_COUNT) {
-                    if ($productItem->count > 0) {
+                    if ($product->count > 1) {
                         $tempAttribute['values'][] = [
-                            'value' => (string)$productItem->count,
+                            'value' => (string)$product->count,
                         ];
                     }
                 }
@@ -231,9 +254,6 @@ class OzonExportChunk
             if (count($tempAttribute['values']) > 0) {
                 $resultAttributes[] = $tempAttribute;
             }
-//            } elseif($attribute->is_required) {
-//                throw new OzonRequiredAttributeMissingException();
-//            }
         }
 
         return $resultAttributes;
@@ -252,7 +272,7 @@ class OzonExportChunk
         foreach ($this->items as $item) {
             OzonImportTaskResult::create([
                 'import_task_id' => $task->id,
-                'product_item_id' => $item['originalId'],
+                'ozon_product_id' => $item['originalId'],
                 'offer_id' => $item['offer_id'],
             ]);
         }
