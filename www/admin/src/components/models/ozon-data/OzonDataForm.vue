@@ -49,18 +49,33 @@ const submitForm = (formData: FormData) => {
 
   data.product_id = props.productId
 
-  OzonDataModel.create(data)
-    .then(() => {
-      $q.notify({
-        progress: true,
-        type: 'positive',
-        position: 'top-right',
-        message: 'Настройки сохранены',
+  if (modelData.value?.id) {
+    OzonDataModel.update(modelData.value?.id, data)
+      .then(() => {
+        $q.notify({
+          progress: true,
+          type: 'positive',
+          position: 'top-right',
+          message: 'Настройки сохранены',
+        })
       })
-    })
-    .catch((error: AxiosError<ApiErrorInterface>) => {
-      apiErrorHandler(error, { formFields: formData })
-    })
+      .catch((error: AxiosError<ApiErrorInterface>) => {
+        apiErrorHandler(error, { formFields: formData })
+      })
+  } else {
+    OzonDataModel.create(data)
+      .then(() => {
+        $q.notify({
+          progress: true,
+          type: 'positive',
+          position: 'top-right',
+          message: 'Настройки сохранены',
+        })
+      })
+      .catch((error: AxiosError<ApiErrorInterface>) => {
+        apiErrorHandler(error, { formFields: formData })
+      })
+  }
 }
 
 const onUpdateCategory = async (node: QTreeNode | undefined) => {
