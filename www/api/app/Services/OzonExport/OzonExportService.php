@@ -72,8 +72,11 @@ class OzonExportService
                         . 'and pi.count is not distinct from ozon_products.count '
                         . 'and pi.updated_at >= ?';
 
-                    $query->whereHas('product', function (Builder $query) use ($lastTask) {
-                        $query->where('updated_at', '>=', $lastTask->created_at);
+                    $query->orWhereHas('product', function (Builder $query) use ($lastTask) {
+                        $query->where('updated_at', '>=', $lastTask->created_at)
+                            ->orWhereHas('ozonData', function (Builder $query) use ($lastTask) {
+                                $query->where('updated_at', '>=', $lastTask->created_at);
+                            });
                     })
                         ->orWhereRaw("exists($isUpdatedQuery)", [$lastTask->created_at]);
                 });
@@ -136,5 +139,32 @@ class OzonExportService
             $task->is_completed = true;
             $task->save();
         }
+    }
+
+    public function updateStocksForAllProduct(): void
+    {
+        $ozonUpdateStocksChunk = new OzonUpdateStocksChunk();
+
+        OzonProduct::query()
+            ->whereNotNull('external_id')
+            ->chunk(500, function (Collection $ozonProducts) use ($ozonUpdateStocksChunk) {
+                foreach ($ozonProducts as $ozonProduct) {
+                    if ($ozonUpdateStocksChunk->addProductItem($ozonProduct) === false) {
+                        $ozonUpdateStocksChunk->startUpdate();
+                        $ozonUpdateStocksChunk = new OzonUpdateStocksChunk();
+                    }
+                }
+            });
+
+        $ozonUpdateStocksChunk->startUpdate();
+    }
+
+
+    public function updateStocksProduct(OzonProduct $product): ?OzonUpdateStocksChunk
+    {
+        $ozonUpdateStocksChunk = new OzonUpdateStocksChunk();
+        $ozonUpdateStocksChunk->addProductItem($product);
+        $ozonUpdateStocksChunk->startUpdate();
+        return $ozonUpdateStocksChunk;
     }
 }

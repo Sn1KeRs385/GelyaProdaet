@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\EntityPhpDoc;
 use App\Models\Traits\Relations\OzonProductRelations;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,5 +41,15 @@ class OzonProduct extends Model
     public function getMorphClass(): string
     {
         return 'OzonProduct';
+    }
+
+    public function getProductItemsQuery(): Builder
+    {
+        return ProductItem::query()
+            ->where('product_id', $this->product_id)
+            ->where('size_id', $this->size_id)
+            ->where('size_year_id', $this->size_year_id)
+            ->where('color_id', $this->color_id)
+            ->where('count', $this->count);
     }
 }

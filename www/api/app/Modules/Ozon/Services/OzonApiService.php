@@ -8,6 +8,7 @@ use Modules\Ozon\Dto\Responses\AttributeValuesResponse;
 use Modules\Ozon\Dto\Responses\CategoryTreeResponse;
 use Modules\Ozon\Dto\Responses\ProductImportInfoResponse;
 use Modules\Ozon\Dto\Responses\ProductImportResponse;
+use Modules\Ozon\Dto\Responses\ProductImportStocksResponse;
 
 class OzonApiService
 {
@@ -104,5 +105,20 @@ class OzonApiService
         );
 
         return ProductImportInfoResponse::from(json_decode($response->getBody()->getContents(), true));
+    }
+
+    public function importProductStocks(array $items): ProductImportStocksResponse
+    {
+        $response = $this->apiClient->request(
+            'POST',
+            config('ozon.url.product.stocks'),
+            [
+                'json' => [
+                    'stocks' => $items,
+                ],
+            ]
+        );
+
+        return ProductImportStocksResponse::from(json_decode($response->getBody()->getContents(), true));
     }
 }

@@ -68,20 +68,10 @@ class OzonExportChunk
         $this->items[] = $item;
     }
 
-    protected function getProductItemQuery(OzonProduct $product): Builder
-    {
-        return ProductItem::query()
-            ->where('product_id', $product->product_id)
-            ->where('size_id', $product->size_id)
-            ->where('size_year_id', $product->size_year_id)
-            ->where('color_id', $product->color_id)
-            ->where('count', $product->count);
-    }
-
     protected function getOldPrice(OzonProduct $product): int
     {
         /** @var ProductItem $productItem */
-        $productItem = $this->getProductItemQuery($product)
+        $productItem = $product->getProductItemsQuery()
             ->orderByDesc('price')
             ->first();
 
@@ -91,7 +81,7 @@ class OzonExportChunk
     protected function getPrice(OzonProduct $product): int
     {
         /** @var ProductItem $productItem */
-        $productItem = $this->getProductItemQuery($product)
+        $productItem = $product->getProductItemsQuery()
             ->orderByDesc('price')
             ->first();
 

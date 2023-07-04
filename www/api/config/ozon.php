@@ -78,6 +78,7 @@ return [
         'product' => [
             'import' => '/v2/product/import',
             'info' => '/v1/product/import/info',
+            'stocks' => '/v1/product/import/stocks',
         ],
     ],
 ];
