@@ -12,7 +12,6 @@ use App\Models\UserIdentifier;
 use App\Utils\TagCreator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use SergiX44\Nutgram\Telegram\Attributes\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
@@ -52,7 +51,11 @@ class ProductService
 
     public function sendProductToTelegram(Product $product, string|int $chatId = null): void
     {
-        $bot = new TelegramBot(config('telegram.bot_api_key'));
+        $config = [
+            'timeout' => 120, // default in seconds, when contacting the Telegram API
+        ];
+
+        $bot = new TelegramBot(config('telegram.bot_api_key'), $config);
 
         if (!$chatId) {
             $chatId = $bot::getPublicId();
