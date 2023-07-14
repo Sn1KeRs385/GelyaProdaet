@@ -387,7 +387,7 @@ class ProductService
             $text .= "\n\n"
                 . implode(
                     ' ',
-                    Arr::map($tags, fn(string $tag) => Str::replace(' ', '', "#$tag"))
+                    Arr::map($tags, fn(string $tag) => preg_replace('/[^0-9A-zА-я#_]/u', '', "#$tag"))
                 );
         }
 
