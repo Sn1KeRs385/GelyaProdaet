@@ -67,6 +67,11 @@ class ProductService
             ->orderBy('created_at', 'desc')
             ->first();
 
+        $hasProducts = $product->items()
+            ->where('is_sold', false)
+            ->where('is_for_sale', true)
+            ->exists();
+
         if ($message) {
             try {
                 $bot->editMessageCaption([
@@ -84,9 +89,15 @@ class ProductService
                     throw $exception;
                 }
             }
+
+            if (!$hasProducts) {
+                $message->delete();
+            }
+            
             return;
         }
-        if (!$product->send_to_telegram) {
+
+        if (!$hasProducts || !$product->send_to_telegram) {
             return;
         }
 
