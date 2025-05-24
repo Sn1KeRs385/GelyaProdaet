@@ -3,3 +3,5 @@
 /docker-compose.yml
 /.docker/
 /.env
+
+.DS_Store
