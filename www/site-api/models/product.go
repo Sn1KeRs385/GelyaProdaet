@@ -8,6 +8,7 @@ import (
 type Product struct {
 	ID             uint      `json:"id" gorm:"primaryKey"`
 	Title          string    `json:"title" gorm:"type:varchar(255);not null"`
+	Slug           string    `json:"slug" gorm:"type:varchar(255);not null;unique"`
 	Description    *string   `json:"description" gorm:"type:text"`
 	TypeID         uint      `json:"type_id" gorm:"not null"`
 	GenderID       uint      `json:"gender_id" gorm:"not null"`

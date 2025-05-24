@@ -78,7 +78,7 @@
   - **Сортировка**: `sort_by` (`created_at`, `price`), `sort_direction` (`asc`, `desc`)
   - **Базовая фильтрация**: только товары с `is_for_sale=true` элементами
   - **Ответ**: объект с `data` (товары) и `meta` (пагинация)
-- `GET /site/products/:id` - Получить товар по ID с полными связями
+- `GET /site/products/:slug` - Получить товар по slug с полными связями
 
 ### Опции (Options) 
 - `GET /site/options` - Получить все опции отсортированные по group_slug, weight, title
@@ -106,6 +106,7 @@
 {
   "id": 1,
   "title": "Футболка Nike",
+  "slug": "futbolka-nike",
   "description": "Спортивная футболка",
   "type_id": 1,
   "gender_id": 2,

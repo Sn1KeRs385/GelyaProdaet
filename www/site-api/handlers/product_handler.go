@@ -420,17 +420,18 @@ func parseIntArray(str string) []int {
 	return result
 }
 
-// GetProduct возвращает товар по ID с полными связями
+// GetProduct возвращает товар по slug с полными связями
 func GetProduct(c *fiber.Ctx) error {
-	id, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
+	slug := c.Params("slug")
+	if slug == "" {
 		return c.Status(400).JSON(fiber.Map{
-			"error": "Неверный ID товара",
+			"error": "Slug товара не указан",
 		})
 	}
 
 	var product models.Product
 	result := database.DB.
+		Where("slug = ?", slug).
 		Preload("Type").
 		Preload("Gender").
 		Preload("Brand").
@@ -442,7 +443,7 @@ func GetProduct(c *fiber.Ctx) error {
 		Preload("Items.Size").
 		Preload("Items.SizeYear").
 		Preload("Items.Color").
-		First(&product, id)
+		First(&product)
 
 	if result.Error != nil {
 		return c.Status(404).JSON(fiber.Map{

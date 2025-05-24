@@ -57,7 +57,7 @@ func main() {
 
 	// Маршруты для товаров (только чтение для внешнего API)
 	api.Get("/products", handlers.GetProducts)
-	api.Get("/products/:id", handlers.GetProduct)
+	api.Get("/products/:slug", handlers.GetProduct)
 
 	// Маршрут для опций (только чтение для внешнего API)
 	api.Get("/options", handlers.GetOptions)

@@ -59,6 +59,7 @@ GET /products?is_active=true&type_id=1,2&size_id=5,6&page=1&per_page=10&sort_by=
     {
       "id": 1,
       "title": "Футболка Nike",
+      "slug": "futbolka-nike",
       "description": "Спортивная футболка из хлопка",
       "type_id": 1,
       "gender_id": 2,
@@ -164,15 +165,15 @@ GET /products?size_year_id=15  # Найдет товары с возрастом
 GET /products?size_id=10,11&size_year_id=15,16  # Максимально широкий поиск по размерам
 ```
 
-#### GET /products/:id
-Возвращает один товар по ID с полными связями.
+#### GET /products/:slug
+Возвращает один товар по slug с полными связями.
 
 **Особенности:**
 - В связях `items` загружаются только элементы с `is_for_sale=true`
 
 **Запрос:**
 ```http
-GET /products/1
+GET /products/nike-air-max-90
 ```
 
 **Ответ:**
@@ -180,6 +181,7 @@ GET /products/1
 {
   "id": 1,
   "title": "Футболка Nike",
+  "slug": "futbolka-nike",
   "description": "Спортивная футболка из хлопка",
   "type_id": 1,
   "gender_id": 2,
@@ -197,7 +199,7 @@ GET /products/1
 ```
 
 **Ошибки:**
-- `400` - Неверный ID товара
+- `400` - Slug товара не указан
 - `404` - Товар не найден
 - `500` - Внутренняя ошибка сервера
 
@@ -269,6 +271,7 @@ GET /health
 {
   "id": 1,
   "title": "string",
+  "slug": "string",
   "description": "string|null",
   "type_id": 1,
   "gender_id": 1,
@@ -401,13 +404,6 @@ if (pagination.has_next) {
 }
 ```
 
-### Получить конкретный товар
-```javascript
-const response = await fetch('/api/v1/products/1');
-const product = await response.json();
-// Возвращается объект товара напрямую (без meta)
-```
-
 ### Получить все опции для фильтров
 ```javascript
 const response = await fetch('/api/v1/options');
@@ -449,6 +445,16 @@ const filters = {
 const params = new URLSearchParams(filters);
 const response3 = await fetch(`/api/v1/products?${params}`);
 // API автоматически найдет все связанные размеры и возрасты
+```
+
+### Получить конкретный товар по slug
+```javascript
+const response = await fetch('/api/v1/products/futbolka-nike');
+const product = await response.json();
+// Возвращается объект товара напрямую (без meta)
+
+console.log('Товар:', product.title); // "Футболка Nike"
+console.log('Slug:', product.slug);   // "futbolka-nike"
 ```
 
 ## 📏 Маппинг размеров
