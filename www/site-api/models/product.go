@@ -10,11 +10,11 @@ type Product struct {
 	Title          string    `json:"title" gorm:"type:varchar(255);not null"`
 	Slug           string    `json:"slug" gorm:"type:varchar(255);not null;unique"`
 	Description    *string   `json:"description" gorm:"type:text"`
-	TypeID         uint      `json:"type_id" gorm:"not null"`
-	GenderID       uint      `json:"gender_id" gorm:"not null"`
-	BrandID        *uint     `json:"brand_id"`
-	CountryID      *uint     `json:"country_id"`
-	SendToTelegram bool      `json:"send_to_telegram" gorm:"default:false"`
+	TypeID         uint      `json:"-" gorm:"not null"`
+	GenderID       uint      `json:"-" gorm:"not null"`
+	BrandID        *uint     `json:"-"`
+	CountryID      *uint     `json:"-"`
+	SendToTelegram bool      `json:"-" gorm:"default:false"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 

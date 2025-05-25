@@ -61,36 +61,39 @@ GET /products?is_active=true&type_id=1,2&size_id=5,6&page=1&per_page=10&sort_by=
       "title": "Футболка Nike",
       "slug": "futbolka-nike",
       "description": "Спортивная футболка из хлопка",
-      "type_id": 1,
-      "gender_id": 2,
-      "brand_id": 3,
-      "country_id": 4,
-      "send_to_telegram": false,
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
       "type": {
         "id": 1,
         "group_slug": "types",
         "title": "Футболка",
-        "weight": 10
+        "is_hidden_from_user_filters": false,
+        "created_at": "2024-01-01T00:00:00Z",
+        "updated_at": "2024-01-01T00:00:00Z"
       },
       "gender": {
         "id": 2,
         "group_slug": "genders",
         "title": "Мужской",
-        "weight": 20
+        "is_hidden_from_user_filters": false,
+        "created_at": "2024-01-01T00:00:00Z",
+        "updated_at": "2024-01-01T00:00:00Z"
       },
       "brand": {
         "id": 3,
         "group_slug": "brands",
         "title": "Nike",
-        "weight": 30
+        "is_hidden_from_user_filters": false,
+        "created_at": "2024-01-01T00:00:00Z",
+        "updated_at": "2024-01-01T00:00:00Z"
       },
       "country": {
         "id": 4,
         "group_slug": "countries",
         "title": "США",
-        "weight": 40
+        "is_hidden_from_user_filters": false,
+        "created_at": "2024-01-01T00:00:00Z",
+        "updated_at": "2024-01-01T00:00:00Z"
       },
       "files": [
         {
@@ -113,27 +116,31 @@ GET /products?is_active=true&type_id=1,2&size_id=5,6&page=1&per_page=10&sort_by=
       "items": [
         {
           "id": 1,
-          "product_id": 1,
-          "size_id": 5,
-          "color_id": 6,
-          "price_buy": 2000,
           "price": 3500,
           "price_final": 3200,
           "count": 1,
           "is_sold": false,
           "is_for_sale": true,
           "is_reserved": false,
+          "sold_at": null,
+          "created_at": "2024-01-01T00:00:00Z",
+          "updated_at": "2024-01-01T00:00:00Z",
           "size": {
             "id": 5,
             "group_slug": "sizes",
             "title": "L",
-            "weight": 50
+            "is_hidden_from_user_filters": false,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
           },
+          "size_year": null,
           "color": {
             "id": 6,
             "group_slug": "colors",
             "title": "Черный",
-            "weight": 60
+            "is_hidden_from_user_filters": false,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z"
           }
         }
       ]
@@ -201,11 +208,6 @@ GET /products/nike-air-max-90
   "title": "Футболка Nike",
   "slug": "futbolka-nike",
   "description": "Спортивная футболка из хлопка",
-  "type_id": 1,
-  "gender_id": 2,
-  "brand_id": 3,
-  "country_id": 4,
-  "send_to_telegram": false,
   "created_at": "2024-01-01T00:00:00Z",
   "updated_at": "2024-01-01T00:00:00Z",
   "type": { /* ListOption */ },
@@ -239,7 +241,6 @@ GET /options
     "id": 1,
     "group_slug": "brands",
     "title": "Adidas",
-    "weight": 10,
     "is_hidden_from_user_filters": false,
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-01-01T00:00:00Z"
@@ -248,16 +249,6 @@ GET /options
     "id": 2,
     "group_slug": "brands",
     "title": "Nike",
-    "weight": 20,
-    "is_hidden_from_user_filters": false,
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  },
-  {
-    "id": 3,
-    "group_slug": "colors",
-    "title": "Белый",
-    "weight": 10,
     "is_hidden_from_user_filters": false,
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-01-01T00:00:00Z"
@@ -292,11 +283,6 @@ GET /health
   "title": "string",
   "slug": "string",
   "description": "string|null",
-  "type_id": 1,
-  "gender_id": 1,
-  "brand_id": 1,
-  "country_id": 1,
-  "send_to_telegram": false,
   "created_at": "2024-01-01T00:00:00Z",
   "updated_at": "2024-01-01T00:00:00Z",
   "type": "ListOption",
@@ -312,23 +298,17 @@ GET /health
 ```json
 {
   "id": 1,
-  "product_id": 1,
-  "size_id": 1,
-  "size_year_id": 1,
-  "color_id": 1,
-  "price_buy": 2000,
-  "price": 3500,
-  "price_final": 3200,
-  "price_sell": 3000,
+  "price": 1200,
+  "price_final": 1000,
   "count": 1,
   "is_sold": false,
   "is_for_sale": true,
   "is_reserved": false,
-  "sold_at": "2024-01-01T00:00:00Z|null",
+  "sold_at": "2024-01-01T00:00:00Z",
   "created_at": "2024-01-01T00:00:00Z",
   "updated_at": "2024-01-01T00:00:00Z",
   "size": "ListOption|null",
-  "size_year": "ListOption|null",
+  "size_year": "ListOption|null", 
   "color": "ListOption|null"
 }
 ```
@@ -373,7 +353,6 @@ GET /health
   "id": 1,
   "group_slug": "string",
   "title": "string",
-  "weight": 10,
   "is_hidden_from_user_filters": false,
   "created_at": "2024-01-01T00:00:00Z",
   "updated_at": "2024-01-01T00:00:00Z"

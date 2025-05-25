@@ -13,7 +13,7 @@ docker compose exec api php artisan optimize
 
 docker compose restart api supervisord
 
-( cd www/admin ; yarn; yarn build )
+# ( cd www/admin ; yarn; yarn build )
 
 docker compose build site-api
 docker compose up -d site-api
