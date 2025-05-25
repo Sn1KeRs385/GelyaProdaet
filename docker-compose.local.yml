@@ -3,7 +3,7 @@ version: '3'
 services:
 
   api:
-    container_name: "${COMPOSE_PROJECT_NAME}_api"
+    container_name: "api"
     build:
       context: ./config/api
     working_dir: /var/www
@@ -16,7 +16,7 @@ services:
       TZ: UTC
 
   nginx:
-    container_name: "${COMPOSE_PROJECT_NAME}_nginx"
+    container_name: "nginx"
     image: nginx:alpine
     ports:
       - ${HOST_PORT_NGINX}:80
@@ -29,13 +29,15 @@ services:
       TZ: UTC
     depends_on:
       - api
+      - site-api
 
   admin:
+    container_name: "admin"
     image: node:16
     volumes:
       - ${PATH_TO_ADMIN}:/srv/www
     ports:
-      - ${HOST_PORT_ADMIN_WS}:9000 # для нормальной работы DEV-режима с обновлением через WS
+      - ${HOST_PORT_ADMIN}:9000 # для нормальной работы DEV-режима с обновлением через WS
     depends_on:
       - api
     working_dir: /srv/www
@@ -44,7 +46,7 @@ services:
       TZ: UTC
 
   postgres:
-    container_name: "${COMPOSE_PROJECT_NAME}_postgresdb"
+    container_name: "postgresdb"
     image: postgres:15.2
     restart: always
     ports:
@@ -57,29 +59,16 @@ services:
       - ./.docker/postgresql-data:/var/lib/postgresql/data
 
   redis:
-    container_name: "${COMPOSE_PROJECT_NAME}_redisdb"
-    image: redis:7.0.9
-    restart: always
+    container_name: "redisdb"
+    image: redis:7-alpine
+    restart: unless-stopped
     ports:
       - "${HOST_PORT_REDIS}:6379"
     volumes:
       - ./.docker/redis-data:/data
 
-  minio:
-    container_name: "${COMPOSE_PROJECT_NAME}_minio"
-    image: minio/minio
-    ports:
-      - "${MINIO_9000_CONTAINER_PORT}:9000"
-      - "${MINIO_9001_CONTAINER_PORT}:9001"
-    volumes:
-      - minio_storage:/data
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    command: server --console-address ":9001" /data
-
   supervisord:
-    container_name: "${COMPOSE_PROJECT_NAME}_supervisord"
+    container_name: "supervisord"
     build:
       context: ./config/supervisord
     volumes:
@@ -88,5 +77,38 @@ services:
     depends_on:
       - api
 
-volumes:
-  minio_storage:
+  site:
+    container_name: "site"
+    build:
+      context: ./config/site
+    volumes:
+      - ${PATH_TO_SITE}:/srv/www
+    ports:
+      - ${HOST_PORT_SITE}:9000 # для нормальной работы DEV-режима с обновлением через WS
+    depends_on:
+      - site-api
+    working_dir: /srv/www
+    command: bash -c "npm run dev"
+    environment:
+      TZ: UTC
+
+  site-api:
+    container_name: "site-api"
+    build:
+      context: .
+      dockerfile: ./config/site-api/Dockerfile
+    environment:
+      SERVER_PORT: 8080
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DATABASE}
+      DB_SSLMODE: disable
+      AWS_URL: https://storage.yandexcloud.net
+      AWS_BUCKET: kidstyle72-dev
+    ports:
+      - ${HOST_PORT_SITE_API}:8080
+    depends_on:
+      - postgres
+    restart: unless-stopped

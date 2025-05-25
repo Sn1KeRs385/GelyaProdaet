@@ -12,6 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ProductCrudService extends BaseCrudService
 {
@@ -75,6 +76,8 @@ class ProductCrudService extends BaseCrudService
 
     protected function storeDataHook(array &$data): void
     {
+        $data['slug'] = Str::random(10) . '-' . Str::slug($data['title']);
+
         $this->storeUpdateDataHook($data);
     }
 
@@ -116,5 +119,17 @@ class ProductCrudService extends BaseCrudService
         $product = Product::findOrFail($productId);
 
         return $this->productService->sendToUserTelegram($product, $user);
+    }
+
+    protected function storeAfterSaveHook(Model &$model, array &$data): void
+    {
+        $model->slug = $model->id . '-' . Str::slug($data['title']);
+        $model->save();
+    }
+
+    protected function updateAfterSaveHook(Model &$model, array &$data): void
+    {
+        $model->slug = $model->id . '-' . Str::slug($data['title']);
+        $model->save();
     }
 }
