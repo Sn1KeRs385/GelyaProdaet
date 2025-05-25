@@ -7,14 +7,14 @@ import (
 // ProductItem представляет конкретный экземпляр товара
 type ProductItem struct {
 	ID         uint       `json:"id" gorm:"primaryKey"`
-	ProductID  uint       `json:"product_id" gorm:"not null"`
-	SizeID     *uint      `json:"size_id"`
-	SizeYearID *uint      `json:"size_year_id"`
-	ColorID    *uint      `json:"color_id"`
-	PriceBuy   uint       `json:"price_buy" gorm:"not null"`
+	ProductID  uint       `json:"-" gorm:"not null"`
+	SizeID     *uint      `json:"-"`
+	SizeYearID *uint      `json:"-"`
+	ColorID    *uint      `json:"-"`
+	PriceBuy   uint       `json:"-" gorm:"not null"`
 	Price      uint       `json:"price" gorm:"not null"`
 	PriceFinal *uint      `json:"price_final"`
-	PriceSell  *uint      `json:"price_sell"`
+	PriceSell  *uint      `json:"-"`
 	Count      uint       `json:"count" gorm:"default:1"`
 	IsSold     bool       `json:"is_sold" gorm:"default:false"`
 	IsForSale  bool       `json:"is_for_sale" gorm:"default:true"`
