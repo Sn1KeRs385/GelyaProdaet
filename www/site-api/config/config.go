@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Database DatabaseConfig
 	Server   ServerConfig
+	S3       S3Config
 }
 
 // DatabaseConfig содержит настройки базы данных
@@ -27,6 +28,13 @@ type ServerConfig struct {
 	Port string
 }
 
+// S3Config содержит настройки S3 хранилища
+type S3Config struct {
+	Bucket string
+	Region string
+	URL    string
+}
+
 // Load загружает конфигурацию из переменных окружения
 func Load() *Config {
 	dbPort, _ := strconv.Atoi(getEnv("DB_PORT", "5432"))
@@ -42,6 +50,11 @@ func Load() *Config {
 		},
 		Server: ServerConfig{
 			Port: getEnv("SERVER_PORT", "8080"),
+		},
+		S3: S3Config{
+			Bucket: getEnv("AWS_BUCKET", "gelya-prodaet"),
+			Region: getEnv("AWS_REGION", "us-east-1"),
+			URL:    getEnv("AWS_URL", ""),
 		},
 	}
 }

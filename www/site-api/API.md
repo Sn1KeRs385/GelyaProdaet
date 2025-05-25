@@ -92,6 +92,24 @@ GET /products?is_active=true&type_id=1,2&size_id=5,6&page=1&per_page=10&sort_by=
         "title": "США",
         "weight": 40
       },
+      "files": [
+        {
+          "id": 1,
+          "status": "FINISHED",
+          "collection": "default",
+          "original_filename": "nike-shirt-1.jpg",
+          "type": "image/jpeg",
+          "url": "https://s3.amazonaws.com/gelya-prodaet/uploads/products/nike-shirt-1.jpg"
+        },
+        {
+          "id": 2,
+          "status": "FINISHED",
+          "collection": "default",
+          "original_filename": "nike-shirt-2.jpg",
+          "type": "image/jpeg",
+          "url": "https://s3.amazonaws.com/gelya-prodaet/uploads/products/nike-shirt-2.jpg"
+        }
+      ],
       "items": [
         {
           "id": 1,
@@ -194,6 +212,7 @@ GET /products/nike-air-max-90
   "gender": { /* ListOption */ },
   "brand": { /* ListOption */ },
   "country": { /* ListOption */ },
+  "files": [ /* File[] */ ],
   "items": [ /* Только ProductItem[] с is_for_sale=true */ ]
 }
 ```
@@ -284,6 +303,7 @@ GET /health
   "gender": "ListOption",
   "brand": "ListOption|null",
   "country": "ListOption|null",
+  "files": "File[]",
   "items": "ProductItem[]"
 }
 ```
@@ -313,6 +333,40 @@ GET /health
 }
 ```
 
+### File
+```json
+{
+  "id": 1,
+  "status": "FINISHED",
+  "collection": "default",
+  "original_filename": "image.jpg",
+  "type": "image/jpeg",
+  "url": "https://s3.amazonaws.com/gelya-prodaet/uploads/products/image.jpg",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-01T00:00:00Z"
+}
+```
+
+**Пример с null URL (когда S3_URL не настроен):**
+```json
+{
+  "id": 2,
+  "status": "FINISHED", 
+  "collection": "default",
+  "original_filename": "image2.jpg",
+  "type": "image/jpeg",
+  "url": null,
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-01T00:00:00Z"
+}
+```
+
+**Примечания по полям:**
+- Возвращаются только файлы со статусом `"FINISHED"` и `deleted_at IS NULL`
+- `url` может быть `null` если S3_URL не настроен в конфигурации
+- `url` формируется по формуле: `https://{S3_URL}/{S3_BUCKET}/{file.path}/{file.filename}`
+- Возможные статусы: `UPLOADING`, `CREATED`, `WAITING_QUEUE`, `CONVERTING`, `FINISHED`, `DELETED`, `ERROR`
+
 ### ListOption
 ```json
 {
@@ -329,7 +383,11 @@ GET /health
 ## 🚀 Особенности
 
 - **Только чтение**: API предназначено только для чтения данных (GET запросы)
-- **Полные связи**: Товары возвращаются с полными связями включая items и опции
+- **Полные связи**: Товары возвращаются с полными связями включая items, опции и файлы
+- **Файлы из S3**: Автоматическое формирование URL для файлов из S3 хранилища
+- **Фильтрация файлов**: Возвращаются только файлы со статусом FINISHED и не удаленные
+- **Nullable URL**: URL файлов будет `null` если S3_URL не настроен в конфигурации  
+- **Умное формирование URL**: URL формируется по формуле `https://{S3_URL}/{S3_BUCKET}/{file.path}/{file.filename}`
 - **Автоматическая фильтрация**: Показываются только товары с элементами доступными для продажи (`is_for_sale=true`)
 - **Автоматическая конвертация размеров**: При фильтрации по размерам происходит cross-поиск между `size_id` и `size_year_id`
 - **Гибкая фильтрация**: Поддержка фильтрации по множественным критериям
@@ -455,6 +513,40 @@ const product = await response.json();
 
 console.log('Товар:', product.title); // "Футболка Nike"
 console.log('Slug:', product.slug);   // "futbolka-nike"
+```
+
+### Работа с файлами товаров
+```javascript
+const response = await fetch('/api/v1/products/futbolka-nike');
+const product = await response.json();
+
+// Получаем все файлы товара
+const files = product.files;
+console.log('Количество файлов:', files.length);
+
+// Фильтруем только изображения с валидными URL
+const images = files.filter(file => 
+  file.type?.startsWith('image/') && file.url !== null
+);
+
+// Отображаем изображения
+images.forEach((image, index) => {
+  const img = document.createElement('img');
+  img.src = image.url;
+  img.alt = image.original_filename;
+  img.className = 'product-image';
+  document.getElementById('product-gallery').appendChild(img);
+});
+
+// Получаем первое изображение как главное (с fallback если URL null)
+const mainImage = images[0]?.url || '/placeholder.jpg';
+document.getElementById('main-image').src = mainImage;
+
+// Обработка случая когда S3 не настроен
+if (files.length > 0 && files.every(f => f.url === null)) {
+  console.log('S3_URL не настроен - файлы недоступны');
+  // Показать плейсхолдер или сообщение об ошибке
+}
 ```
 
 ## 📏 Маппинг размеров

@@ -38,6 +38,7 @@ func Migrate() error {
 		&models.ListOption{},
 		&models.Product{},
 		&models.ProductItem{},
+		&models.File{},
 		&models.User{},
 		&models.UserIdentifier{},
 	)

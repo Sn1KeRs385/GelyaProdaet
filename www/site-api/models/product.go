@@ -23,6 +23,7 @@ type Product struct {
 	Gender  ListOption    `json:"gender" gorm:"foreignKey:GenderID;references:ID"`
 	Brand   *ListOption   `json:"brand" gorm:"foreignKey:BrandID;references:ID"`
 	Country *ListOption   `json:"country" gorm:"foreignKey:CountryID;references:ID"`
+	Files   []File        `json:"files" gorm:"polymorphic:Owner;polymorphicValue:Product"`
 	Items   []ProductItem `json:"items" gorm:"foreignKey:ProductID"`
 }
 

@@ -55,9 +55,12 @@ func main() {
 	// API маршруты
 	api := app.Group("/api/v1")
 
+	// Создаем обработчики с конфигурацией
+	productHandler := handlers.NewProductHandler(cfg)
+
 	// Маршруты для товаров (только чтение для внешнего API)
-	api.Get("/products", handlers.GetProducts)
-	api.Get("/products/:slug", handlers.GetProduct)
+	api.Get("/products", productHandler.GetProducts)
+	api.Get("/products/:slug", productHandler.GetProduct)
 
 	// Маршрут для опций (только чтение для внешнего API)
 	api.Get("/options", handlers.GetOptions)

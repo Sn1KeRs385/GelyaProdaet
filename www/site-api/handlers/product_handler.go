@@ -1,14 +1,28 @@
 package handlers
 
 import (
+	"site-api/config"
 	"site-api/database"
 	"site-api/models"
+	"site-api/utils"
 	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
+
+// ProductHandler содержит зависимости для обработчиков товаров
+type ProductHandler struct {
+	Config *config.Config
+}
+
+// NewProductHandler создает новый экземпляр ProductHandler
+func NewProductHandler(cfg *config.Config) *ProductHandler {
+	return &ProductHandler{
+		Config: cfg,
+	}
+}
 
 // SizeToYearMapping маппинг размеров на годы (из SizeConverter.php)
 var SizeToYearMapping = map[int][]int{
@@ -350,7 +364,7 @@ func applySorting(query *gorm.DB, c *fiber.Ctx) *gorm.DB {
 }
 
 // GetProducts возвращает все товары с полными связями, фильтрацией, пагинацией и сортировкой
-func GetProducts(c *fiber.Ctx) error {
+func (h *ProductHandler) GetProducts(c *fiber.Ctx) error {
 	var products []models.Product
 
 	// Парсим параметры пагинации
@@ -376,6 +390,10 @@ func GetProducts(c *fiber.Ctx) error {
 		Preload("Gender").
 		Preload("Brand").
 		Preload("Country").
+		Preload("Files", func(db *gorm.DB) *gorm.DB {
+			// Загружаем только файлы со статусом FINISHED и не удаленные
+			return db.Where("status = ? AND deleted_at IS NULL", "FINISHED")
+		}).
 		Preload("Items", func(db *gorm.DB) *gorm.DB {
 			// Загружаем только items с is_for_sale=true
 			return db.Where("is_for_sale = true")
@@ -389,6 +407,11 @@ func GetProducts(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{
 			"error": "Ошибка при получении товаров",
 		})
+	}
+
+	// Устанавливаем URL для файлов
+	for i := range products {
+		utils.SetFileURLs(products[i].Files, h.Config)
 	}
 
 	// Рассчитываем метаинформацию
@@ -421,7 +444,7 @@ func parseIntArray(str string) []int {
 }
 
 // GetProduct возвращает товар по slug с полными связями
-func GetProduct(c *fiber.Ctx) error {
+func (h *ProductHandler) GetProduct(c *fiber.Ctx) error {
 	slug := c.Params("slug")
 	if slug == "" {
 		return c.Status(400).JSON(fiber.Map{
@@ -436,6 +459,10 @@ func GetProduct(c *fiber.Ctx) error {
 		Preload("Gender").
 		Preload("Brand").
 		Preload("Country").
+		Preload("Files", func(db *gorm.DB) *gorm.DB {
+			// Загружаем только файлы со статусом FINISHED и не удаленные
+			return db.Where("status = ? AND deleted_at IS NULL", "FINISHED")
+		}).
 		Preload("Items", func(db *gorm.DB) *gorm.DB {
 			// Загружаем только items с is_for_sale=true
 			return db.Where("is_for_sale = true")
@@ -450,6 +477,9 @@ func GetProduct(c *fiber.Ctx) error {
 			"error": "Товар не найден",
 		})
 	}
+
+	// Устанавливаем URL для файлов
+	utils.SetFileURLs(product.Files, h.Config)
 
 	return c.JSON(product)
 }
