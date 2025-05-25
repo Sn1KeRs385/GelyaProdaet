@@ -53,7 +53,7 @@ func main() {
 	}))
 
 	// API маршруты
-	api := app.Group("/api/v1")
+	api := app.Group("/")
 
 	// Создаем обработчики с конфигурацией
 	productHandler := handlers.NewProductHandler(cfg)

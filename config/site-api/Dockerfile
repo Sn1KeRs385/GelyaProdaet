@@ -14,7 +14,7 @@ COPY www/site-api/go.mod www/site-api/go.sum ./
 RUN go mod download
 
 # Копируем исходный код
-COPY www/site-api/ .
+COPY www/site-api/ ./
 
 # Собираем приложение
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o site-api main.go

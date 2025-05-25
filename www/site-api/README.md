@@ -83,8 +83,8 @@
 - **Health Check**: `http://api.gelyaprodaet.local/site/health`
 
 ### Прямой доступ (для разработки)
-- **Go API**: `http://localhost:8080/api/v1/`
-- **Laravel API**: `http://localhost:8000/api/`
+- **Go API**: `http://localhost:8080`
+- **Laravel API**: `http://localhost:8000`
 
 ### Товары (Products)
 - `GET /site/products` - Получить товары с фильтрацией, пагинацией и сортировкой
